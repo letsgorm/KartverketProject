@@ -1,0 +1,15 @@
+services:
+  kartverketproject:
+    image: ${DOCKER_REGISTRY-}kartverketproject
+    build:
+      context: .
+      dockerfile: KartverketProject/Dockerfile
+    ports:
+        - "5000:80"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ConnectionStrings__DefaultConnection=Server=127.0.0.1;Database=KartverketDB;User=root;Password=${DB_PASSWORD};
+networks:
+  appnet:
+    external: true
+    name: appnet
