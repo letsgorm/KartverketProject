@@ -22,6 +22,8 @@ You should now have mariadbcontainer and kartverketproject running in docker.
 
 ![docker](images/docker.png)
 
+Remember to set the docker-compose toggle to KartverketProject and run the project so that you can see the website.
+
 # Connecting to database
 
 6. Create a new .env file inside the docker-compose project.
