@@ -16,9 +16,10 @@ public class KartverketController : ControllerBase
             ObstacleName = "Tre",
             ObstacleHeight = 2,
             ObstacleDescription = "Et tre ligger her",
-            ObstacleJSON = "[lat = 1337, lang = 1337]",
+            ObstacleJSON = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Point\",\"coordinates\":[7.994013,58.161083]}},{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Point\",\"coordinates\":[7.999463,58.16114]}},{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[7.994013,58.161083],[7.999463,58.16114]]}}]}"
         }
     };
+
 
     [HttpGet]
     public ActionResult<ObstacleData> GetObstacles()

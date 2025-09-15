@@ -3,9 +3,9 @@
     ViewData["Title"] = "Register Obstacle";
 }
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<div id="map"></div>
 
 <section class="mx-auto max-w-2xl">
     <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6">
@@ -16,6 +16,8 @@
 
         <form asp-action="DataForm" method="post" class="space-y-5">
             <div class="grid gap-5 sm:grid-cols-2">
+
+                <input type="hidden" asp-for="ObstacleJSON" id="ObstacleJSON" />
                 <!-- Obstacle Name -->
                 <div class="sm:col-span-2">
                     <label asp-for="ObstacleName" class="block text-sm font-medium text-gray-800 mb-1">Obstacle Name</label>
@@ -48,8 +50,6 @@
                 </div>
             </div>
 
-            <div id="map"></div>
-
             <div class="pt-2">
                 <button type="submit"
                         class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -61,6 +61,31 @@
 </section>
 
 @section Scripts {
-    <!-- If you use client-side validation, keep the standard validation partial -->
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // la layers ver tom
+        let layers = {};
+
+        function updateObstacleJSON() {
+            // layers til string
+            const geoJsonString = JSON.stringify(layers);
+            // ta obstaclejson fra hidden til geojsonstring
+            document.getElementById('ObstacleJSON').value = geoJsonString;
+        }
+
+        // hor etter form submit
+        document.querySelector('form').addEventListener('submit', function (e) {
+            // nor formen blir sendt, oppdater geojsonstring
+            updateObstacleJSON();
+
+            // hent ny deklarering pga funksjonen er utenfor
+            const geoJsonString = document.getElementById('ObstacleJSON').value;
+
+            // hvis tom, stopp brukeren.
+            if(!geoJsonString.length || geoJsonString == '{}') {
+                e.preventDefault();
+                alert("Map requires two markers");
+            }
+        });
+    </script>
 }

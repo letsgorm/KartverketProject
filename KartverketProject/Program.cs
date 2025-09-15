@@ -16,13 +16,17 @@ namespace KartverketProject
             options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
             new MySqlServerVersion(new Version(11, 8, 3))));
 
+            builder.Services.AddOpenApi();
+
             var app = builder.Build();
+
+            app.MapOpenApi();
+
+            app.MapScalarApiReference();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
-                app.MapScalarApiReference();
-                //app.MapOpenApi();
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
