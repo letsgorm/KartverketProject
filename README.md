@@ -40,9 +40,10 @@ Remember to set the docker-compose toggle to KartverketProject and run the proje
 
 9. Update the database with "Update-Database" in Nuget Package Manager Console.
 
-![changeme](images/changeme.png)
+![updatedb](images/updatedb.png)
 
 You should now be connected to the database.
+
 
 # Migration (optional)
 
