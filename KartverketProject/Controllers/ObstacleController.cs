@@ -18,6 +18,9 @@ public ActionResult DataForm()
 [HttpPost]
 public ActionResult DataForm(ObstacleData obstacledata)
 {
-    return View("Overview", obstacledata);
+    if (ModelState.IsValid) { // validering
+        return View("Overview", obstacledata);
+    }
+    return View();
 }
 }

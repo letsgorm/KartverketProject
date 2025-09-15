@@ -4,6 +4,8 @@
     ViewData["Title"] = "Overview";
 }
 
+<div id="map-overview" class="mt-6 rounded-lg border border-gray-300" style="height:400px;"></div>
+
 <section class="mx-auto max-w-2xl">
     <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6 space-y-4">
         <header>
@@ -12,6 +14,10 @@
         </header>
 
         <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="sm:col-span-1">
+                <dt class="text-sm font-medium text-gray-600">Obstacle JSON</dt>
+                <dd class="mt-1 text-base text-gray-900 break-words">@Model.ObstacleJSON</dd>
+            </div>
             <div class="sm:col-span-1">
                 <dt class="text-sm font-medium text-gray-600">Obstacle Name</dt>
                 <dd class="mt-1 text-base text-gray-900 break-words">@Model.ObstacleName</dd>
@@ -34,3 +40,26 @@
         </div>
     </div>
 </section>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        var map = L.map('map-overview').setView([0, 0], 2);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        // lag obstaclejson til raw html, ellers null.
+        var geojsonData = @Html.Raw(Model.ObstacleJSON ?? "null");
+
+        // legg til ny kart
+        if (geojsonData) {
+            var layer = L.geoJSON(geojsonData).addTo(map);
+            map.fitBounds(layer.getBounds());
+        } else {
+            console.warn("No geometry data found");
+        }
+    </script>
+}
