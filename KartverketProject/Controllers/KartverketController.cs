@@ -42,7 +42,7 @@ public class KartverketController(ApplicationDbContext context) : ControllerBase
         }
         _context.Obstacles.Add(newObstacle);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(AddObstacle), new { id = newObstacle.ObstacleId }, newObstacle); // mulig eksamen sprmsl AHHH
+        return CreatedAtAction(nameof(AddObstacle), new { id = newObstacle.ObstacleId }, newObstacle); 
     }
 
     [HttpPut("{id}")]
