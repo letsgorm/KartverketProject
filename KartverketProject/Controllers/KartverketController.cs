@@ -1,37 +1,28 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using KartverketProject.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace KartverketProject.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class KartverketController : ControllerBase
+public class KartverketController(ApplicationDbContext context) : ControllerBase
 {
-    static private List<ObstacleData> obstacles = new List<ObstacleData>
-    {
-        new ObstacleData
-        {
-            ObstacleId = 1,
-            ObstacleName = "Tre",
-            ObstacleHeight = 2,
-            ObstacleDescription = "Et tre ligger her",
-            ObstacleJSON = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Point\",\"coordinates\":[7.994013,58.161083]}},{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Point\",\"coordinates\":[7.999463,58.16114]}},{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"LineString\",\"coordinates\":[[7.994013,58.161083],[7.999463,58.16114]]}}]}"
-        }
-    };
-
+    private readonly ApplicationDbContext _context = context;
 
     [HttpGet]
-    public ActionResult<ObstacleData> GetObstacles()
+    public async Task<ActionResult<List<ObstacleData>>> GetObstacles()
     {
-        return Ok(obstacles);
+        return Ok(await _context.Obstacles.ToListAsync());
     }
 
 
     [HttpGet("{id}")]
-    public ActionResult<ObstacleData> GetObstaclesById(int id)
+    public async Task<ActionResult<ObstacleData>> GetObstaclesById(int id)
     {
-        var obstacle = obstacles.Find(o => o.ObstacleId == id);
+        var obstacle = await _context.Obstacles.FindAsync(id);
         if (obstacle is null)
         {
             return NotFound();
@@ -43,21 +34,21 @@ public class KartverketController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<ObstacleData> AddObstacle(ObstacleData newObstacle)
+    public async Task <ActionResult<ObstacleData>> AddObstacle(ObstacleData newObstacle)
     {
         if (newObstacle is null)
         {
             return NotFound();
         }
-        newObstacle.ObstacleId = obstacles.Max(o => o.ObstacleId) + 1;
-        obstacles.Add(newObstacle);
+        _context.Obstacles.Add(newObstacle);
+        await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(AddObstacle), new { id = newObstacle.ObstacleId }, newObstacle); // mulig eksamen sprmsl AHHH
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateObstacle(int id, ObstacleData updatedObstacle)
+    public async Task<IActionResult> UpdateObstacle(int id, ObstacleData updatedObstacle)
     {
-        var obstacle = obstacles.Find(o => o.ObstacleId == id);
+        var obstacle = await _context.Obstacles.FindAsync(id);
         if (obstacle is null)
         {
             return NotFound();
@@ -69,18 +60,21 @@ public class KartverketController : ControllerBase
         obstacle.ObstacleDescription = updatedObstacle.ObstacleDescription;
         obstacle.ObstacleJSON = updatedObstacle.ObstacleJSON;
 
+        await _context.SaveChangesAsync();
+
         return NoContent();
     }
 
     [HttpDelete]
-    public IActionResult RemoveObstacle(int id)
+    public async Task<IActionResult> RemoveObstacle(int id)
     {
-        var obstacle = obstacles.FirstOrDefault(o => o.ObstacleId == id);
+        var obstacle = await _context.Obstacles.FindAsync(id);
         if (obstacle is null)
         {
             return NotFound();
         }
-        obstacles.Remove(obstacle);
+        _context.Obstacles.Remove(obstacle);
+        await _context.SaveChangesAsync();  
         return NoContent();
     }
 }
