@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
 <div id="map"></div>
+<div id="noMarker" style="color: red"></div>
 
 <section class="mx-auto max-w-2xl">
     <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6">
@@ -83,8 +84,8 @@
 
             // hvis tom, stopp brukeren.
             if(!geoJsonString.length || geoJsonString == '{}') {
+                document.getElementById('noMarker').innerText = 'Please add at least two markers';
                 e.preventDefault();
-                alert("Map requires two markers");
             }
         });
     </script>
