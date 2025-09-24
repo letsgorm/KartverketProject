@@ -22,7 +22,7 @@ public class KartverketController(ApplicationDbContext context) : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<ObstacleData>> GetObstaclesById(int id)
     {
-        var obstacle = await _context.Obstacles.FindAsync(id); // Asynkron henting av hinder basert på id
+        var obstacle = await _context.Obstacles.FindAsync(id); // Asynkron henting av hinder basert pï¿½ id
         if (obstacle is null)
         {
             return NotFound();
