@@ -30,11 +30,11 @@ Remember to set the docker-compose toggle to KartverketProject and run the proje
    
 ![env](images/env.png)
 
-6. Write "DB_PASSWORD=changeme" and fill out changeme with the MYSQL_ROOT_PASSWORD that was set in step 3.
+6. Write "DB_PASSWORD=changeme" and fill out changeme with the MYSQL_ROOT_PASSWORD that was set in step 2.
 
 ![pass](images/pass.png)
 
-7. Change Pwd in appsettings.json so that it matches your .env file password set in step 7.
+7. Change Pwd in appsettings.json so that it matches your .env file password set in step 6.
    
 ![changeme](images/changeme.png)
 
