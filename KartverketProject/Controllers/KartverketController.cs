@@ -58,6 +58,7 @@ public class KartverketController(ApplicationDbContext context) : ControllerBase
         obstacle.ObstacleName = updatedObstacle.ObstacleName;
         obstacle.ObstacleHeight = updatedObstacle.ObstacleHeight;
         obstacle.ObstacleDescription = updatedObstacle.ObstacleDescription;
+        obstacle.ObstacleSubmittedDate = updatedObstacle.ObstacleSubmittedDate;
         obstacle.ObstacleJSON = updatedObstacle.ObstacleJSON;
 
         await _context.SaveChangesAsync(); // Lagrer endringer asynkront, viktig!

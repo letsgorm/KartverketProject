@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
 <div id="map"></div>
-<div id="noMarker" style="color: red"></div>
+<div id="noMarker" style="color: red"></div> <!-- error hvis ingen markers fins -->
 
 <section class="mx-auto max-w-2xl">
     <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6">
@@ -19,6 +19,7 @@
             <div class="grid gap-5 sm:grid-cols-2">
 
                 <input type="hidden" asp-for="ObstacleJSON" id="ObstacleJSON" />
+                <input type="hidden" asp-for="ObstacleSubmittedDate" id="ObstacleSubmittedDate" />
                 <!-- Obstacle Name -->
                 <div class="sm:col-span-2">
                     <label asp-for="ObstacleName" class="block text-sm font-medium text-gray-800 mb-1">Obstacle Name</label>
@@ -64,28 +65,69 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // la layers ver tom
         let layers = {};
 
         function updateObstacleJSON() {
-            // layers til string
             const geoJsonString = JSON.stringify(layers);
-            // ta obstaclejson fra hidden til geojsonstring
             document.getElementById('ObstacleJSON').value = geoJsonString;
         }
+        function updateObstacleDate() {
+            const currentDate = new Date();
+            document.getElementById('ObstacleSubmittedDate').value = currentDate.toISOString();
+        }
 
-        // hor etter form submit
-        document.querySelector('form').addEventListener('submit', function (e) {
-            // nor formen blir sendt, oppdater geojsonstring
+        document.querySelector('form').addEventListener('submit', async function (e) {
+            // la nettleser gjor validering. ikke slett, funker ikke uten
+            if (!e.target.checkValidity()) {
+                return;
+            }
+
+            // client side validering funker men server side validering brekker fordi den fryser siden, fiks pls
+            e.preventDefault();
+
             updateObstacleJSON();
+            updateObstacleDate();
 
-            // hent ny deklarering pga funksjonen er utenfor
+            // hent ut json igjen fordi den er inni updateobstaclejson, ingen global funksjon
             const geoJsonString = document.getElementById('ObstacleJSON').value;
 
-            // hvis tom, stopp brukeren.
-            if(!geoJsonString.length || geoJsonString == '{}') {
-                document.getElementById('noMarker').innerText = 'Please add at least two markers';
-                e.preventDefault();
+            // refaktorering
+            const errorMarker = document.getElementById('noMarker');
+
+            // ingen markers lagt til, vis feilmelding
+            if (!geoJsonString.length || geoJsonString === '{}') {
+                errorMarker.innerText = 'Please add at least two markers';
+                return;
+            } else {
+                errorMarker.innerText = '';
+            }
+
+            // hent ut juice
+            const form = e.target; 
+            const data = { 
+                ObstacleName: form.ObstacleName.value,
+                ObstacleHeight: form.ObstacleHeight.value,
+                ObstacleDescription: form.ObstacleDescription.value,
+                ObstacleJSON: form.ObstacleJSON.value,
+                ObstacleSubmittedDate: form.ObstacleSubmittedDate.value
+            };
+
+            try {
+                // vent til api har fatt data
+                const response = await fetch('/api/Kartverket', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    // send formen
+                    form.submit();
+                } else {
+                    errorMarker.innerText = 'Submission failed. Please try again.';
+                }
+            } catch (err) {
+                errorMarker.innerText = 'Network error. Please try again.';
             }
         });
     </script>
