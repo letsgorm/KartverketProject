@@ -2,7 +2,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-\# Setting up the DBPASSWORD
+# Setting up the DBPASSWORD
 
 
 
@@ -10,7 +10,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-!\[dockercompose](images/cmd1.png)
+![dockercompose](images/cmd1.png)
 
 
 
@@ -18,7 +18,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-!\[dockercompose](images/solution2.png)
+![dockercompose](images/solution2.png)
 
 
 
@@ -26,7 +26,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-!\[dockercompose](images/add3.png)
+![dockercompose](images/add3.png)
 
 
 
@@ -34,7 +34,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-!\[dockercompose](images/env4.png)
+![dockercompose](images/env4.png)
 
 
 
@@ -42,7 +42,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-!\[dockercompose](images/apppass5.png)
+![dockercompose](images/apppass5.png)
 
 
 
@@ -50,23 +50,23 @@ Under maintenance. New docker-compose setup.
 
 
 
-!\[dockercompose](images/volume6.png)
+![dockercompose](images/volume6.png)
 
 
 
-!\[dockercompose](images/deletecompose7.png)
+![dockercompose](images/deletecompose7.png)
 
 
 
-\# Running the project
+# Running the project
 
 
 
-7\. Select docker-compose as the main project.
+7. Select docker-compose as the main project.
 
 
 
-!\[dockercompose](images/selectdockercompose8.png)
+![dockercompose](images/selectdockercompose8.png)
 
 
 
@@ -74,7 +74,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-!\[dockercompose](images/rundockercompose9.png)
+![dockercompose](images/rundockercompose9.png)
 
 
 
@@ -82,7 +82,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-!\[dockercompose](images/observedockercompose10.png)
+![dockercompose](images/observedockercompose10.png)
 
 
 
