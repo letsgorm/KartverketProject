@@ -14,7 +14,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-2\. Open the solution in Visual Studio
+2. Open the solution in Visual Studio
 
 
 
@@ -22,7 +22,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-3\. Right click the docker-compose text, and hover over Add, then click New Item.
+3. Right click the docker-compose text, and hover over Add, then click New Item.
 
 
 
@@ -30,7 +30,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-4\. Name the file .env
+4. Name the file .env
 
 
 
@@ -38,7 +38,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-5\. In .env, type DBPASSWORD= and then the password recieved by @dovidee. If not, send a message. Make sure the appsettings.json also contains the password in Pwd=, otherwise it will not work.
+5. In .env, type DBPASSWORD= and then the password recieved by @dovidee. If not, send a message. Make sure the appsettings.json also contains the password in Pwd=, otherwise it will not work.
 
 
 
@@ -46,7 +46,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-6\. If you face any errors with the password still. Open cmd, list with «docker volume ls» and then do «docker volume rm {VOLUMENAME HERE}». If it says volume is in use, go to docker desktop and delete the container. Try running the project again.
+6. If you face any errors with the password still. Open cmd, list with «docker volume ls» and then do «docker volume rm {VOLUMENAME HERE}». If it says volume is in use, go to docker desktop and delete the container. Try running the project again.
 
 
 
@@ -70,7 +70,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-8\. Run the docker-compose project.
+8. Run the docker-compose project.
 
 
 
@@ -78,7 +78,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-9\. Observe that all three containers have started.
+9. Observe that all three containers have started.
 
 
 
