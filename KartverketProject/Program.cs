@@ -2,7 +2,7 @@ using KartverketProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
-namespace KartverketProject
+namespace KartverketProject // Map obstacle registration system - Student project
 {
     public class Program
     {
