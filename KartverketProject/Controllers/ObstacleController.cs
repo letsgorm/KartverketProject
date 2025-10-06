@@ -1,7 +1,4 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using KartverketProject.Models;
-using KartverketProject.Controllers;
 
 namespace KartverketProject.Controllers;
 
