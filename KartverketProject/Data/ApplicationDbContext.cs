@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using KartverketProject.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
@@ -17,4 +18,6 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<ObstacleData>()
             .HasKey(o => o.ObstacleId);
     }
+    public DbSet<User> Users { get; set; } 
+
 }
