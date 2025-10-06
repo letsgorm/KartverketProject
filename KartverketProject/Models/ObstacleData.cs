@@ -16,5 +16,7 @@ public class ObstacleData
     [MaxLength(1000)]
     public string ObstacleDescription { get; set; }
 
+    public DateTime ObstacleSubmittedDate { get; set; }
+
     public string ObstacleJSON { get; set; }
 }

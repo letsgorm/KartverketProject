@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace KartverketProject.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
-public class KartverketController(ApplicationDbContext context) : ControllerBase
+[Route("api/[controller]")] // Automatisk modell validering
+[ApiController] // Automatisk binding og gjor API mer clean
+public class KartverketController(ApplicationDbContext context) : ControllerBase // Dependency injection i dbcontext
 {
     private readonly ApplicationDbContext _context = context;
 
     [HttpGet]
     public async Task<ActionResult<List<ObstacleData>>> GetObstacles()
     {
-        return Ok(await _context.Obstacles.ToListAsync());
+        return Ok(await _context.Obstacles.ToListAsync()); // Asynkron henting av alle hindre
     }
 
 
     [HttpGet("{id}")]
     public async Task<ActionResult<ObstacleData>> GetObstaclesById(int id)
     {
-        var obstacle = await _context.Obstacles.FindAsync(id);
+        var obstacle = await _context.Obstacles.FindAsync(id); // Asynkron henting av hinder basert p� id
         if (obstacle is null)
         {
             return NotFound();
@@ -40,9 +40,9 @@ public class KartverketController(ApplicationDbContext context) : ControllerBase
         {
             return NotFound();
         }
-        _context.Obstacles.Add(newObstacle);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(AddObstacle), new { id = newObstacle.ObstacleId }, newObstacle); 
+        _context.Obstacles.Add(newObstacle); // Legger til ny hinder
+        await _context.SaveChangesAsync(); // Lagrer endringer asynkront, viktig!
+        return CreatedAtAction(nameof(AddObstacle), new { id = newObstacle.ObstacleId }, newObstacle);
     }
 
     [HttpPut("{id}")]
@@ -58,9 +58,10 @@ public class KartverketController(ApplicationDbContext context) : ControllerBase
         obstacle.ObstacleName = updatedObstacle.ObstacleName;
         obstacle.ObstacleHeight = updatedObstacle.ObstacleHeight;
         obstacle.ObstacleDescription = updatedObstacle.ObstacleDescription;
+        obstacle.ObstacleSubmittedDate = updatedObstacle.ObstacleSubmittedDate;
         obstacle.ObstacleJSON = updatedObstacle.ObstacleJSON;
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(); // Lagrer endringer asynkront, viktig!
 
         return NoContent();
     }
@@ -73,8 +74,8 @@ public class KartverketController(ApplicationDbContext context) : ControllerBase
         {
             return NotFound();
         }
-        _context.Obstacles.Remove(obstacle);
-        await _context.SaveChangesAsync();  
+        _context.Obstacles.Remove(obstacle); // Fjerner hinder
+        await _context.SaveChangesAsync();  // Lagrer endringer asynkront, viktig!
         return NoContent();
     }
 }

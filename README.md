@@ -1,55 +1,100 @@
-# Setup
-
-1. Clone the project
-
-git clone https://github.com/letsgorm/KartverketProject.git
-
-2. Create the container. Do not forget to set the MYSQL_ROOT_PASSWORD!
-
-docker run --name mariadbcontainer -e MYSQL_ROOT_PASSWORD=changeme -p 3307:3306 -d docker.io/library/mariadb:11.8
-
-3. In Visual Studio -> Tools -> Command Line -> Developer Command Prompt, please type:
-
-docker network create appnet || true
-
-docker network connect appnet mariadbcontainer
-
-4. Run the project's docker compose
-
-![dockercompose](images/dockercompose.png)
-
-You should now have mariadbcontainer and kartverketproject running in docker.
-
-![docker](images/docker.png)
-
-Remember to set the docker-compose toggle to KartverketProject and run the project so that you can see the website.
-
-# Connecting to database
-
-5. Create a new .env file inside the docker-compose project.
-   
-![env](images/env.png)
-
-6. Write "DB_PASSWORD=changeme" and fill out changeme with the MYSQL_ROOT_PASSWORD that was set in step 3.
-
-![pass](images/pass.png)
-
-7. Change Pwd in appsettings.json so that it matches your .env file password set in step 7.
-   
-![changeme](images/changeme.png)
-
-8. Update the database with "Update-Database" in Nuget Package Manager Console.
-
-![updatedb](images/updatedb.png)
-
-You should now be connected to the database.
+Under maintenance. New docker-compose setup.
 
 
-# Migration (optional)
 
-9. Delete the migrations folder
+# Setting up the DBPASSWORD
 
-![deletemigration](images/deletemigration.png)
 
-10. Add the migration with "Add-Migration -Context ApplicationDbContext" in Nuget Package Manager Console.
-![addmigration](images/addmigration.png)
+
+1. Open cmd, and clone the project
+
+
+
+![dockercompose](images/cmd1.png)
+
+
+
+2. Open the solution in Visual Studio
+
+
+
+![dockercompose](images/solution2.png)
+
+
+
+3. Right click the docker-compose text, and hover over Add, then click New Item.
+
+
+
+![dockercompose](images/add3.png)
+
+
+
+4. Name the file .env
+
+
+
+![dockercompose](images/env4.png)
+
+
+
+5. In .env, type DBPASSWORD= and then the password recieved by @dovidee. If not, send a message. Make sure the appsettings.json also contains the password in Pwd=, otherwise it will not work.
+
+
+
+![dockercompose](images/apppass5.png)
+
+
+
+6. If you face any errors with the password still. Open cmd, list with «docker volume ls» and then do «docker volume rm {VOLUMENAME HERE}». If it says volume is in use, go to docker desktop and delete the container. Try running the project again.
+
+
+
+![dockercompose](images/volume6.png)
+
+
+
+![dockercompose](images/deletecompose7.png)
+
+
+
+# Running the project
+
+
+
+7. Select docker-compose as the main project.
+
+
+
+![dockercompose](images/selectdockercompose8.png)
+
+
+
+8. Run the docker-compose project.
+
+
+
+![dockercompose](images/rundockercompose9.png)
+
+
+
+9. Observe that all three containers have started.
+
+
+
+![dockercompose](images/observedockercompose10.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

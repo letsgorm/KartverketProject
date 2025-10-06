@@ -5,11 +5,44 @@ services:
       context: .
       dockerfile: KartverketProject/Dockerfile
     ports:
-        - "5000:80"
+      - "8080:8080"
     environment:
-        - ASPNETCORE_ENVIRONMENT=Development
-        - ConnectionStrings__DefaultConnection=Server=127.0.0.1;Database=KartverketDB;User=root;Password=${DB_PASSWORD};
-networks:
-  appnet:
-    external: true
-    name: appnet
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080 
+      - ConnectionStrings__DefaultConnection=Server=mariadb;Database=KartverketDB;User=root;Password=${DBPASSWORD};
+    depends_on:
+        - mariadb
+      
+  mariadb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DBPASSWORD}
+      MYSQL_DATABASE: KartverketDB
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p${DBPASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  migrate:
+    build:
+      context: .
+      dockerfile: KartverketProject/Dockerfile
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mariadb;Database=KartverketDB;User=root;Password=${DBPASSWORD};
+    command: >
+      bash -c "dotnet ef database update --project KartverketProject/KartverketProject.csproj --context ApplicationDbContext"
+
+volumes:
+  mariadb_data:
+
+ 
