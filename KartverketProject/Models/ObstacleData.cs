@@ -18,5 +18,6 @@ public class ObstacleData
 
     public DateTime ObstacleSubmittedDate { get; set; }
 
+    [Required(ErrorMessage = "Field is required")]
     public string ObstacleJSON { get; set; }
 }

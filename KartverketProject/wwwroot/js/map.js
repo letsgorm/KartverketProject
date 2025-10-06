@@ -26,8 +26,9 @@ map.on('click', function(e) {
     points.push(e.latlng);
 
     // hvis to markers er satt
-    if(points.length == 2) {
-        var polyline = L.polyline(points, {color: "red"}).addTo(map);
+    if (points.length == 2) {
+        document.getElementById("noMarker").innerText = "";
+        var polyline = L.polyline(points, { color: "red" }).addTo(map);
         group = L.layerGroup([markers[0], markers[1], polyline]).addTo(map);
         checkpoint = true;
         // lagre til geojson som vi lagrer etterpo i hidden field

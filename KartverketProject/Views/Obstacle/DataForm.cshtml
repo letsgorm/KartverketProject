@@ -5,9 +5,13 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
+<!-- Kart -->
 <div id="map"></div>
-<div id="noMarker" style="color: red"></div> <!-- error hvis ingen markers fins -->
 
+<!-- Legg til markers -->
+<div id="noMarker" style="color: red">Please add at least two markers</div>
+
+<!-- Form -->
 <section class="mx-auto max-w-2xl">
     <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6">
         <header class="mb-6">
@@ -18,9 +22,13 @@
         <form asp-action="DataForm" method="post" class="space-y-5">
             <div class="grid gap-5 sm:grid-cols-2">
 
+                <!-- ObstacleJSON -->
                 <input type="hidden" asp-for="ObstacleJSON" id="ObstacleJSON" />
+
+                <!-- ObstacleSubmittedDate -->
                 <input type="hidden" asp-for="ObstacleSubmittedDate" id="ObstacleSubmittedDate" />
-                <!-- Obstacle Name -->
+
+                <!-- ObstacleName -->
                 <div class="sm:col-span-2">
                     <label asp-for="ObstacleName" class="block text-sm font-medium text-gray-800 mb-1">Obstacle Name</label>
                     <input asp-for="ObstacleName"
@@ -67,44 +75,24 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        let layers = {};
+        document.querySelector('form').addEventListener('submit', async function (e) {
+            // sjekk at markere er satt i gruppen
+            if(!group) 
+            {
+                // stopp formen
+                e.preventDefault();
+                return;
+            }
 
-        function updateObstacleJSON() {
-            const geoJsonString = JSON.stringify(layers);
-            document.getElementById('ObstacleJSON').value = geoJsonString;
-        }
-        function updateObstacleDate() {
+            // sett dato
             const currentDate = new Date();
             document.getElementById('ObstacleSubmittedDate').value = currentDate.toISOString();
-        }
 
-        document.querySelector('form').addEventListener('submit', async function (e) {
-            // la nettleser gjor validering. ikke slett, funker ikke uten
-            if (!e.target.checkValidity()) {
-                return;
-            }
+            // stringify layers
+            const geoJsonString = JSON.stringify(layers);
+            document.getElementById('ObstacleJSON').value = geoJsonString;
 
-            // client side validering funker men server side validering brekker fordi den fryser siden, fiks pls
-            e.preventDefault();
-
-            updateObstacleJSON();
-            updateObstacleDate();
-
-            // hent ut json igjen fordi den er inni updateobstaclejson, ingen global funksjon
-            const geoJsonString = document.getElementById('ObstacleJSON').value;
-
-            // refaktorering
-            const errorMarker = document.getElementById('noMarker');
-
-            // ingen markers lagt til, vis feilmelding
-            if (!geoJsonString.length || geoJsonString === '{}') {
-                errorMarker.innerText = 'Please add at least two markers';
-                return;
-            } else {
-                errorMarker.innerText = '';
-            }
-
-            // hent ut juice
+            // hent ut verdier
             const form = e.target; 
             const data = { 
                 ObstacleName: form.ObstacleName.value,
@@ -126,10 +114,10 @@
                     // send formen
                     form.submit();
                 } else {
-                    errorMarker.innerText = 'Submission failed. Please try again.';
+                    console.log("Form submission failed");
                 }
             } catch (err) {
-                errorMarker.innerText = 'Network error. Please try again.';
+                console.log("Network error")
             }
         });
 
