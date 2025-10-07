@@ -55,12 +55,9 @@
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
-        // lag obstaclejson til raw html, ellers null.
-        var geojsonData = @Html.Raw(Model.ObstacleJSON ?? "null");
-
         // legg til ny kart
         if (geojsonData) {
-            var layer = L.geoJSON(geojsonData).addTo(map);
+            var layer = L.geoJSON(@Model.ObstacleJSON).addTo(map);
             map.fitBounds(layer.getBounds());
         } else {
             console.warn("No geometry data found");
