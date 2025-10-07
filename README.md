@@ -1,7 +1,3 @@
-Under maintenance. New docker-compose setup.
-
-
-
 # Setting up the DBPASSWORD
 
 
