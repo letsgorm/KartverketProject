@@ -1,19 +1,37 @@
+﻿var mapElement = document.getElementById('map');
+if (!mapElement) {
+    // No map on this page; nothing to do
+    return;
+}
+
 var map = L.map('map').fitWorld();
 
-// lag ny kart
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+// Lys base
+var lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+    attribution: '&copy; OpenStreetMap contributors'
+});
+
+// Mørk base (CartoDB Dark Matter)
+var darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://carto.com/">CartoDB</a>'
+});
+
+// Velg starttema basert på dark mode
+var isDark = document.body.classList.contains('darkmode') ||
+             localStorage.getItem('darkmode') === 'active';
+var baseLayer = isDark ? darkTiles : lightTiles;
+baseLayer.addTo(map);
 
 var points = [];
 var markers = [];
 var group = null;
 let checkpoint = false;
 
-map.on('click', function(e) {
+map.on('click', function (e) {
     // hvis allerede satt, fjern alt
-    if(checkpoint) {
+    if (checkpoint) {
         map.removeLayer(group);
         points = [];
         markers = [];
@@ -32,20 +50,19 @@ map.on('click', function(e) {
         group = L.layerGroup([markers[0], markers[1], polyline]).addTo(map);
         checkpoint = true;
         // lagre til geojson som vi lagrer etterpo i hidden field
-        layers = group.toGeoJSON();
+        if (typeof layers !== 'undefined') {
+            layers = group.toGeoJSON();
+        }
     }
 });
 
-// finn brukers sted
-map.locate({setView: true, maxZoom: 16});
+// Finn brukerposisjon
+map.locate({ setView: true, maxZoom: 16 });
 
 function onLocationFound(e) {
-    // bruker innen stedet
     var radius = e.accuracy;
-
     L.marker(e.latlng).addTo(map)
         .bindPopup("You are here").openPopup();
-
     L.circle(e.latlng, radius).addTo(map);
 }
 
@@ -56,3 +73,13 @@ function onLocationError(e) {
 }
 
 map.on('locationerror', onLocationError);
+
+// 🟢 Bytt karttema når dark mode endres
+window.addEventListener('themechange', function (e) {
+    var theme = e.detail && e.detail.theme;
+    var next = theme === 'dark' ? darkTiles : lightTiles;
+    if (map.hasLayer(next)) return;
+    if (map.hasLayer(lightTiles)) map.removeLayer(lightTiles);
+    if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
+    next.addTo(map);
+});
