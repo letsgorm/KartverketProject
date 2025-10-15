@@ -2,22 +2,22 @@
 
 public class ObstacleData
 {
-    public int ObstacleId { get; set; }
+    public int obstacleId { get; set; }
 
     [Required(ErrorMessage = "Field is required")]
     [MaxLength(100)]
-    public string ObstacleName { get; set; }
+    public string obstacleName { get; set; }
 
     [Required(ErrorMessage = "Field is required")]
     [Range(0, 200)]
-    public double ObstacleHeight { get; set; }
+    public double obstacleHeight { get; set; }
 
     [Required(ErrorMessage = "Field is required")]
     [MaxLength(1000)]
-    public string ObstacleDescription { get; set; }
+    public string obstacleDescription { get; set; }
 
-    public DateTime ObstacleSubmittedDate { get; set; }
+    public DateTime obstacleSubmittedDate { get; set; }
 
     [Required(ErrorMessage = "Field is required")]
-    public string ObstacleJSON { get; set; }
+    public string obstacleJson { get; set; }
 }

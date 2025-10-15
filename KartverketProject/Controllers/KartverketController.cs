@@ -42,7 +42,7 @@ public class KartverketController(ApplicationDbContext context) : ControllerBase
         }
         _context.Obstacles.Add(newObstacle); // Legger til ny hinder
         await _context.SaveChangesAsync(); // Lagrer endringer asynkront, viktig!
-        return CreatedAtAction(nameof(AddObstacle), new { id = newObstacle.ObstacleId }, newObstacle);
+        return CreatedAtAction(nameof(AddObstacle), new { id = newObstacle.obstacleId }, newObstacle);
     }
 
     [HttpPut("{id}")]
@@ -54,12 +54,12 @@ public class KartverketController(ApplicationDbContext context) : ControllerBase
             return NotFound();
         }
 
-        obstacle.ObstacleId = updatedObstacle.ObstacleId;
-        obstacle.ObstacleName = updatedObstacle.ObstacleName;
-        obstacle.ObstacleHeight = updatedObstacle.ObstacleHeight;
-        obstacle.ObstacleDescription = updatedObstacle.ObstacleDescription;
-        obstacle.ObstacleSubmittedDate = updatedObstacle.ObstacleSubmittedDate;
-        obstacle.ObstacleJSON = updatedObstacle.ObstacleJSON;
+        obstacle.obstacleId = updatedObstacle.obstacleId;
+        obstacle.obstacleName = updatedObstacle.obstacleName;
+        obstacle.obstacleHeight = updatedObstacle.obstacleHeight;
+        obstacle.obstacleDescription = updatedObstacle.obstacleDescription;
+        obstacle.obstacleSubmittedDate = updatedObstacle.obstacleSubmittedDate;
+        obstacle.obstacleJson = updatedObstacle.obstacleJson;
 
         await _context.SaveChangesAsync(); // Lagrer endringer asynkront, viktig!
 
