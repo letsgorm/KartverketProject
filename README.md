@@ -126,6 +126,30 @@ Based on the C4 model: https://c4model.com/diagrams/system-context
 
 Based on the C4 model: https://c4model.com/diagrams/container
 
+### Technologies
+
+ASP.NET Core: https://dotnet.microsoft.com/en-us/apps/aspnet
+
+Docker: https://www.docker.com/
+
+MariaDB: https://mariadb.org/
+
+MySQL: https://www.mysql.com/
+
+Visual Paradigm: https://online.visual-paradigm.com/
+
+CSS: https://developer.mozilla.org/en-US/docs/Web/CSS
+
+JavaScript: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+
+HTML: https://developer.mozilla.org/en-US/docs/Web/HTML
+
+Scalar API: https://scalar.com/ 
+
+Scalar application route: http://localhost:8080/scalar/v1
+
+Kartverket API: https://nrl.kartverket.no/nrl/v3
+
 ## Unit testing
 
 ### Scenarios
