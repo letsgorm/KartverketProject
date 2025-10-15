@@ -7,7 +7,7 @@ using Assert = Xunit.Assert;
 
 public class ControllerTest
 {
-    // Test if the ModelState is invalid when ObstacleJson is missing
+    // Test if the ModelState is valid
     [Fact]
     public void ModelStateValidation()
     {
@@ -44,7 +44,7 @@ public class ControllerTest
         var obstacleData = (new ObstacleData
         {
             obstacleId = 0,
-            obstacleName = "john",
+            obstacleName = "tower",
             obstacleHeight = 5.5,
             obstacleDescription = "test",
             obstacleSubmittedDate = date,
@@ -55,12 +55,12 @@ public class ControllerTest
         var obstacle = await controller.DataForm(obstacleData);
 
         // Assert
-        var savedObstacle = context.Obstacles.FirstOrDefault(o => o.obstacleName == "john");
+        var savedObstacle = context.Obstacles.FirstOrDefault(o => o.obstacleName == "tower");
         Assert.NotNull(obstacle);
-        Assert.Equal("john", savedObstacle.obstacleName);
+        Assert.Equal("tower", savedObstacle.obstacleName);
     }
 
-    // Test if the username and password authenticates in the database
+    // Test if the user can authenticate
     [Fact]
     public async Task UserSaveToDatabase()
     {
