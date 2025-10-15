@@ -1,7 +1,3 @@
-Under maintenance. New docker-compose setup.
-
-
-
 # Setting up the DBPASSWORD
 
 
@@ -38,7 +34,7 @@ Under maintenance. New docker-compose setup.
 
 
 
-5. In .env, type DBPASSWORD= and then the password recieved by @dovidee. If not, send a message. Make sure the appsettings.json also contains the password in Pwd=, otherwise it will not work.
+5. In .env, type DBPASSWORD= and then any random password. Make sure the appsettings.json also contains the password in Pwd=, otherwise it will not work.
 
 
 
