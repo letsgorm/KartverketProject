@@ -16,7 +16,7 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ObstacleData>()
-            .HasKey(o => o.ObstacleId);
+            .HasKey(o => o.obstacleId);
     }
     public DbSet<User> Users { get; set; } 
 

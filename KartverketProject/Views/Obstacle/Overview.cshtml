@@ -16,23 +16,23 @@
         <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="sm:col-span-1">
                 <dt class="text-sm font-medium text-gray-600">Obstacle JSON</dt>
-                <dd class="mt-1 text-base text-gray-900 break-words">@Model.ObstacleJSON</dd>
+                <dd class="mt-1 text-base text-gray-900 break-words">@Model.obstacleJson</dd>
             </div>
             <div class="sm:col-span-1">
                 <dt class="text-sm font-medium text-gray-600">Obstacle Name</dt>
-                <dd class="mt-1 text-base text-gray-900 break-words">@Model.ObstacleName</dd>
+                <dd class="mt-1 text-base text-gray-900 break-words">@Model.obstacleName</dd>
             </div>
             <div class="sm:col-span-1">
                 <dt class="text-sm font-medium text-gray-600">Height (m)</dt>
-                <dd class="mt-1 text-base text-gray-900">@Model.ObstacleHeight</dd>
+                <dd class="mt-1 text-base text-gray-900">@Model.obstacleHeight</dd>
             </div>
             <div class="sm:col-span-1">
                 <dt class="text-sm font-medium text-gray-600">Description</dt>
-                <dd class="mt-1 text-base text-gray-900 break-words sm:col-span-3">@Model.ObstacleDescription</dd>
+                <dd class="mt-1 text-base text-gray-900 break-words sm:col-span-3">@Model.obstacleDescription</dd>
             </div>
             <div class="sm:col-span-1">
                 <dt class="text-sm font-medium text-gray-600">Created date</dt>
-                <dd class="mt-1 text-base text-gray-900 break-words sm:col-span-3">@Model.ObstacleSubmittedDate</dd>
+                <dd class="mt-1 text-base text-gray-900 break-words sm:col-span-3">@Model.obstacleSubmittedDate</dd>
             </div>
         </dl>
 
@@ -57,7 +57,7 @@
 
         // legg til ny kart
         if (geojsonData) {
-            var layer = L.geoJSON(@Model.ObstacleJSON).addTo(map);
+            var layer = L.geoJSON(@Model.obstacleJson).addTo(map);
             map.fitBounds(layer.getBounds());
         } else {
             console.warn("No geometry data found");
