@@ -67,18 +67,17 @@ A solution that allows users to mark obstacles on a map.
 2. Run the project as docker-compose (step 6), let it start up its containers and then exit.
 
 
-3. Set the project to KartverketProject, but do not run it.
-
-
-3. Delete the migrations folder, and run command 3.1 and 3.2 in NuGet Package Manage Console
-
-
-![dockercompose](images/migrations15.png)
-
+3. Set the project to KartverketProject, but do not run it. Run command 3.1 and 3.2 in NuGet Package Manage Console
 
 3.1 Add-Migrations InitialCreate
 
 3.2 Update-Database
+
+
+3. Delete the migrations folder
+
+
+![dockercompose](images/migrations15.png)
 
 
 4. Switch the project back to docker-compose (step 6) and run it. 
