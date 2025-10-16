@@ -8,23 +8,23 @@ services:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080 
-      - ConnectionStrings__DefaultConnection=Server=mariadb;Database=KartverketDB;User=root;Password=${DBPASSWORD};
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=mariadb;Database=KartverketDB;User=root;Password=${DB_PASSWORD};
     depends_on:
-        - mariadb
+      - mariadb
       
   mariadb:
     image: mariadb:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DBPASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: KartverketDB
     ports:
-      - "3307:3306"
+      - "3310:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p${DBPASSWORD}"]
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -38,11 +38,12 @@ services:
       mariadb:
         condition: service_healthy
     environment:
-      - ConnectionStrings__DefaultConnection=Server=mariadb;Database=KartverketDB;User=root;Password=${DBPASSWORD};
+      - ConnectionStrings__DefaultConnection=Server=mariadb;Database=KartverketDB;User=root;Password=${DB_PASSWORD};
     command: >
       bash -c "dotnet ef database update --project KartverketProject/KartverketProject.csproj --context ApplicationDbContext"
 
 volumes:
   mariadb_data:
+
 
  
