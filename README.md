@@ -131,7 +131,11 @@ Based on the C4 model: https://c4model.com/diagrams/container
 
 ### Scenarios
 
-Permalink
+https://github.com/letsgorm/KartverketProject/blob/61e0adda155e96a1ce9f4199811deffa7794ecdf/KartverketTest/Test1.cs#L12-L28
+
+https://github.com/letsgorm/KartverketProject/blob/61e0adda155e96a1ce9f4199811deffa7794ecdf/KartverketTest/Test1.cs#L33-L52
+
+https://github.com/letsgorm/KartverketProject/blob/61e0adda155e96a1ce9f4199811deffa7794ecdf/KartverketTest/Test1.cs#L65-L90
 
 ### Results
  
