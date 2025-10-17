@@ -1,9 +1,7 @@
 ﻿using KartverketProject.Controllers;
-using KartverketProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using Assert = Xunit.Assert;
 using User = KartverketProject.Models.User;
 
