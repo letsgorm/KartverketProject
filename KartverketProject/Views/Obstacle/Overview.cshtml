@@ -1,4 +1,5 @@
-﻿@model ObstacleData
+﻿@using Ganss.Xss
+@model ObstacleData
 
 @{
     ViewData["Title"] = "Overview";
@@ -44,7 +45,10 @@
         </div>
     </div>
 </section>
-
+@{
+    var sanitizer = new HtmlSanitizer();
+    string sanitizedJson = sanitizer.Sanitize(Model.ObstacleJSON);
+}
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -55,9 +59,11 @@
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
+        var sanitizedJson = JSON.parse('@Html.Raw(sanitizedJson.Replace("'", "\\'"))');
+
         // legg til ny kart
-        if (geojsonData) {
-            var layer = L.geoJSON(@Model.ObstacleJSON).addTo(map);
+        if (sanitizedJson) {
+            var layer = L.geoJSON(sanitizedJson).addTo(map);
             map.fitBounds(layer.getBounds());
         } else {
             console.warn("No geometry data found");

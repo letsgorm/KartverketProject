@@ -19,20 +19,20 @@ namespace KartverketProject.Migrations
                 name: "Obstacles",
                 columns: table => new
                 {
-                    obstacleId = table.Column<int>(type: "int", nullable: false)
+                    ObstacleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    obstacleName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    ObstacleName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    obstacleHeight = table.Column<double>(type: "double", nullable: false),
-                    obstacleDescription = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false)
+                    ObstacleHeight = table.Column<double>(type: "double", nullable: false),
+                    ObstacleDescription = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    obstacleSubmittedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    obstacleJson = table.Column<string>(type: "longtext", nullable: false)
+                    ObstacleSubmittedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ObstacleJSON = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Obstacles", x => x.obstacleId);
+                    table.PrimaryKey("PK_Obstacles", x => x.ObstacleId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KartverketProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251015183539_InitialCreate")]
+    [Migration("20251017032542_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -47,33 +47,33 @@ namespace KartverketProject.Migrations
 
             modelBuilder.Entity("ObstacleData", b =>
                 {
-                    b.Property<int>("obstacleId")
+                    b.Property<int>("ObstacleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("obstacleId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ObstacleId"));
 
-                    b.Property<string>("obstacleDescription")
+                    b.Property<string>("ObstacleDescription")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
-                    b.Property<double>("obstacleHeight")
+                    b.Property<double>("ObstacleHeight")
                         .HasColumnType("double");
 
-                    b.Property<string>("obstacleJson")
+                    b.Property<string>("ObstacleJSON")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("obstacleName")
+                    b.Property<string>("ObstacleName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<DateTime>("obstacleSubmittedDate")
+                    b.Property<DateTime>("ObstacleSubmittedDate")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("obstacleId");
+                    b.HasKey("ObstacleId");
 
                     b.ToTable("Obstacles");
                 });
