@@ -27,28 +27,36 @@ function onLocationError(e) {
 
 map.on('locationerror', onLocationError);
 
+// lag array av punkter og gruppe for lag
 var points = [];
-let layerCount = 0;
 var group = L.layerGroup().addTo(map);
 
 map.on('click', function (e) {
-    if (points.length == 50) {
-        group.clearLayers();
-        points = [];
-        layers = null;
-    }
     points.push(e.latlng);
 
     var poly = L.polyline(points, { color: "blue" });
     var marker = L.marker(e.latlng);
     group.addLayer(poly);
     group.addLayer(marker);
+    // lagre objektet til json
     layers = group.toGeoJSON();
+
+    if (points.length > 0) {
+        // fjern varsel
+        markerWarning = document.getElementById("noMarker");
+        markerWarning.innerHTML = "";
+    }
+    if (points.length == 50) {
+        // fjern alle lag
+        group.clearLayers();
+        points = [];
+    }
 });
 
 const reset = document.getElementById('resetMap');
 
 reset.addEventListener("click", function () {
+    // fjern alle lag
     group.clearLayers();
     points = [];
 });

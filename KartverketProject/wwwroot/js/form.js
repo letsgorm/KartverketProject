@@ -1,7 +1,6 @@
 ﻿document.querySelector('form').addEventListener('submit', async function (e) {
     // sjekk at markere er satt i gruppen
-    if (!group) {
-        // stopp formen
+    if (points.length == 0) {
         e.preventDefault();
         return;
     }
