@@ -1,15 +1,20 @@
 ﻿@model ObstacleData
+
 @{
     ViewData["Title"] = "Register Obstacle";
 }
 
+<!-- CSS -->
+<link rel="stylesheet" href="~/css/dark.css" />
+
+<!-- Mobil support-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
 <!-- Kart -->
-<div id="map"></div>
-
-<!-- Legg til markers -->
-<div id="noMarker" style="color: red">Please add at least two markers</div>
+<div id="mapWrapper">
+    <div id="map"></div>
+    <button type="button" id="resetMap">Reset</button>
+</div>
 
 <!-- Form -->
 <section class="mx-auto max-w-2xl">
@@ -74,89 +79,6 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        document.querySelector('form').addEventListener('submit', async function (e) {
-            // sjekk at markere er satt i gruppen
-            if(!group) 
-            {
-                // stopp formen
-                e.preventDefault();
-                return;
-            }
-
-            // sett dato
-            const currentDate = new Date();
-            document.getElementById('ObstacleSubmittedDate').value = currentDate.toISOString();
-
-            // stringify layers
-            const geoJsonString = JSON.stringify(layers);
-            document.getElementById('ObstacleJSON').value = geoJsonString;
-
-            // hent ut verdier
-            const form = e.target; 
-            const data = { 
-                ObstacleName: form.ObstacleName.value,
-                ObstacleHeight: form.ObstacleHeight.value,
-                ObstacleDescription: form.ObstacleDescription.value,
-                ObstacleJSON: form.ObstacleJSON.value,
-                ObstacleSubmittedDate: form.ObstacleSubmittedDate.value
-            };
-
-            try {
-                // vent til api har fatt data
-                const response = await fetch('/api/Kartverket', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok) {
-                    // send formen
-                    form.submit();
-                } else {
-                    console.log("Form submission failed");
-                }
-            } catch (err) {
-                console.log("Network error")
-            }
-        });
-
-        // Dark Mode Toggle
-        const toggleButton = document.getElementById('darkModeToggle');
-
-        toggleButton.addEventListener('click', function () {
-            document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.setItem('theme', 'light');
-            }
-        });
-
-        // når siden lastes inn på nytt beholder den moden den var på
-        window.onload = function () {
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('dark-mode');
-            }
-        };
-    </script>
+    <script src="~/js/form.js"></script>
+    <script src="~/js/dark.js"></script>
 }
-
-<style>
-   
-    body.dark-mode {
-        background-color: #18181b;
-        color: #f3f4f6;
-    }
-
-    /* Add more dark mode styles as needed */
-    body.dark-mode .bg-white {
-        background-color: #27272a !important;
-    }
-    body.dark-mode .text-gray-800 {
-        color: #f3f4f6 !important;
-    }
-    body.dark-mode .text-gray-600 {
-        color: #d1d5db !important;
-    }
-</style>

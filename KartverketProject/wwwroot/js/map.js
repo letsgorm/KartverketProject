@@ -6,38 +6,8 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-var points = [];
-var markers = [];
-var group = null;
-let checkpoint = false;
-
-map.on('click', function(e) {
-    // hvis allerede satt, fjern alt
-    if(checkpoint) {
-        map.removeLayer(group);
-        points = [];
-        markers = [];
-        group = null;
-        checkpoint = false;
-    }
-    // legg til ny marker, og legg de til arrays
-    var marker = L.marker(e.latlng).addTo(map);
-    markers.push(marker);
-    points.push(e.latlng);
-
-    // hvis to markers er satt
-    if (points.length == 2) {
-        document.getElementById("noMarker").innerText = "";
-        var polyline = L.polyline(points, { color: "red" }).addTo(map);
-        group = L.layerGroup([markers[0], markers[1], polyline]).addTo(map);
-        checkpoint = true;
-        // lagre til geojson som vi lagrer etterpo i hidden field
-        layers = group.toGeoJSON();
-    }
-});
-
 // finn brukers sted
-map.locate({setView: true, maxZoom: 16});
+map.locate({ setView: true, maxZoom: 16 });
 
 function onLocationFound(e) {
     // bruker innen stedet
@@ -56,3 +26,29 @@ function onLocationError(e) {
 }
 
 map.on('locationerror', onLocationError);
+
+var points = [];
+let layerCount = 0;
+var group = L.layerGroup().addTo(map);
+
+map.on('click', function (e) {
+    if (points.length == 50) {
+        group.clearLayers();
+        points = [];
+        layers = null;
+    }
+    points.push(e.latlng);
+
+    var poly = L.polyline(points, { color: "blue" });
+    var marker = L.marker(e.latlng);
+    group.addLayer(poly);
+    group.addLayer(marker);
+    layers = group.toGeoJSON();
+});
+
+const reset = document.getElementById('resetMap');
+
+reset.addEventListener("click", function () {
+    group.clearLayers();
+    points = [];
+});
