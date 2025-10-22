@@ -8,20 +8,20 @@
 
     // sett dato
     const currentDate = new Date();
-    document.getElementById('obstacleSubmittedDate').value = currentDate.toISOString();
+    document.getElementById('ObstacleSubmittedDate').value = currentDate.toISOString();
 
     // stringify layers
     const geoJsonString = JSON.stringify(layers);
-    document.getElementById('obstacleJson').value = geoJsonString;
+    document.getElementById('ObstacleJSON').value = geoJsonString;
 
     // hent ut verdier
     const form = e.target;
     const data = {
-        obstacleName: form.obstacleName.value,
-        obstacleHeight: form.obstacleHeight.value,
-        obstacleDescription: form.obstacleDescription.value,
-        obstacleJson: form.obstacleJson.value,
-        obstacleSubmittedDate: form.obstacleSubmittedDate.value
+        ObstacleName: form.ObstacleName.value,
+        ObstacleHeight: form.ObstacleHeight.value,
+        ObstacleDescription: form.ObstacleDescription.value,
+        ObstacleJSON: form.ObstacleJSON.value,
+        ObstacleSubmittedDate: form.ObstacleSubmittedDate.value
     };
 
     try {

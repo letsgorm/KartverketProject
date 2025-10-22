@@ -1,0 +1,17 @@
+﻿body.dark-mode {
+    background-color: #18181b;
+    color: #f3f4f6;
+}
+
+    /* Add more dark mode styles as needed */
+    body.dark-mode .bg-white {
+        background-color: #27272a !important;
+    }
+
+    body.dark-mode .text-gray-800 {
+        color: #f3f4f6 !important;
+    }
+
+    body.dark-mode .text-gray-600 {
+        color: #d1d5db !important;
+}
