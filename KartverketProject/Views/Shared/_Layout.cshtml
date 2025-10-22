@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FirstWebApplication</title>
+    <title>@ViewData["Title"] - Kartverket</title>
 
     <!-- Tailwind (CDN for quick start). For production, use a proper build pipeline. -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,15 +22,15 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/FirstWebApplication.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
     <!-- Header / Nav -->
     <header class="border-b bg-white">
         <nav class="container flex items-center justify-between py-3">
-            <a class="text-lg font-semibold tracking-tight hover:text-indigo-600 transition-colors"
+            <a class="hover:opacity-80 transition-opacity"
                asp-area="" asp-controller="Home" asp-action="Index">
-                FirstWebApplication
+                <img src="~/images/kartverketlogo.png" alt="Kartverket" class="h-10" />
             </a>
 
             <!-- Mobile menu button -->
@@ -72,7 +72,7 @@
     <!-- Footer -->
     <footer class="border-t bg-white text-sm text-gray-600">
         <div class="container py-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <p>&copy; 2025 - FirstWebApplication</p>
+            <p>&copy; 2025 - Kartverket Obstacle Registry</p>
             <p>
                 <a class="text-indigo-700 hover:underline"
                    asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
