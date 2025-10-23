@@ -6,38 +6,8 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-var points = [];
-var markers = [];
-var group = null;
-let checkpoint = false;
-
-map.on('click', function(e) {
-    // hvis allerede satt, fjern alt
-    if(checkpoint) {
-        map.removeLayer(group);
-        points = [];
-        markers = [];
-        group = null;
-        checkpoint = false;
-    }
-    // legg til ny marker, og legg de til arrays
-    var marker = L.marker(e.latlng).addTo(map);
-    markers.push(marker);
-    points.push(e.latlng);
-
-    // hvis to markers er satt
-    if (points.length == 2) {
-        document.getElementById("noMarker").innerText = "";
-        var polyline = L.polyline(points, { color: "red" }).addTo(map);
-        group = L.layerGroup([markers[0], markers[1], polyline]).addTo(map);
-        checkpoint = true;
-        // lagre til geojson som vi lagrer etterpo i hidden field
-        layers = group.toGeoJSON();
-    }
-});
-
 // finn brukers sted
-map.locate({setView: true, maxZoom: 16});
+map.locate({ setView: true, maxZoom: 16 });
 
 function onLocationFound(e) {
     // bruker innen stedet
@@ -56,3 +26,92 @@ function onLocationError(e) {
 }
 
 map.on('locationerror', onLocationError);
+
+// globale variabler
+var points = [];
+var group = L.layerGroup().addTo(map);
+var draw = false;
+var poly = null;
+
+function addPoint(latlng) {
+    if (draw) {
+        // legg til lat og lng for polyline
+        points.push(latlng);
+        // oppdater polyline
+        updatePolyline();
+        // legg til marker med egen ikon
+        addMarker(latlng);
+        // oppdater geojson
+        updateGeoJSON();
+        // sjekk at lengden er over 2 eller lik 50
+        checkLength();
+    } else {
+        return;
+    }
+};
+
+function updatePolyline() {
+    if (!poly) {
+        poly = L.polyline(points, { color: "blue" });
+    } else {
+        poly.setLatLngs(points);
+    }
+};
+
+function addMarker(latlng) {
+    const dotIcon = L.divIcon({
+        iconSize: [10, 10],
+        iconAnchor: [5, 5]
+    });
+
+    var marker = L.marker(latlng, {
+        icon: dotIcon
+    });
+
+    // legg til lag i gruppen
+    group.addLayer(poly);
+    group.addLayer(marker);
+};
+
+function updateGeoJSON() {
+    // lagre objektet til json
+    layers = group.toGeoJSON();
+};
+
+function markerUndone() {
+    document.getElementById("noMarker").innerHTML = "Please add a marker";
+};
+
+function checkLength() {
+    if (points.length == 0) {
+        markerUndone();
+    } else {
+        document.getElementById("noMarker").innerHTML = "";
+    }
+    if (points.length == 50) {
+        // fjern alle lag
+        group.clearLayers();
+        points = [];
+    }
+};
+
+// legg til punkt hvis draw mode er aktivert
+map.on('click', function (e) {
+    addPoint(e.latlng);
+});
+
+const markTool = document.getElementById('markerIcon');
+const trashTool = document.getElementById('trashIcon');
+
+markTool.addEventListener("click", function () {
+    // hvis draw er true, sett draw til false og motsatt
+    draw = !draw;
+    this.classList.toggle('fade-out');
+});
+
+trashTool.addEventListener("click", function () {
+    // fjern alle lag
+    group.clearLayers();
+    points = [];
+    markerUndone();
+});

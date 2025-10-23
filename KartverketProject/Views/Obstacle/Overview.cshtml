@@ -52,6 +52,7 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <!-- vanlig json inkludering funker ikke pga escape -->
     <script>
         var map = L.map('map-overview').setView([0, 0], 2);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
