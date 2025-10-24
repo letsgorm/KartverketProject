@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ObstacleData>
+@{
+    ViewData["Title"] = "All Obstacles";
+    var selectedStatus = ViewData["SelectedStatus"] as string ?? "All";
+}
+
+<section class="mx-auto max-w-6xl px-6 py-8">
+    <header class="mb-6">
+        <h1 class="text-3xl font-semibold text-gray-800">All Obstacles</h1>
+    </header>
+
+    <div class="mb-4 flex items-center space-x-3">
+        <label for="statusFilter" class="text-gray-700 font-medium">Filter by status:</label>
+        <form asp-controller="Obstacle" asp-action="OverviewAll" method="get" class="inline">
+            <select id="statusFilter" name="statusFilter" onchange="this.form.submit()"
+                    class="rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <option value="All" selected="@("All" == selectedStatus)">All</option>
+                <option value="Pending" selected="@("Pending" == selectedStatus)">Pending</option>
+                <option value="Approved" selected="@("Approved" == selectedStatus)">Approved</option>
+                <option value="Rejected" selected="@("Rejected" == selectedStatus)">Rejected</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="overflow-x-auto rounded-lg shadow ring-1 ring-gray-200">
+        <table class="min-w-full border-collapse bg-white">
+            <thead class="bg-gray-100 border-b">
+                <tr class="text-left text-gray-700 font-medium">
+                    <th class="px-4 py-3">ID</th>
+                    <th class="px-4 py-3">Name</th>
+                    <th class="px-4 py-3">Height (m)</th>
+                    <th class="px-4 py-3">Description</th>
+                    <th class="px-4 py-3">Submitted</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3 text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obstacle in Model)
+                {
+                    <tr class="border-b hover:bg-gray-50 transition">
+                        <td class="px-4 py-3 text-gray-800">@obstacle.ObstacleId</td>
+                        <td class="px-4 py-3">@obstacle.ObstacleName</td>
+                        <td class="px-4 py-3">@obstacle.ObstacleHeight</td>
+                        <td class="px-4 py-3 max-w-xs truncate" title="@obstacle.ObstacleDescription">@obstacle.ObstacleDescription</td>
+                        <td class="px-4 py-3">@obstacle.ObstacleSubmittedDate.ToString("yyyy-MM-dd")</td>
+                        <td class="px-4 py-3 font-medium">
+                            @if (obstacle.Status == "Approved")
+                            {
+                                <span class="text-green-600">Approved</span>
+                            }
+                            else if (obstacle.Status == "Rejected")
+                            {
+                                <span class="text-red-600">Rejected</span>
+                            }
+                            else
+                            {
+                                <span class="text-yellow-600">Pending</span>
+                            }
+                        </td>
+                        <td class="px-4 py-3 text-center space-x-2">
+                            <a asp-action="UpdateStatus" asp-route-id="@obstacle.ObstacleId" asp-route-newStatus="Approved"
+                               class="text-sm font-medium text-green-700 hover:underline">Approve</a>
+                            <a asp-action="UpdateStatus" asp-route-id="@obstacle.ObstacleId" asp-route-newStatus="Rejected"
+                               class="text-sm font-medium text-red-700 hover:underline">Reject</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
