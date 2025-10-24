@@ -32,13 +32,10 @@
             body: JSON.stringify(data)
         });
 
-        if (response.ok) {
-            // send formen
-            form.submit();
-        } else {
+        if (!response.ok) {
             console.log("Form submission failed");
         }
     } catch (err) {
-        console.log("Network error")
+        console.log("Network error");
     }
 });
