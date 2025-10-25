@@ -24,13 +24,29 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+
+    @{
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString()?.ToLower();
+        var isHomePage = currentAction == "index";
+        var headerClass = isHomePage
+        ? "bg-transparent text-white"
+        : "backdrop-blur-md bg-gray-900/80 text-white shadow-lg";
+
+    }
+
+
     <!-- Header / Nav -->
-    <header class="border-b bg-white">
-        <nav class="container flex items-center justify-between py-3">
-            <a class="hover:opacity-80 transition-opacity"
-               asp-area="" asp-controller="Home" asp-action="Index">
-                <img src="~/images/kartverketlogo.png" alt="Kartverket" class="h-10" />
-            </a>
+    <partial name="_Header" model="@headerClass" />
+
+
+    <!-- Main -->
+    <div class="container flex-1 w-full pt-24">
+        <main role="main" class="py-6">
+            @RenderBody()
+        </main>
+    </div>
+  
+
 
             <!-- Mobile menu button -->
             <button id="navToggle"
@@ -58,8 +74,8 @@
                     </li>
                 </ul>
             </div>
-        </nav>
-    </header>
+        
+    
 
     <!-- Main -->
     <div class="container flex-1 w-full">
