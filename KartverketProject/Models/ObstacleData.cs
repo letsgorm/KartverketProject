@@ -20,4 +20,8 @@ public class ObstacleData
 
     [Required(ErrorMessage = "Field is required")]
     public string ObstacleJSON { get; set; }
+
+    [Required]
+    [MaxLength(50)]
+    public string Status { get; set; } = "Pending";
 }
