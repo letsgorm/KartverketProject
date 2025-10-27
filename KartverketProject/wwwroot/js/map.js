@@ -7,7 +7,7 @@ L.tileLayer('http://localhost:8080/styles/basic-preview/512/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // finn brukers sted
-map.locate({ setView: true, maxZoom: 9 });
+map.locate({ setView: true, maxZoom: 18 });
 
 function onLocationFound(e) {
     // bruker innen stedet
