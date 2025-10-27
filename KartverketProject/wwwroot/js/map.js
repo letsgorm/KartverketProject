@@ -1,13 +1,13 @@
 var map = L.map('map').fitWorld();
 
-// lag ny kart
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+// hent offline kart fra lokal tileserver-gl
+L.tileLayer('http://localhost:8080/styles/basic-preview/512/{z}/{x}/{y}.png', {
+    maxZoom: 18, // originalt 13 zoom
+    attribution: 'OpenStreetMap'
 }).addTo(map);
 
 // finn brukers sted
-map.locate({ setView: true, maxZoom: 16 });
+map.locate({ setView: true, maxZoom: 9 });
 
 function onLocationFound(e) {
     // bruker innen stedet

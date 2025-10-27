@@ -55,9 +55,9 @@
     <!-- vanlig json inkludering funker ikke pga escape -->
     <script>
         var map = L.map('map-overview').setView([0, 0], 2);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap'
+        L.tileLayer('http://localhost:8080/styles/basic-preview/512/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: 'OpenStreetMap'
         }).addTo(map);
 
         var sanitizedJson = JSON.parse('@Html.Raw(sanitizedJson.Replace("'", "\\'"))');
