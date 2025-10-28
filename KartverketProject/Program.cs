@@ -38,6 +38,9 @@ namespace KartverketProject
 
             app.Use(async (context, next) =>
             {
+                context.Response.Headers["X-Frame-Options"] = "DENY";
+                context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+
                 context.Response.Headers["Content-Security-Policy"] =
                     "default-src 'self'; " +
                     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://unpkg.com; " +
@@ -50,11 +53,8 @@ namespace KartverketProject
                     "base-uri 'self'; " +
                     "form-action 'self';";
 
-                    context.Response.Headers["X-Frame-Options"] = "DENY";
-
                 await next();
             });
-
 
 
             app.UseStaticFiles();
