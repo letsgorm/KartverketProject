@@ -50,6 +50,8 @@ namespace KartverketProject
                     "base-uri 'self'; " +
                     "form-action 'self';";
 
+                    context.Response.Headers["X-Frame-Options"] = "DENY";
+
                 await next();
             });
 
