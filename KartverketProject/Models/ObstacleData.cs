@@ -1,6 +1,6 @@
 ﻿using KartverketProject.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+
 
 public class ObstacleData
 {
@@ -26,4 +26,7 @@ public class ObstacleData
     [Required]
     [MaxLength(50)]
     public string Status { get; set; } = "Pending";
+
+    // liste av data
+    public ICollection<Data> DataEntries { get; set; } = new List<Data>();
 }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KartverketProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251031093715_InitialCreate")]
+    [Migration("20251031104759_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -23,6 +23,28 @@ namespace KartverketProject.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("KartverketProject.Models.Data", b =>
+                {
+                    b.Property<int>("DataId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("DataId"));
+
+                    b.Property<int>("ObstacleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ObstacleJSON")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("DataId");
+
+                    b.HasIndex("ObstacleId");
+
+                    b.ToTable("DataEntries");
+                });
 
             modelBuilder.Entity("KartverketProject.Models.User", b =>
                 {
@@ -85,6 +107,22 @@ namespace KartverketProject.Migrations
                     b.HasKey("ObstacleId");
 
                     b.ToTable("Obstacles");
+                });
+
+            modelBuilder.Entity("KartverketProject.Models.Data", b =>
+                {
+                    b.HasOne("ObstacleData", "Obstacle")
+                        .WithMany("DataEntries")
+                        .HasForeignKey("ObstacleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Obstacle");
+                });
+
+            modelBuilder.Entity("ObstacleData", b =>
+                {
+                    b.Navigation("DataEntries");
                 });
 #pragma warning restore 612, 618
         }
