@@ -28,6 +28,8 @@ namespace KartverketProject.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ObstacleSubmittedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ObstacleJSON = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Status = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -45,6 +47,8 @@ namespace KartverketProject.Migrations
                     Username = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Password = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Email = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>

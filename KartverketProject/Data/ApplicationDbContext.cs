@@ -10,8 +10,7 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    // Define your DbSet properties here for your entities
-    public DbSet<ObstacleData> Obstacles { get; set; }
+    public DbSet<ObstacleData> Obstacles => Set<ObstacleData>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

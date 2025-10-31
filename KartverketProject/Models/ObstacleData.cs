@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using KartverketProject.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 public class ObstacleData
 {

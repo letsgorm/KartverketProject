@@ -48,12 +48,6 @@ namespace KartverketProject.Controllers
             {
                 return Ok("Login successful."); 
             }
-
-            
         }
-        
-
-
-
     }
 }
