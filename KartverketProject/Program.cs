@@ -17,6 +17,8 @@ namespace KartverketProject
             options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
             new MySqlServerVersion(new Version(11, 8, 3))));
 
+            builder.Services.AddScoped<ObstacleService>();
+
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
@@ -29,12 +31,12 @@ namespace KartverketProject
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-                app.ApplyMigrations();
+                //app.ApplyMigrations(); // ukommenter dette til å migrere automatisk
             }
 
             app.UseHttpsRedirection();
+            
             app.UseStaticFiles();
 
             app.UseRouting();

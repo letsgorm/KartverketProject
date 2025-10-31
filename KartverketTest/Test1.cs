@@ -17,7 +17,8 @@ public class ControllerTest
             .Options;
 
         var context = new ApplicationDbContext(options);
-        var controller = new ObstacleController(context);
+        var service = new ObstacleService(context);
+        var controller = new ObstacleController(service);
         var obstacleData = new ObstacleData();
 
         // Act
@@ -38,7 +39,8 @@ public class ControllerTest
             .Options;
 
         var context = new ApplicationDbContext(options);
-        var controller = new ObstacleController(context);
+        var service = new ObstacleService(context);
+        var controller = new ObstacleController(service);
         var date = new DateTime(2025, 10, 15, 14, 30, 0);
 
         var obstacleData = (new ObstacleData
@@ -71,7 +73,10 @@ public class ControllerTest
 
         var context = new ApplicationDbContext(options);
 
-        context.Users.Add(new User { Username = "john", Password = "smith" });
+        context.Users.Add(new User { 
+            Username = "john", 
+            Password = "smith", 
+            Email = "johnsmith@kartverket.no"});
         await context.SaveChangesAsync();
 
         var controller = new AuthenticationController(context);
@@ -79,7 +84,8 @@ public class ControllerTest
         var existingUser = new User
         {
             Username = "john",
-            Password = "smith"
+            Password = "smith",
+            Email = "johnsmith@kartverket.no"
         };
 
         // Act
