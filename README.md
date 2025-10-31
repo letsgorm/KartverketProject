@@ -1,7 +1,15 @@
 # Kartverket Project
 
 ## Description
-A solution that allows users to mark obstacles on a map.
+Seamlessly register and view obstacles on the map — even offline.
+
+### Offline map
+
+To be able to see the map, download the 1.17 GB ZIP below.
+
+http://github.com/letsgorm/KartverketProject/releases/latest/download/norway.zip
+
+Unzip the folder and place the norway.mbtiles file in KartverketProject/KartverketProject/wwwroot/
 
 ### Getting started
 
@@ -103,17 +111,16 @@ Together these three complement each other, as the controller redirects the user
 
 ### Frontend
 
-The frontend is stored on the wwwroot, where it stores CSS, JavaScript and library files like bootstrap. While CSS allows styling on the web page, JavaScript enables developers to handle actions such as forms and interactions between the user and the elements. Finally, bootstrap allows developers to stylize their pages in a fast manner without overcomplicating CSS. 
-
+The frontend is stored on the wwwroot, where it stores HTML, CSS and JavaScript. While CSS allows styling on the web page, JavaScript enables developers to handle actions such as forms and interactions between the user and the elements. The project uses Tailwind CSS in order to show icons.
 
 ### Backend
 
-The backend is comprised of the Dockerfile, Docker-compose, Data folder, Controllers and Models. Docker gets its images from the dockerfile, where the containers get the necessary images in order to build the corresponding services in docker-compose.yml; The containers are built on images and use volumes. The volumes stores tables, databases, passwords and additional information about the database. 
+The backend comprises of the Dockerfile, Docker-compose, Data folder, Controllers and Models. Docker gets its images from the dockerfile, where the containers get the necessary images in order to build the corresponding services in docker-compose.yml; The containers are built on images and use volumes. The volumes stores tables, databases, passwords and additional information about the database. 
 
 
 ### Execution
 
-After docker is finished, program.cs starts; the application adds services to the views to allow for controller interactions, registers the DBContext, runs a third party API called Scalar, and automatically applies migrations through a helper service called migrate. If the appsettings.json password, .env password and the dbcontext are applied correctly; the server starts on port 8080.
+After docker is finished, program.cs starts; the application adds services to the views to allow for controller interactions, registers the DBContext, runs a third party API called Scalar, and automatically applies migrations through a helper service called migrate. If the appsettings.json password, .env password and the dbcontext are applied correctly; the server starts on port 8082.
 
 ### System context diagram
 
