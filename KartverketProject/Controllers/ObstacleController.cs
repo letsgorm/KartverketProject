@@ -21,7 +21,6 @@ public class ObstacleController : Controller
     {
         if (!ModelState.IsValid) return View();
 
-        // MVC logic: save obstacle and redirect to Overview page
         await _service.AddObstacleAsync(obstacledata);
         return RedirectToAction("Overview", new { id = obstacledata.ObstacleId });
     }

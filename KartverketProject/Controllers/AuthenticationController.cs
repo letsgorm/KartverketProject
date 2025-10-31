@@ -11,6 +11,7 @@ namespace KartverketProject.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+        // registrer db kontekst
         public AuthenticationController(ApplicationDbContext context)
         {
             _context = context;

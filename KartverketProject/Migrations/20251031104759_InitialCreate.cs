@@ -56,16 +56,46 @@ namespace KartverketProject.Migrations
                     table.PrimaryKey("PK_Users", x => x.UserId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "DataEntries",
+                columns: table => new
+                {
+                    DataId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ObstacleJSON = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ObstacleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataEntries", x => x.DataId);
+                    table.ForeignKey(
+                        name: "FK_DataEntries_Obstacles_ObstacleId",
+                        column: x => x.ObstacleId,
+                        principalTable: "Obstacles",
+                        principalColumn: "ObstacleId",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataEntries_ObstacleId",
+                table: "DataEntries",
+                column: "ObstacleId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Obstacles");
+                name: "DataEntries");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Obstacles");
         }
     }
 }

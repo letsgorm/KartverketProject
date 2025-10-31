@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using KartverketProject.Models;
+using Microsoft.EntityFrameworkCore;
 
 public class ObstacleService
 {
@@ -13,8 +14,18 @@ public class ObstacleService
     // returner hindre
     public async Task<ObstacleData> AddObstacleAsync(ObstacleData obstacle)
     {
-        _context.Obstacles.Add(obstacle);
+        _context.Obstacles.Add(obstacle); // lag hindre forst foor data
         await _context.SaveChangesAsync();
+
+        var data = new Data // lag ny data
+        {
+            ObstacleJSON = obstacle.ObstacleJSON,
+            ObstacleId = obstacle.ObstacleId
+        };
+
+        _context.DataEntries.Add(data); // legg til data
+        await _context.SaveChangesAsync();
+
         return obstacle;
     }
 
@@ -27,7 +38,9 @@ public class ObstacleService
     // gi alle hindre som liste
     public async Task<List<ObstacleData>> GetAllObstaclesAsync()
     {
-        return await _context.Obstacles.ToListAsync();
+        return await _context.Obstacles
+            .Include(o => o.DataEntries) // inkluder relasjon
+            .ToListAsync();
     }
 
     // oppdater hindre
