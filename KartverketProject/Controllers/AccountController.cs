@@ -2,6 +2,7 @@
 
 namespace KartverketProject.Controllers
 {
+    // Use UserService to handle user authentication and registration logic
     public class AccountController : Controller
     {
         [HttpGet]

@@ -1,3 +1,4 @@
+using KartverketProject.Models;
 using Microsoft.AspNetCore.Mvc;
 
 public class ObstacleController : Controller
@@ -10,14 +11,16 @@ public class ObstacleController : Controller
         _service = service;
     }
 
+    // GET: /Obstacle/DataForm
     // blir kalt etter at vi trykker på "Register Obstacle" lenken i Index viewet
     [HttpGet]
     public ActionResult DataForm() => View();
 
 
+    // POST: /Obstacle/DataForm
     // blir kalt etter at vi trykker på "Submit Data" knapp i DataForm viewet
     [HttpPost]
-    public async Task<IActionResult> DataForm(ObstacleData obstacledata)
+    public async Task<IActionResult> DataForm(Obstacle obstacledata)
     {
         if (!ModelState.IsValid) return View();
 
@@ -26,17 +29,18 @@ public class ObstacleController : Controller
     }
 
     // GET: /Obstacle/Overview/{id}
+    // hent hindre med id
     [HttpGet]
     public async Task<IActionResult> Overview(int id)
     {
         var obstacle = await _service.GetObstacleByIdAsync(id);
         if (obstacle == null) return NotFound();
 
-        // MVC logic: return a View
         return View(obstacle);
     }
 
     // GET: /Obstacle/OverviewAll
+    // hent alle hindre uansett status
     [HttpGet]
     public async Task<IActionResult> OverviewAll(string statusFilter)
     {
@@ -51,6 +55,7 @@ public class ObstacleController : Controller
     }
 
     // GET: /Obstacle/UpdateStatus/newStatus=Approved
+    // hent alle hindre med status filter
     [HttpGet]
     public async Task<IActionResult> UpdateStatus(int id, string newStatus)
     {
