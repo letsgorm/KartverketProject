@@ -1,4 +1,6 @@
+using KartverketProject.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -15,7 +17,7 @@ public class KartverketController : ControllerBase
     // GET: /api/Kartverket
     // hent hindre
     [HttpGet]
-    public async Task<ActionResult<List<ObstacleData>>> GetObstacles()
+    public async Task<ActionResult<List<Obstacle>>> GetObstacles()
     {
         var obstacles = await _service.GetAllObstaclesAsync();
         return Ok(obstacles);
@@ -24,7 +26,7 @@ public class KartverketController : ControllerBase
     // GET: /api/Kartverket/{id}
     // hent hindre med id
     [HttpGet("{id}")]
-    public async Task<ActionResult<ObstacleData>> GetObstacleById(int id)
+    public async Task<ActionResult<Obstacle>> GetObstacleById(int id)
     {
         var obstacle = await _service.GetObstacleByIdAsync(id);
         if (obstacle == null) return NotFound();
@@ -32,11 +34,14 @@ public class KartverketController : ControllerBase
         return Ok(obstacle);
     }
 
+            // ikke gjor newObstacle eller newStatus nullable pls det krasjer APIen
+
     // POST: /api/Kartverket
     // legg til hindre
     [HttpPost]
-    // frombody med ? trengs eller saa kommer det validering error...
-    public async Task<ActionResult<ObstacleData>> AddObstacle([FromBody] ObstacleData? newObstacle)
+    public async Task<ActionResult<Obstacle>> AddObstacle(
+        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)]
+        Obstacle newObstacle)
     {
         var obstacle = await _service.AddObstacleAsync(newObstacle);
         return CreatedAtAction(nameof(GetObstacleById), new { id = obstacle.ObstacleId }, obstacle);
@@ -45,8 +50,7 @@ public class KartverketController : ControllerBase
     // PUT: /api/Kartverket/{id}
     // endre hindre
     [HttpPut("{id}")]
-    // frombody med ? trengs eller saa kommer det validering error...
-    public async Task<IActionResult> UpdateObstacleStatus(int id, [FromBody] string? newStatus)
+    public async Task<IActionResult> UpdateObstacleStatus(int id, string newStatus)
     {
         await _service.UpdateObstacleStatusAsync(id, newStatus);
         return NoContent();

@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using KartverketProject.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using KartverketProject.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KartverketProject.Controllers
 
@@ -9,37 +8,82 @@ namespace KartverketProject.Controllers
     [Route("api/[controller]")]
     public class AuthenticationController : ControllerBase 
     {
-        private readonly ApplicationDbContext _context;
+        private readonly UserService _service;
 
         // registrer db kontekst
-        public AuthenticationController(ApplicationDbContext context)
+        public AuthenticationController(UserService service)
         {
-            _context = context;
+            _service = service;
         }
 
+        // GET: /api/authentication
+        // hent bruker
+        [HttpGet]
+        public async Task<ActionResult<List<User>>> GetUsers()
+        {
+            var users = await _service.GetAllUsersAsync();
+            return Ok(users);
+        }
+
+        // GET: /api/authentication/{id}
+        // hent bruker med id
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> GetUserById(int id)
+        {
+            var user = await _service.GetUserByIdAsync(id);
+            if (user == null) return NotFound();
+
+            return Ok(user);
+        }
+
+        // POST: /api/authentication
+        // legg til bruker
+        [HttpPost]
+        public async Task<ActionResult<User>> AddUser(User newUser)
+        {
+            var user = await _service.AddUserAsync(newUser);
+            return CreatedAtAction(nameof(GetUserById), new { id = user.UserId }, user);
+        }
+
+        // PUT: /api/authentication/{id}
+        // endre bruker
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(User user)
+        {
+            await _service.UpdateUserAsync(user);
+            return NoContent();
+        }
+
+        // DEL: /api/authentication/{id}
+        // slett en bruker i db
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveUser(int id)
+        {
+            await _service.DeleteUserAsync(id);
+            return NoContent();
+        }
 
         // POST: api/authentication/register
+        // sjekk om brukernavn er tatt
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] User newUser)
+        public async Task<IActionResult> Register(User newUser)
         {
-            if (await _context.Users.AnyAsync(u => u.Username == newUser.Username))
+            if (await _service.UserExistsAsync(newUser))
             {
                 return BadRequest("Username already exists.");
             }
 
-            _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
+            await _service.AddUserAsync(newUser);
             return Ok("User registered successfully.");
 
         }
 
-
         // POST: api/authentication/login
+        // login med brukernavn og passord
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] User loginRequest)
+        public async Task<IActionResult> Login(User loginRequest)
         {
-            var existingUser = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == loginRequest.Username && u.Password == loginRequest.Password);
+            var existingUser = await _service.UserLoginAsync(loginRequest);
 
             if (existingUser == null)
             {

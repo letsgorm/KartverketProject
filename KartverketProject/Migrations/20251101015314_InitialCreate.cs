@@ -44,11 +44,11 @@ namespace KartverketProject.Migrations
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Username = table.Column<string>(type: "longtext", nullable: false)
+                    Username = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Password = table.Column<string>(type: "longtext", nullable: false)
+                    Password = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: false)
+                    Email = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -79,10 +79,67 @@ namespace KartverketProject.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "Report",
+                columns: table => new
+                {
+                    ReportId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ObstacleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Report", x => x.ReportId);
+                    table.ForeignKey(
+                        name: "FK_Report_Obstacles_ObstacleId",
+                        column: x => x.ObstacleId,
+                        principalTable: "Obstacles",
+                        principalColumn: "ObstacleId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Report_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "Obstacles",
+                columns: new[] { "ObstacleId", "ObstacleDescription", "ObstacleHeight", "ObstacleJSON", "ObstacleName", "ObstacleSubmittedDate", "Status" },
+                values: new object[] { 1, "This is a test obstacle.", 10.5, "{\"type\":\"FeatureCollection\",\"features\":[]}", "Test Obstacle", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending" });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserId", "Email", "Password", "Username" },
+                values: new object[] { 1, "test@test.com", "password123", "testuser" });
+
+            migrationBuilder.InsertData(
+                table: "DataEntries",
+                columns: new[] { "DataId", "ObstacleId", "ObstacleJSON" },
+                values: new object[] { 1, 1, "{\"type\":\"FeatureCollection\",\"features\":[]}" });
+
+            migrationBuilder.InsertData(
+                table: "Report",
+                columns: new[] { "ReportId", "ObstacleId", "UserId" },
+                values: new object[] { 1, 1, 1 });
+
             migrationBuilder.CreateIndex(
                 name: "IX_DataEntries_ObstacleId",
                 table: "DataEntries",
                 column: "ObstacleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Report_ObstacleId",
+                table: "Report",
+                column: "ObstacleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Report_UserId",
+                table: "Report",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -92,10 +149,13 @@ namespace KartverketProject.Migrations
                 name: "DataEntries");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Report");
 
             migrationBuilder.DropTable(
                 name: "Obstacles");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

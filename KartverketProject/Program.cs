@@ -1,4 +1,5 @@
 using KartverketProject.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -17,7 +18,16 @@ namespace KartverketProject
             options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
             new MySqlServerVersion(new Version(11, 8, 3))));
 
+            // Add CRUD services
+
             builder.Services.AddScoped<ObstacleService>();
+
+            builder.Services.AddScoped<UserService>();
+
+            builder.Services.AddControllers(options =>
+            {
+                options.AllowEmptyInputInBodyModelBinding = false;
+            });
 
             builder.Services.AddOpenApi();
 
