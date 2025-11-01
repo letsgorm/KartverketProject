@@ -62,7 +62,7 @@ public class ApplicationDbContext : DbContext
                 ObstacleDescription = "This is a test obstacle.",
                 ObstacleSubmittedDate = new DateTime(2024, 1, 1),
                 ObstacleJSON = "{\"type\":\"FeatureCollection\",\"features\":[]}",
-                Status = "Pending"
+                ObstacleStatus = "Pending"
             }
          );
 

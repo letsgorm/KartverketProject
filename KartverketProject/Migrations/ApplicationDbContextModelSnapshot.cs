@@ -76,13 +76,13 @@ namespace KartverketProject.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<DateTime>("ObstacleSubmittedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Status")
+                    b.Property<string>("ObstacleStatus")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
+
+                    b.Property<DateTime>("ObstacleSubmittedDate")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("ObstacleId");
 
@@ -96,8 +96,8 @@ namespace KartverketProject.Migrations
                             ObstacleHeight = 10.5,
                             ObstacleJSON = "{\"type\":\"FeatureCollection\",\"features\":[]}",
                             ObstacleName = "Test Obstacle",
-                            ObstacleSubmittedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Pending"
+                            ObstacleStatus = "Pending",
+                            ObstacleSubmittedDate = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 

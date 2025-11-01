@@ -29,7 +29,7 @@ namespace KartverketProject.Migrations
                     ObstacleSubmittedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ObstacleJSON = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Status = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                    ObstacleStatus = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -108,8 +108,8 @@ namespace KartverketProject.Migrations
 
             migrationBuilder.InsertData(
                 table: "Obstacles",
-                columns: new[] { "ObstacleId", "ObstacleDescription", "ObstacleHeight", "ObstacleJSON", "ObstacleName", "ObstacleSubmittedDate", "Status" },
-                values: new object[] { 1, "This is a test obstacle.", 10.5, "{\"type\":\"FeatureCollection\",\"features\":[]}", "Test Obstacle", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending" });
+                columns: new[] { "ObstacleId", "ObstacleDescription", "ObstacleHeight", "ObstacleJSON", "ObstacleName", "ObstacleStatus", "ObstacleSubmittedDate" },
+                values: new object[] { 1, "This is a test obstacle.", 10.5, "{\"type\":\"FeatureCollection\",\"features\":[]}", "Test Obstacle", "Pending", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.InsertData(
                 table: "Users",
