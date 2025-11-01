@@ -47,7 +47,7 @@ public class ObstacleController : Controller
         var obstacles = await _service.GetAllObstaclesAsync();
         if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "All")
         {
-            obstacles = obstacles.Where(o => o.Status == statusFilter).ToList();
+            obstacles = obstacles.Where(o => o.ObstacleStatus == statusFilter).ToList();
         }
 
         ViewData["SelectedStatus"] = statusFilter;

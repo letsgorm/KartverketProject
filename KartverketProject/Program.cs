@@ -24,11 +24,6 @@ namespace KartverketProject
 
             builder.Services.AddScoped<UserService>();
 
-            builder.Services.AddControllers(options =>
-            {
-                options.AllowEmptyInputInBodyModelBinding = false;
-            });
-
             builder.Services.AddOpenApi();
 
             var app = builder.Build();

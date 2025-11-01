@@ -69,7 +69,7 @@ public class ObstacleService
             obstacle.ObstacleDescription = updatedObstacle.ObstacleDescription;
             obstacle.ObstacleSubmittedDate = updatedObstacle.ObstacleSubmittedDate;
             obstacle.ObstacleJSON = updatedObstacle.ObstacleJSON;
-            obstacle.Status = updatedObstacle.Status;
+            obstacle.ObstacleStatus = updatedObstacle.ObstacleStatus;
             await _context.SaveChangesAsync();
         }
     }
@@ -82,7 +82,7 @@ public class ObstacleService
         var obstacle = await _context.Obstacles.FindAsync(id);
         if (obstacle != null)
         {
-            obstacle.Status = newStatus;
+            obstacle.ObstacleStatus = newStatus;
             await _context.SaveChangesAsync();
         }
     }

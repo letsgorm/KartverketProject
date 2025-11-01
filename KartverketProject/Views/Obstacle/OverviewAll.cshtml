@@ -45,11 +45,11 @@
                         <td class="px-4 py-3 max-w-xs truncate" title="@obstacle.ObstacleDescription">@obstacle.ObstacleDescription</td>
                         <td class="px-4 py-3">@obstacle.ObstacleSubmittedDate.ToString("yyyy-MM-dd")</td>
                         <td class="px-4 py-3 font-medium">
-                            @if (obstacle.Status == "Approved")
+                            @if (obstacle.ObstacleStatus == "Approved")
                             {
                                 <span class="text-green-600">Approved</span>
                             }
-                            else if (obstacle.Status == "Rejected")
+                            else if (obstacle.ObstacleStatus == "Rejected")
                             {
                                 <span class="text-red-600">Rejected</span>
                             }
