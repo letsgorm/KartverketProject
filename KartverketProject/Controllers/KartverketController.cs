@@ -1,81 +1,67 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using KartverketProject.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace KartverketProject.Controllers;
-
-[Route("api/[controller]")] // Automatisk modell validering
-[ApiController] // Automatisk binding og gjor API mer clean
-public class KartverketController(ApplicationDbContext context) : ControllerBase // Dependency injection i dbcontext
+[Route("api/[controller]")]
+[ApiController]
+public class KartverketController : ControllerBase
 {
-    private readonly ApplicationDbContext _context = context;
+    // registrer service som gir loos kobling
+    private readonly ObstacleService _service;
 
+    public KartverketController(ObstacleService service)
+    {
+        _service = service;
+    }
+
+    // GET: /api/Kartverket
+    // hent hindre
     [HttpGet]
-    public async Task<ActionResult<List<ObstacleData>>> GetObstacles()
+    public async Task<ActionResult<List<Obstacle>>> GetObstacles()
     {
-        return Ok(await _context.Obstacles.ToListAsync()); // Asynkron henting av alle hindre
+        var obstacles = await _service.GetAllObstaclesAsync();
+        return Ok(obstacles);
     }
 
-
+    // GET: /api/Kartverket/{id}
+    // hent hindre med id
     [HttpGet("{id}")]
-    public async Task<ActionResult<ObstacleData>> GetObstaclesById(int id)
+    public async Task<ActionResult<Obstacle>> GetObstacleById(int id)
     {
-        var obstacle = await _context.Obstacles.FindAsync(id); // Asynkron henting av hinder basert p� id
-        if (obstacle is null)
-        {
-            return NotFound();
-        }
-        else
-        {
-            return Ok(obstacle);
-        }
+        var obstacle = await _service.GetObstacleByIdAsync(id);
+        if (obstacle == null) return NotFound();
+
+        return Ok(obstacle);
     }
 
+            // ikke gjor newObstacle eller newStatus nullable pls det krasjer APIen
+
+    // POST: /api/Kartverket
+    // legg til hindre
     [HttpPost]
-    public async Task <ActionResult<ObstacleData>> AddObstacle(ObstacleData newObstacle)
+    public async Task<ActionResult<Obstacle>> AddObstacle(
+        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)]
+        Obstacle newObstacle)
     {
-        if (newObstacle is null)
-        {
-            return NotFound();
-        }
-        _context.Obstacles.Add(newObstacle); // Legger til ny hinder
-        await _context.SaveChangesAsync(); // Lagrer endringer asynkront, viktig!
-        return CreatedAtAction(nameof(AddObstacle), new { id = newObstacle.ObstacleId }, newObstacle);
+        var obstacle = await _service.AddObstacleAsync(newObstacle);
+        return CreatedAtAction(nameof(GetObstacleById), new { id = obstacle.ObstacleId }, obstacle);
     }
 
+    // PUT: /api/Kartverket/{id}
+    // endre hindre
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateObstacle(int id, ObstacleData updatedObstacle)
+    public async Task<IActionResult> UpdateObstacleStatus(int id, string newStatus)
     {
-        var obstacle = await _context.Obstacles.FindAsync(id);
-        if (obstacle is null)
-        {
-            return NotFound();
-        }
-
-        obstacle.ObstacleId = updatedObstacle.ObstacleId;
-        obstacle.ObstacleName = updatedObstacle.ObstacleName;
-        obstacle.ObstacleHeight = updatedObstacle.ObstacleHeight;
-        obstacle.ObstacleDescription = updatedObstacle.ObstacleDescription;
-        obstacle.ObstacleSubmittedDate = updatedObstacle.ObstacleSubmittedDate;
-        obstacle.ObstacleJSON = updatedObstacle.ObstacleJSON;
-
-        await _context.SaveChangesAsync(); // Lagrer endringer asynkront, viktig!
-
+        await _service.UpdateObstacleStatusAsync(id, newStatus);
         return NoContent();
     }
 
-    [HttpDelete]
+    // DEL: /api/Kartverket/{id}
+    // slett en hindre i db
+    [HttpDelete("{id}")]
     public async Task<IActionResult> RemoveObstacle(int id)
     {
-        var obstacle = await _context.Obstacles.FindAsync(id);
-        if (obstacle is null)
-        {
-            return NotFound();
-        }
-        _context.Obstacles.Remove(obstacle); // Fjerner hinder
-        await _context.SaveChangesAsync();  // Lagrer endringer asynkront, viktig!
+        await _service.DeleteObstacleAsync(id);
         return NoContent();
     }
 }

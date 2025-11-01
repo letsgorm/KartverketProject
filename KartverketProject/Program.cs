@@ -1,4 +1,4 @@
-﻿using KartverketProject.Data;
+using KartverketProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -10,7 +10,7 @@ namespace KartverketProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // 🔒 Disable Kestrel's "Server" response header entirely
+            // Disable Kestrel's "Server" response header entirely
             builder.WebHost.ConfigureKestrel(options =>
             {
                 options.AddServerHeader = false;
@@ -22,6 +22,12 @@ namespace KartverketProject
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
                 new MySqlServerVersion(new Version(11, 8, 3))));
+
+            // Add CRUD services
+
+            builder.Services.AddScoped<ObstacleService>();
+
+            builder.Services.AddScoped<UserService>();
 
             builder.Services.AddOpenApi();
 
@@ -35,12 +41,14 @@ namespace KartverketProject
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
-                app.ApplyMigrations();
+                //app.ApplyMigrations(); // ukommenter dette til å migrere automatisk
             }
 
             app.UseHttpsRedirection();
+            
+            app.UseStaticFiles();
 
-            // ✅ Security headers
+            // Security headers
             app.Use(async (context, next) =>
             {
                 context.Response.Headers["X-Frame-Options"] = "DENY";
@@ -48,7 +56,7 @@ namespace KartverketProject
                 context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
                 context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload";
 
-                // ✅ CSP - allow Tailwind, Leaflet, etc.
+                // CSP - allow Tailwind, Leaflet, etc.
                 context.Response.Headers["Content-Security-Policy"] =
                     "default-src 'self'; " +
                     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://unpkg.com; " +

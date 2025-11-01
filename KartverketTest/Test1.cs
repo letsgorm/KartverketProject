@@ -1,4 +1,5 @@
 ﻿using KartverketProject.Controllers;
+using KartverketProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -17,8 +18,9 @@ public class ControllerTest
             .Options;
 
         var context = new ApplicationDbContext(options);
-        var controller = new ObstacleController(context);
-        var obstacleData = new ObstacleData();
+        var service = new ObstacleService(context);
+        var controller = new ObstacleController(service);
+        var obstacleData = new Obstacle();
 
         // Act
         var result = controller.DataForm() as ViewResult;
@@ -38,10 +40,11 @@ public class ControllerTest
             .Options;
 
         var context = new ApplicationDbContext(options);
-        var controller = new ObstacleController(context);
+        var service = new ObstacleService(context);
+        var controller = new ObstacleController(service);
         var date = new DateTime(2025, 10, 15, 14, 30, 0);
 
-        var obstacleData = (new ObstacleData
+        var obstacleData = (new Obstacle
         {
             ObstacleId = 0,
             ObstacleName = "john",
@@ -71,15 +74,21 @@ public class ControllerTest
 
         var context = new ApplicationDbContext(options);
 
-        context.Users.Add(new User { Username = "john", Password = "smith" });
+        context.Users.Add(new User { 
+            Username = "john", 
+            Password = "smith", 
+            Email = "johnsmith@kartverket.no"});
         await context.SaveChangesAsync();
 
-        var controller = new AuthenticationController(context);
+        var service = new UserService(context);
+
+        var controller = new AuthenticationController(service);
 
         var existingUser = new User
         {
             Username = "john",
-            Password = "smith"
+            Password = "smith",
+            Email = "johnsmith@kartverket.no"
         };
 
         // Act
