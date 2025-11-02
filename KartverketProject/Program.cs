@@ -40,7 +40,7 @@ namespace KartverketProject
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
-                //app.ApplyMigrations(); // ukommenter dette til å migrere automatisk
+                //app.ApplyMigrations(); // ukommenter dette til Ã¥ migrere automatisk
             }
 
             app.UseHttpsRedirection();
