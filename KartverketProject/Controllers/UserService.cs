@@ -64,6 +64,7 @@ public class UserService
             user.Username = updatedUser.Username;
             user.Password = updatedUser.Password;
             user.Email = updatedUser.Email;
+            user.Active = updatedUser.Active;
             await _context.SaveChangesAsync();
         }
     }

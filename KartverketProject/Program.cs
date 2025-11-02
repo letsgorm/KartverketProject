@@ -1,4 +1,3 @@
-using KartverketProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -45,7 +44,7 @@ namespace KartverketProject
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseStaticFiles();
 
             // Security headers

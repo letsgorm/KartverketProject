@@ -14,6 +14,7 @@ namespace KartverketProject.Models
         [Required]
         [MaxLength(100)]
         public string Email { get; set; }
+        public bool Active { get; set; } = true;
 
         // liste av rapporter
         public ICollection<Report> ReportEntries { get; set; } = new List<Report>();

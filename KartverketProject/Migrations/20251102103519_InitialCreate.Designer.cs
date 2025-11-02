@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KartverketProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251101060602_InitialCreate")]
+    [Migration("20251102103519_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -143,6 +143,9 @@ namespace KartverketProject.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserId"));
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -166,6 +169,7 @@ namespace KartverketProject.Migrations
                         new
                         {
                             UserId = 1,
+                            Active = true,
                             Email = "test@test.com",
                             Password = "password123",
                             Username = "testuser"

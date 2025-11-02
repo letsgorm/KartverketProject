@@ -1,7 +1,7 @@
 # Kartverket Project
 
 ## Description
-Seamlessly register and view obstacles on the map — even offline.
+Seamlessly register and view obstacles on the map - even offline.
 
 ### Offline map
 

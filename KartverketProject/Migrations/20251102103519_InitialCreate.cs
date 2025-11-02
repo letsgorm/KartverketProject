@@ -49,7 +49,8 @@ namespace KartverketProject.Migrations
                     Password = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Email = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Active = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -113,8 +114,8 @@ namespace KartverketProject.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "Email", "Password", "Username" },
-                values: new object[] { 1, "test@test.com", "password123", "testuser" });
+                columns: new[] { "UserId", "Active", "Email", "Password", "Username" },
+                values: new object[] { 1, true, "test@test.com", "password123", "testuser" });
 
             migrationBuilder.InsertData(
                 table: "DataEntries",
