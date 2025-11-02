@@ -140,6 +140,9 @@ namespace KartverketProject.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserId"));
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -163,6 +166,7 @@ namespace KartverketProject.Migrations
                         new
                         {
                             UserId = 1,
+                            Active = true,
                             Email = "test@test.com",
                             Password = "password123",
                             Username = "testuser"

@@ -75,9 +75,10 @@ public class ControllerTest
         var context = new ApplicationDbContext(options);
 
         context.Users.Add(new User { 
-            Username = "john", 
-            Password = "smith", 
-            Email = "johnsmith@kartverket.no"});
+            Username = "alpha", 
+            Password = "alpha123", 
+            Email = "alpha@gorm.no"
+        });
         await context.SaveChangesAsync();
 
         var service = new UserService(context);
@@ -86,9 +87,9 @@ public class ControllerTest
 
         var existingUser = new User
         {
-            Username = "john",
-            Password = "smith",
-            Email = "johnsmith@kartverket.no"
+            Username = "alpha",
+            Password = "alpha123",
+            Email = "alpha@gorm.no"
         };
 
         // Act
