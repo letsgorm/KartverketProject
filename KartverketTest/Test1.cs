@@ -1,13 +1,17 @@
 ﻿using KartverketProject.Controllers;
+using KartverketProject.Data;
+using KartverketProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 using Assert = Xunit.Assert;
-using User = KartverketProject.Models.User;
 
 public class ControllerTest
 {
-    // Test if the ModelState is invalid when ObstacleJson is missing
+    // Test if the ModelState is valid when accessing the DataForm view
     [Fact]
     public void ModelStateValidation()
     {
@@ -19,7 +23,6 @@ public class ControllerTest
         var context = new ApplicationDbContext(options);
         var service = new ObstacleService(context);
         var controller = new ObstacleController(service);
-        var obstacleData = new ObstacleData();
 
         // Act
         var result = controller.DataForm() as ViewResult;
@@ -35,7 +38,7 @@ public class ControllerTest
     {
         // Arrange
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase("TestDb")
+            .UseInMemoryDatabase("TestDb_Save")
             .Options;
 
         var context = new ApplicationDbContext(options);
@@ -43,7 +46,7 @@ public class ControllerTest
         var controller = new ObstacleController(service);
         var date = new DateTime(2025, 10, 15, 14, 30, 0);
 
-        var obstacleData = (new ObstacleData
+        var obstacleData = new ObstacleData
         {
             ObstacleId = 0,
             ObstacleName = "john",
@@ -51,7 +54,7 @@ public class ControllerTest
             ObstacleDescription = "test",
             ObstacleSubmittedDate = date,
             ObstacleJSON = "1"
-        });
+        };
 
         // Act
         var obstacle = await controller.DataForm(obstacleData);
@@ -59,40 +62,7 @@ public class ControllerTest
         // Assert
         var savedObstacle = context.Obstacles.FirstOrDefault(o => o.ObstacleName == "john");
         Assert.NotNull(obstacle);
+        Assert.NotNull(savedObstacle);
         Assert.Equal("john", savedObstacle.ObstacleName);
-    }
-
-    // Test if the username and password authenticates in the database
-    [Fact]
-    public async Task UserSaveToDatabase()
-    {
-        // Arrange
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        var context = new ApplicationDbContext(options);
-
-        context.Users.Add(new User { 
-            Username = "john", 
-            Password = "smith", 
-            Email = "johnsmith@kartverket.no"});
-        await context.SaveChangesAsync();
-
-        var controller = new AuthenticationController(context);
-
-        var existingUser = new User
-        {
-            Username = "john",
-            Password = "smith",
-            Email = "johnsmith@kartverket.no"
-        };
-
-        // Act
-        var login = await controller.Login(existingUser);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(login);
-        Assert.Equal("Login successful.", okResult.Value);
     }
 }

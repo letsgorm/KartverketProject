@@ -1,10 +1,10 @@
 ﻿using KartverketProject.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
-using System.Reflection.Emit;
 
-
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -15,17 +15,16 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Oppretter Identity-tabellene 
+        base.OnModelCreating(modelBuilder);
+
+        // Egne tabeller og relasjoner
         modelBuilder.Entity<ObstacleData>()
             .HasKey(o => o.ObstacleId);
 
-        // en til mange, hindre kan ha mange JSON data
         modelBuilder.Entity<Data>()
             .HasOne(d => d.Obstacle)
             .WithMany(o => o.DataEntries)
             .HasForeignKey(d => d.ObstacleId);
-
-        // legg til brukere senere
     }
-    public DbSet<User> Users { get; set; } 
-
 }
