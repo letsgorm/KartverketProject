@@ -1,5 +1,4 @@
 ﻿using KartverketProject.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 // This is the CRUD service for Obstacles.
@@ -24,7 +23,6 @@ public class ObstacleService
     public async Task<List<Obstacle>> GetAllObstaclesAsync()
     {
         return await _context.Obstacles
-            .Include(o => o.DataEntries) // inkluder relasjon
             .ToListAsync();
     }
 
@@ -34,7 +32,6 @@ public class ObstacleService
     public async Task<Obstacle?> GetObstacleByIdAsync(int id)
     {
         return await _context.Obstacles
-            .Include(o => o.DataEntries) // inkluder relasjon
             .FirstOrDefaultAsync(o => o.ObstacleId == id);
     }
 
@@ -43,15 +40,6 @@ public class ObstacleService
     public async Task<Obstacle> AddObstacleAsync(Obstacle obstacle)
     {
         _context.Obstacles.Add(obstacle); // lag hindre forst foor data
-        await _context.SaveChangesAsync();
-
-        var data = new Data // lag ny data
-        {
-            ObstacleJSON = obstacle.ObstacleJSON,
-            ObstacleId = obstacle.ObstacleId
-        };
-
-        _context.DataEntries.Add(data); // legg til data
         await _context.SaveChangesAsync();
 
         return obstacle;

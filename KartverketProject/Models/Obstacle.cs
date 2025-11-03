@@ -1,5 +1,4 @@
-﻿using KartverketProject.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 
 namespace KartverketProject.Models
@@ -27,8 +26,5 @@ namespace KartverketProject.Models
         [Required]
         [MaxLength(50)]
         public string ObstacleStatus { get; set; } = "Pending";
-
-        // liste av data
-        public ICollection<Data> DataEntries { get; set; } = new List<Data>();
     }
 }

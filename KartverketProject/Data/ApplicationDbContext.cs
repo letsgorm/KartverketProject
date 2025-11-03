@@ -10,7 +10,6 @@ public class ApplicationDbContext : DbContext
     // bruker -> rapport -> data -> hindre
     public DbSet<User> Users => Set<User>();
     public DbSet<Report> Report => Set<Report>();
-    public DbSet<Data> DataEntries => Set<Data>();
     public DbSet<Obstacle> Obstacles => Set<Obstacle>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,9 +22,6 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Report>()
             .HasKey(o => o.ReportId);
 
-        modelBuilder.Entity<Data>()
-            .HasKey(o => o.DataId);
-
         modelBuilder.Entity<Obstacle>()
             .HasKey(o => o.ObstacleId);
 
@@ -35,11 +31,6 @@ public class ApplicationDbContext : DbContext
             .HasOne(u => u.User)
             .WithMany(o => o.ReportEntries)
             .HasForeignKey(d => d.UserId); // fremmed nokler
-
-        modelBuilder.Entity<Data>()
-            .HasOne(d => d.Obstacle)
-            .WithMany(o => o.DataEntries)
-            .HasForeignKey(d => d.ObstacleId); // fremmed nokler
 
         // seed data
 
@@ -63,15 +54,6 @@ public class ApplicationDbContext : DbContext
                 ObstacleSubmittedDate = new DateTime(2024, 1, 1),
                 ObstacleJSON = "{\"type\":\"FeatureCollection\",\"features\":[]}",
                 ObstacleStatus = "Pending"
-            }
-         );
-
-        modelBuilder.Entity<Data>().HasData(
-            new Data
-            {
-                ObstacleId = 1,
-                ObstacleJSON = "{\"type\":\"FeatureCollection\",\"features\":[]}",
-                DataId = 1
             }
          );
 

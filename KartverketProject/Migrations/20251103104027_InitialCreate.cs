@@ -59,28 +59,6 @@ namespace KartverketProject.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "DataEntries",
-                columns: table => new
-                {
-                    DataId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ObstacleJSON = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ObstacleId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DataEntries", x => x.DataId);
-                    table.ForeignKey(
-                        name: "FK_DataEntries_Obstacles_ObstacleId",
-                        column: x => x.ObstacleId,
-                        principalTable: "Obstacles",
-                        principalColumn: "ObstacleId",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Report",
                 columns: table => new
                 {
@@ -118,19 +96,9 @@ namespace KartverketProject.Migrations
                 values: new object[] { 1, true, "test@test.com", "password123", "testuser" });
 
             migrationBuilder.InsertData(
-                table: "DataEntries",
-                columns: new[] { "DataId", "ObstacleId", "ObstacleJSON" },
-                values: new object[] { 1, 1, "{\"type\":\"FeatureCollection\",\"features\":[]}" });
-
-            migrationBuilder.InsertData(
                 table: "Report",
                 columns: new[] { "ReportId", "ObstacleId", "UserId" },
                 values: new object[] { 1, 1, 1 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataEntries_ObstacleId",
-                table: "DataEntries",
-                column: "ObstacleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Report_ObstacleId",
@@ -146,9 +114,6 @@ namespace KartverketProject.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "DataEntries");
-
             migrationBuilder.DropTable(
                 name: "Report");
 
