@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KartverketProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251102103519_InitialCreate")]
+    [Migration("20251103104027_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -23,36 +23,6 @@ namespace KartverketProject.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("KartverketProject.Models.Data", b =>
-                {
-                    b.Property<int>("DataId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("DataId"));
-
-                    b.Property<int>("ObstacleId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ObstacleJSON")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("DataId");
-
-                    b.HasIndex("ObstacleId");
-
-                    b.ToTable("DataEntries");
-
-                    b.HasData(
-                        new
-                        {
-                            DataId = 1,
-                            ObstacleId = 1,
-                            ObstacleJSON = "{\"type\":\"FeatureCollection\",\"features\":[]}"
-                        });
-                });
 
             modelBuilder.Entity("KartverketProject.Models.Obstacle", b =>
                 {
@@ -176,17 +146,6 @@ namespace KartverketProject.Migrations
                         });
                 });
 
-            modelBuilder.Entity("KartverketProject.Models.Data", b =>
-                {
-                    b.HasOne("KartverketProject.Models.Obstacle", "Obstacle")
-                        .WithMany("DataEntries")
-                        .HasForeignKey("ObstacleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Obstacle");
-                });
-
             modelBuilder.Entity("KartverketProject.Models.Report", b =>
                 {
                     b.HasOne("KartverketProject.Models.Obstacle", "Obstacle")
@@ -204,11 +163,6 @@ namespace KartverketProject.Migrations
                     b.Navigation("Obstacle");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("KartverketProject.Models.Obstacle", b =>
-                {
-                    b.Navigation("DataEntries");
                 });
 
             modelBuilder.Entity("KartverketProject.Models.User", b =>
