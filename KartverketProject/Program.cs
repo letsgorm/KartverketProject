@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -15,17 +16,20 @@ namespace KartverketProject
                 options.AddServerHeader = false;
             });
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
-
+            //  Add database context
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-                new MySqlServerVersion(new Version(11, 8, 3))));
+                options.UseMySql(
+                    builder.Configuration.GetConnectionString("DefaultConnection"),
+                    new MySqlServerVersion(new Version(11, 8, 3))
+                ));
 
-            // Add CRUD services
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
+            // MVC & other services
+            builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<ObstacleService>();
-
             builder.Services.AddScoped<UserService>();
 
             builder.Services.AddOpenApi();
@@ -35,7 +39,6 @@ namespace KartverketProject
             app.MapOpenApi();
             app.MapScalarApiReference();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -73,6 +76,7 @@ namespace KartverketProject
 
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

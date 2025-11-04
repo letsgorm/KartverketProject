@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Assert = Xunit.Assert;
-using User = KartverketProject.Models.User;
 
 public class ControllerTest
 {
-    // Test if the ModelState is invalid when ObstacleJson is missing
+    // Test if the ModelState is valid when accessing the DataForm view
     [Fact]
     public void ModelStateValidation()
     {
@@ -36,7 +35,7 @@ public class ControllerTest
     {
         // Arrange
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase("TestDb")
+            .UseInMemoryDatabase("TestDb_Save")
             .Options;
 
         var context = new ApplicationDbContext(options);
@@ -44,7 +43,7 @@ public class ControllerTest
         var controller = new ObstacleController(service);
         var date = new DateTime(2025, 10, 15, 14, 30, 0);
 
-        var obstacleData = (new Obstacle
+        var obstacleData = new Obstacle
         {
             ObstacleId = 0,
             ObstacleName = "john",
@@ -52,7 +51,7 @@ public class ControllerTest
             ObstacleDescription = "test",
             ObstacleSubmittedDate = date,
             ObstacleJSON = "1"
-        });
+        };
 
         // Act
         var obstacle = await controller.DataForm(obstacleData);
@@ -60,6 +59,7 @@ public class ControllerTest
         // Assert
         var savedObstacle = context.Obstacles.FirstOrDefault(o => o.ObstacleName == "john");
         Assert.NotNull(obstacle);
+        Assert.NotNull(savedObstacle);
         Assert.Equal("john", savedObstacle.ObstacleName);
     }
 
