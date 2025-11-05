@@ -1,52 +1,44 @@
 ﻿using KartverketProject.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
-public class ApplicationDbContext : IdentityDbContext<IdentityUser>
-
+public class ApplicationDbContext : IdentityDbContext<User>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
-    // bruker -> rapport -> data -> hindre
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Report> Report => Set<Report>();
+    // Dine egne tabeller (Identity-tabeller legges til automatisk)
+    public DbSet<Report> Reports => Set<Report>();
     public DbSet<Obstacle> Obstacles => Set<Obstacle>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // VIKTIG: må være først, ellers krasjer Identity-relasjonene
         base.OnModelCreating(modelBuilder);
 
-        // primaer nokler
-        modelBuilder.Entity<User>()
-            .HasKey(o => o.UserId);
-
+        // Primærnøkler
         modelBuilder.Entity<Report>()
-            .HasKey(o => o.ReportId);
+            .HasKey(r => r.ReportId);
 
         modelBuilder.Entity<Obstacle>()
             .HasKey(o => o.ObstacleId);
 
-        // bygger relasjoner
+        // Relasjoner
+        modelBuilder.Entity<Report>()
+            .HasOne(r => r.User)
+            .WithMany(u => u.ReportEntries)
+            .HasForeignKey(r => r.UserId)
+            .IsRequired(false); // valgfritt, siden noen rapporter kanskje ikke har bruker
 
         modelBuilder.Entity<Report>()
-            .HasOne(u => u.User)
-            .WithMany(o => o.ReportEntries)
-            .HasForeignKey(d => d.UserId); // fremmed nokler
+            .HasOne(r => r.Obstacle)
+            .WithMany()
+            .HasForeignKey(r => r.ObstacleId);
 
-        // seed data
-
-        modelBuilder.Entity<User>().HasData(
-            new User
-            {
-                UserId = 1,
-                Username = "testuser",
-                Password = "password123",
-                Email = "test@test.com"
-            }
-        );
+        // Fjern manuell seeding av Identity-brukere (Identity håndterer det selv)
+        // Du kan fortsatt seede testdata for Obstacle og Report om du vil:
 
         modelBuilder.Entity<Obstacle>().HasData(
             new Obstacle
@@ -59,15 +51,15 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 ObstacleJSON = "{\"type\":\"FeatureCollection\",\"features\":[]}",
                 ObstacleStatus = "Pending"
             }
-         );
+        );
 
         modelBuilder.Entity<Report>().HasData(
             new Report
             {
                 ReportId = 1,
-                UserId = 1,
-                ObstacleId = 1
+                ObstacleId = 1,
+                UserId = null // Ingen koblet bruker i seed, Identity lager det selv
             }
-         );
+        );
     }
 }
