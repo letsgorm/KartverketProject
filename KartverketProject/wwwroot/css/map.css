@@ -1,43 +1,80 @@
-﻿body {
-    padding: 0;
+﻿/* --- Reset --- */
+body {
     margin: 0;
+    padding: 0
 }
 
+/* --- Map layout --- */
 #map {
     height: 95vh;
-    z-index: 0;
+    z-index: 0
 }
 
 #map-wrapper {
     position: relative;
-    height: 95vh;
+    height: 95vh
 }
 
+/* --- Icon buttons --- */
 .icon {
     position: absolute;
     left: 10px;
-    padding: 10px;
-    background-color: white;
-    font-size: 24px;
-    border: 1px solid black;
-    border-radius: 10px;
+    /* størrelse */
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    background: #fff;
+    /* tving grønn ikonfarge – overstyr dark.css */
+    color: #007A33 !important;
+    border: 1px solid #ddd;
+    box-shadow: 0 3px 8px rgba(0,0,0,.15);
+    transition: transform .15s ease, box-shadow .15s ease
 }
 
+    .icon:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,.25)
+    }
+
+    /* Default: outline for svg (sol + trash) */
+    .icon svg {
+        stroke: currentColor !important;
+        fill: none !important;
+        width: 34px; /* gjør ikonene tydelige i store knapper */
+        height: 34px
+    }
+
+/* Pin (marker) skal være solid/fylt */
+#markerIcon svg {
+    fill: currentColor !important;
+    stroke: none !important
+}
+
+#darkIcon svg,
+#trashIcon svg {
+    width: 34px;
+    height: 34px;
+    stroke-width: 2.0px; 
+}
+
+
+/* Plassering */
 #markerIcon {
-    opacity: 0.5;
-    transition: opacity 0.5s ease-in-out;
-    top: 300px;
+    top: 300px
 }
 
 #darkIcon {
-    opacity: 0.5;
-    top: 360px;
+    top: 380px
 }
 
 #trashIcon {
-    top: 420px;
+    top: 460px
 }
 
+/* Valgfri fade fra JS */
 #markerIcon.fade-out {
-    opacity: 1;
+    opacity: .5
 }
