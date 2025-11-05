@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using KartverketProject.Models; 
 
 namespace KartverketProject
 {
@@ -23,7 +24,7 @@ namespace KartverketProject
                     new MySqlServerVersion(new Version(11, 8, 3))
                 ));
 
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            builder.Services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 

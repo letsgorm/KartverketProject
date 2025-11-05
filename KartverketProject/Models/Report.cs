@@ -6,7 +6,7 @@ namespace KartverketProject.Models
     {
         public int ReportId { get; set; }
 
-        public int UserId { get; set; } // FK
+        public string UserId { get; set; } // FK
 
         public int ObstacleId { get; set; } // FK
 

@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using KartverketProject.Models;
 
 namespace KartverketProject.Controllers
 {
     // Use UserService to handle user authentication and registration logic
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -29,7 +30,7 @@ namespace KartverketProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = email, Email = email };
+                var user = new User { UserName = email, Email = email };
                 var result = await _userManager.CreateAsync(user, password);
 
                 if (result.Succeeded)

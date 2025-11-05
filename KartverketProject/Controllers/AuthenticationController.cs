@@ -1,98 +1,106 @@
 ﻿using KartverketProject.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KartverketProject.Controllers
-
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthenticationController : ControllerBase 
+    public class AuthenticationController : ControllerBase
     {
-        private readonly UserService _service;
+        private readonly UserService _userService;
 
-        // registrer db kontekst
-        public AuthenticationController(UserService service)
+        public AuthenticationController(UserService userService)
         {
-            _service = service;
+            _userService = userService;
         }
 
-        // GET: /api/authentication
-        // hent bruker
+        // GET: api/authentication
         [HttpGet]
-        public async Task<ActionResult<List<User>>> GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
-            var users = await _service.GetAllUsersAsync();
+            var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
 
-        // GET: /api/authentication/{id}
-        // hent bruker med id
+        // GET: api/authentication/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserById(int id)
+        public async Task<IActionResult> GetUserById(string id)
         {
-            var user = await _service.GetUserByIdAsync(id);
-            if (user == null) return NotFound();
-
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user == null)
+                return NotFound();
             return Ok(user);
         }
 
-        // POST: /api/authentication
-        // legg til bruker
-        [HttpPost]
-        public async Task<ActionResult<User>> AddUser(User newUser)
-        {
-            var user = await _service.AddUserAsync(newUser);
-            return CreatedAtAction(nameof(GetUserById), new { id = user.UserId }, user);
-        }
-
-        // PUT: /api/authentication/{id}
-        // endre bruker
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(User user)
-        {
-            await _service.UpdateUserAsync(user);
-            return NoContent();
-        }
-
-        // DEL: /api/authentication/{id}
-        // slett en bruker i db
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveUser(int id)
-        {
-            await _service.DeleteUserAsync(id);
-            return NoContent();
-        }
-
         // POST: api/authentication/register
-        // sjekk om brukernavn er tatt
         [HttpPost("register")]
-        public async Task<IActionResult> Register(User newUser)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest model)
         {
-            if (await _service.UserExistsAsync(newUser))
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = new User
             {
-                return BadRequest("Username already exists.");
-            }
+                UserName = model.UserName,
+                Email = model.Email,
+                FullName = model.FullName,
+                Department = model.Department
+            };
 
-            await _service.AddUserAsync(newUser);
-            return Ok("User registered successfully.");
+            var result = await _userService.AddUserAsync(user, model.Password);
 
+            if (result.Succeeded)
+                return Ok(new { Message = "User registered successfully!" });
+
+            return BadRequest(result.Errors);
         }
 
         // POST: api/authentication/login
-        // login med brukernavn og passord
         [HttpPost("login")]
-        public async Task<IActionResult> Login(User loginRequest)
+        public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
-            var existingUser = await _service.UserLoginAsync(loginRequest);
+            var result = await _userService.UserLoginAsync(model.UserName, model.Password);
 
-            if (existingUser == null)
-            {
-                return Unauthorized("Invalid username or password.");
-            }
-            else
-            {
-                return Ok("Login successful."); 
-            }
+            if (result.Succeeded)
+                return Ok(new { Message = "Login successful!" });
+
+            return Unauthorized(new { Message = "Invalid username or password." });
         }
+
+        // PUT: api/authentication/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] User updatedUser)
+        {
+            if (id != updatedUser.Id)
+                return BadRequest();
+
+            await _userService.UpdateUserAsync(updatedUser);
+            return NoContent();
+        }
+
+        // DELETE: api/authentication/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            await _userService.DeleteUserAsync(id);
+            return NoContent();
+        }
+    }
+
+    // DTO-klasser for innkommende request-data
+    public class RegisterRequest
+    {
+        public string UserName { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Password { get; set; } = "";
+        public string FullName { get; set; } = "";
+        public string Department { get; set; } = "";
+    }
+
+    public class LoginRequest
+    {
+        public string UserName { get; set; } = "";
+        public string Password { get; set; } = "";
     }
 }
