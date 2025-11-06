@@ -65,32 +65,12 @@ Unzip the folder and place the norway.mbtiles file in KartverketProject/Kartverk
 
 1. Open cmd, list with «docker volume ls» and then do «docker volume rm {VOLUMENAME HERE}». If it says volume is in use, go to docker desktop and delete the container.
 
-
 ![dockercompose](images/volume6.png)
 
 
 ![dockercompose](images/deletecompose7.png)
 
-
-2. Run the project as docker-compose (step 6), let it start up its containers and then exit.
-
-
-3. Set the project to KartverketProject, but do not run it.
-
-
-3. Delete the migrations folder, and run command 3.1 and 3.2 in NuGet Package Manage Console
-
-
-![dockercompose](images/migrations15.png)
-
-
-3.1 Add-Migration InitialCreate
-
-3.2 Update-Database
-
-
-4. Switch the project back to docker-compose (step 6) and run it. 
-
+2. Run the project as docker-compose to set up the volume again.
 
 ## System architecture
 
