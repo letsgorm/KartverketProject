@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using KartverketProject.Models; 
+using KartverketProject.Models;
+using KartverketProject.Data;
 
 namespace KartverketProject
 {
@@ -18,6 +19,13 @@ namespace KartverketProject
             });
 
             //  Add database context
+
+            builder.Services.AddDbContext<AuthenticationDbContext>(options =>
+                options.UseMySql(
+                    builder.Configuration.GetConnectionString("DefaultConnection"),
+                    new MySqlServerVersion(new Version(11, 8, 3))
+                ));
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -25,7 +33,7 @@ namespace KartverketProject
                 ));
 
             builder.Services.AddIdentity<User, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddEntityFrameworkStores<AuthenticationDbContext>()
             .AddDefaultTokenProviders();
 
             // MVC & other services

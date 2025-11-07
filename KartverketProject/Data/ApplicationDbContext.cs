@@ -1,17 +1,15 @@
 ﻿using KartverketProject.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class ApplicationDbContext : IdentityDbContext<User>
+public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
     // Dine egne tabeller (Identity-tabeller legges til automatisk)
-    public DbSet<Report> Reports => Set<Report>();
-    public DbSet<Obstacle> Obstacles => Set<Obstacle>();
+    public DbSet<Report> Report => Set<Report>();
+    public DbSet<Obstacle> Obstacle => Set<Obstacle>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
