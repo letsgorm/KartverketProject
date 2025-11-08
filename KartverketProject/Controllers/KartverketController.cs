@@ -1,6 +1,6 @@
 using KartverketProject.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Security.Claims;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -34,16 +34,13 @@ public class KartverketController : ControllerBase
         return Ok(obstacle);
     }
 
-            // ikke gjor newObstacle eller newStatus nullable pls det krasjer APIen
-
     // POST: /api/Kartverket
     // legg til hindre
     [HttpPost]
-    public async Task<ActionResult<Obstacle>> AddObstacle(
-        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)]
-        Obstacle newObstacle)
+    public async Task<ActionResult<Obstacle>> AddObstacle(Obstacle newObstacle)
     {
-        var obstacle = await _service.AddObstacleAsync(newObstacle);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var obstacle = await _service.AddObstacleAsync(newObstacle, userId);
         return CreatedAtAction(nameof(GetObstacleById), new { id = obstacle.ObstacleId }, obstacle);
     }
 

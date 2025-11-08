@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+// This is the CRUD service for Obstacle.
+// AuthenticationController
+// AccountController
+
 public class UserService
 {
     private readonly UserManager<User> _userManager;
@@ -18,15 +22,13 @@ public class UserService
     // Hent alle brukere
     public async Task<List<User>> GetAllUsersAsync()
     {
-        return await _userManager.Users.Include(u => u.ReportEntries).ToListAsync();
+        return await _userManager.Users.ToListAsync();
     }
 
     // Hent bruker med ID
     public async Task<User?> GetUserByIdAsync(string id)
     {
-        return await _userManager.Users
-            .Include(u => u.ReportEntries)
-            .FirstOrDefaultAsync(u => u.Id == id);
+        return await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
 
     // Opprett ny bruker
@@ -45,8 +47,8 @@ public class UserService
             existingUser.Email = updatedUser.Email;
             existingUser.UserName = updatedUser.UserName;
             existingUser.Active = updatedUser.Active;
-            existingUser.FullName = updatedUser.FullName;
-            existingUser.Department = updatedUser.Department;
+            existingUser.FirstName = updatedUser.FirstName;
+            existingUser.LastName = updatedUser.LastName;
 
             await _userManager.UpdateAsync(existingUser);
         }

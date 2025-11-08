@@ -10,6 +10,7 @@ public class ApplicationDbContext : DbContext
     // Dine egne tabeller (Identity-tabeller legges til automatisk)
     public DbSet<Report> Report => Set<Report>();
     public DbSet<Obstacle> Obstacle => Set<Obstacle>();
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,14 +27,16 @@ public class ApplicationDbContext : DbContext
         // Relasjoner
         modelBuilder.Entity<Report>()
             .HasOne(r => r.User)
-            .WithMany(u => u.ReportEntries)
+            .WithMany()
             .HasForeignKey(r => r.UserId)
             .IsRequired(false); // valgfritt, siden noen rapporter kanskje ikke har bruker
 
         modelBuilder.Entity<Report>()
-            .HasOne(r => r.Obstacle)
-            .WithMany()
+            .HasOne(r => r.Obstacle) // holder kolleksjonen
+            .WithMany(o => o.ReportEntries) // holder navigering egenskapene
             .HasForeignKey(r => r.ObstacleId);
+
+        modelBuilder.Entity<User>().ToTable("AspNetUsers");
 
         // Fjern manuell seeding av Identity-brukere (Identity håndterer det selv)
         // Du kan fortsatt seede testdata for Obstacle og Report om du vil:
@@ -56,7 +59,7 @@ public class ApplicationDbContext : DbContext
             {
                 ReportId = 1,
                 ObstacleId = 1,
-                UserId = null // Ingen koblet bruker i seed, Identity lager det selv
+                UserId = null
             }
         );
     }

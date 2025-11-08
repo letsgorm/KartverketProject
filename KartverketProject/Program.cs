@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using KartverketProject.Models;
 using KartverketProject.Data;
+using Pomelo.EntityFrameworkCore.MySql.Internal;
 
 namespace KartverketProject
 {
@@ -18,20 +19,20 @@ namespace KartverketProject
                 options.AddServerHeader = false;
             });
 
-            //  Add database context
+            //  Add database context, use same connection string due to nested ReportEntries
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseMySql(
+                    builder.Configuration.GetConnectionString("DefaultConnection"),
+                    new MySqlServerVersion(new Version(11, 8, 3))
+            ));
 
             builder.Services.AddDbContext<AuthenticationDbContext>(options =>
                 options.UseMySql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
                     new MySqlServerVersion(new Version(11, 8, 3))
-                ));
+            ));
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(
-                    builder.Configuration.GetConnectionString("DefaultConnection"),
-                    new MySqlServerVersion(new Version(11, 8, 3))
-                ));
-
+            // Core Identity
             builder.Services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<AuthenticationDbContext>()
             .AddDefaultTokenProviders();
@@ -40,8 +41,14 @@ namespace KartverketProject
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<ObstacleService>();
             builder.Services.AddScoped<UserService>();
-
             builder.Services.AddOpenApi();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AuthenticatedAll", policy =>
+                    policy.RequireRole("admin", "reviewer", "user"));
+                options.AddPolicy("AuthenticatedHigh", policy =>
+                    policy.RequireRole("admin", "reviewer"));
+            });
 
             var app = builder.Build();
 
@@ -52,11 +59,9 @@ namespace KartverketProject
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
-                //app.ApplyMigrations(); // ukommenter dette til å migrere automatisk
             }
 
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
 
             // Security headers

@@ -43,8 +43,8 @@ namespace KartverketProject.Controllers
             {
                 UserName = model.UserName,
                 Email = model.Email,
-                FullName = model.FullName,
-                Department = model.Department
+                FirstName = model.FirstName,
+                LastName = model.LastName,
             };
 
             var result = await _userService.AddUserAsync(user, model.Password);
@@ -93,8 +93,8 @@ namespace KartverketProject.Controllers
         public string UserName { get; set; } = "";
         public string Email { get; set; } = "";
         public string Password { get; set; } = "";
-        public string FullName { get; set; } = "";
-        public string Department { get; set; } = "";
+        public string FirstName { get; set; } = "";
+        public string LastName { get; set; } = "";
     }
 
     public class LoginRequest
