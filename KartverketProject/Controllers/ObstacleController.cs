@@ -1,6 +1,8 @@
 using KartverketProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+[Authorize(Roles = "User")]
 public class ObstacleController : Controller
 {
     // registrer service som gir loos kobling
