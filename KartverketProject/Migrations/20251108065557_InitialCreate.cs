@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace KartverketProject.Migrations.ApplicationDb
+namespace KartverketProject.Migrations
 {
     /// <inheritdoc />
-    public partial class Identity : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace KartverketProject.Migrations.ApplicationDb
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Obstacles",
+                name: "Obstacle",
                 columns: table => new
                 {
                     ObstacleId = table.Column<int>(type: "int", nullable: false)
@@ -34,7 +34,7 @@ namespace KartverketProject.Migrations.ApplicationDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Obstacles", x => x.ObstacleId);
+                    table.PrimaryKey("PK_Obstacle", x => x.ObstacleId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -44,9 +44,9 @@ namespace KartverketProject.Migrations.ApplicationDb
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    FullName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
+                    FirstName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Department = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
+                    LastName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Active = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     UserName = table.Column<string>(type: "longtext", nullable: true)
@@ -79,7 +79,7 @@ namespace KartverketProject.Migrations.ApplicationDb
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Reports",
+                name: "Report",
                 columns: table => new
                 {
                     ReportId = table.Column<int>(type: "int", nullable: false)
@@ -90,15 +90,15 @@ namespace KartverketProject.Migrations.ApplicationDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reports", x => x.ReportId);
+                    table.PrimaryKey("PK_Report", x => x.ReportId);
                     table.ForeignKey(
-                        name: "FK_Reports_Obstacles_ObstacleId",
+                        name: "FK_Report_Obstacle_ObstacleId",
                         column: x => x.ObstacleId,
-                        principalTable: "Obstacles",
+                        principalTable: "Obstacle",
                         principalColumn: "ObstacleId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reports_User_UserId",
+                        name: "FK_Report_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id");
@@ -106,23 +106,23 @@ namespace KartverketProject.Migrations.ApplicationDb
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
-                table: "Obstacles",
+                table: "Obstacle",
                 columns: new[] { "ObstacleId", "ObstacleDescription", "ObstacleHeight", "ObstacleJSON", "ObstacleName", "ObstacleStatus", "ObstacleSubmittedDate" },
                 values: new object[] { 1, "This is a test obstacle.", 10.5, "{\"type\":\"FeatureCollection\",\"features\":[]}", "Test Obstacle", "Pending", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.InsertData(
-                table: "Reports",
+                table: "Report",
                 columns: new[] { "ReportId", "ObstacleId", "UserId" },
                 values: new object[] { 1, 1, null });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reports_ObstacleId",
-                table: "Reports",
+                name: "IX_Report_ObstacleId",
+                table: "Report",
                 column: "ObstacleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reports_UserId",
-                table: "Reports",
+                name: "IX_Report_UserId",
+                table: "Report",
                 column: "UserId");
         }
 
@@ -130,10 +130,10 @@ namespace KartverketProject.Migrations.ApplicationDb
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Reports");
+                name: "Report");
 
             migrationBuilder.DropTable(
-                name: "Obstacles");
+                name: "Obstacle");
 
             migrationBuilder.DropTable(
                 name: "User");

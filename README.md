@@ -60,6 +60,37 @@ Unzip the folder and place the norway.mbtiles file in KartverketProject/Kartverk
 
 ![dockercompose](images/observedockercompose10.png)
 
+## Resetting migrations
+
+
+1. Delete migrations folder
+
+
+![dockercompose](images/migrations15.png)
+
+2. Switch to KartverketProject 
+
+
+![dockercompose](images/selectdockercompose8.png)
+
+
+3. In Visual Studio:
+
+
+Tools -> NuGet Package Manager -> Package Manager Console
+
+
+4. Type all commands in order.
+
+
+Apply-Migrations InitialCreate -Context ApplicationDbContext
+
+Apply-Migrations InitialCreate -Context AuthenticationDbContext
+
+Update-Database -Context ApplicationDbContext
+
+Update-Database -Context AuthenticationDbContext
+
 
 ### Password does not work
 
@@ -127,3 +158,12 @@ https://github.com/letsgorm/KartverketProject/blob/61e0adda155e96a1ce9f4199811de
 ### Results
  
 ![dockercompose](images/unittesting13.png)
+
+## Credits
+
+A special thank you to DAkintola94 for assisting us and allowing us to reuse his code.
+
+You can find his project here:
+
+https://github.com/DAkintola94/MatFrem/tree/main
+

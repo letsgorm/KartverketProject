@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace KartverketProject.Migrations.ApplicationDb
+namespace KartverketProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251107064743_Identity")]
-    partial class Identity
+    [Migration("20251108065557_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,7 +59,7 @@ namespace KartverketProject.Migrations.ApplicationDb
 
                     b.HasKey("ObstacleId");
 
-                    b.ToTable("Obstacles");
+                    b.ToTable("Obstacle");
 
                     b.HasData(
                         new
@@ -94,7 +94,7 @@ namespace KartverketProject.Migrations.ApplicationDb
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Report");
 
                     b.HasData(
                         new
@@ -118,19 +118,19 @@ namespace KartverketProject.Migrations.ApplicationDb
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Department")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("FullName")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -170,13 +170,13 @@ namespace KartverketProject.Migrations.ApplicationDb
             modelBuilder.Entity("KartverketProject.Models.Report", b =>
                 {
                     b.HasOne("KartverketProject.Models.Obstacle", "Obstacle")
-                        .WithMany()
+                        .WithMany("ReportEntries")
                         .HasForeignKey("ObstacleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KartverketProject.Models.User", "User")
-                        .WithMany("ReportEntries")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("Obstacle");
@@ -184,7 +184,7 @@ namespace KartverketProject.Migrations.ApplicationDb
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KartverketProject.Models.User", b =>
+            modelBuilder.Entity("KartverketProject.Models.Obstacle", b =>
                 {
                     b.Navigation("ReportEntries");
                 });

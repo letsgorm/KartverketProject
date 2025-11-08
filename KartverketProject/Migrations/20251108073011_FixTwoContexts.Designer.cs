@@ -3,16 +3,19 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace KartverketProject.Migrations.ApplicationDb
+namespace KartverketProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251108073011_FixTwoContexts")]
+    partial class FixTwoContexts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,7 +59,7 @@ namespace KartverketProject.Migrations.ApplicationDb
 
                     b.HasKey("ObstacleId");
 
-                    b.ToTable("Obstacles");
+                    b.ToTable("Obstacle");
 
                     b.HasData(
                         new
@@ -91,7 +94,7 @@ namespace KartverketProject.Migrations.ApplicationDb
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Report");
 
                     b.HasData(
                         new
@@ -115,19 +118,19 @@ namespace KartverketProject.Migrations.ApplicationDb
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Department")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("FullName")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -161,19 +164,19 @@ namespace KartverketProject.Migrations.ApplicationDb
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("KartverketProject.Models.Report", b =>
                 {
                     b.HasOne("KartverketProject.Models.Obstacle", "Obstacle")
-                        .WithMany()
+                        .WithMany("ReportEntries")
                         .HasForeignKey("ObstacleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KartverketProject.Models.User", "User")
-                        .WithMany("ReportEntries")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("Obstacle");
@@ -181,7 +184,7 @@ namespace KartverketProject.Migrations.ApplicationDb
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KartverketProject.Models.User", b =>
+            modelBuilder.Entity("KartverketProject.Models.Obstacle", b =>
                 {
                     b.Navigation("ReportEntries");
                 });

@@ -1,8 +1,9 @@
 using KartverketProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
-[Authorize(Roles = "User")]
+[Authorize(Policy = "AuthenticatedAll")]
 public class ObstacleController : Controller
 {
     // registrer service som gir loos kobling
@@ -25,9 +26,9 @@ public class ObstacleController : Controller
     public async Task<IActionResult> DataForm(Obstacle obstacledata)
     {
         if (!ModelState.IsValid) return View();
-
-        await _service.AddObstacleAsync(obstacledata);
-        return RedirectToAction("Overview", new { id = obstacledata.ObstacleId });
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var saved = await _service.AddObstacleAsync(obstacledata, userId);
+        return RedirectToAction("Overview", new { id = saved.ObstacleId});
     }
 
     // GET: /Obstacle/Overview/{id}

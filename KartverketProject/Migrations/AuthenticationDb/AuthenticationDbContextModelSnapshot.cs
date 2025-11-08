@@ -4,19 +4,16 @@ using KartverketProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace KartverketProject.Migrations
+namespace KartverketProject.Migrations.AuthenticationDb
 {
     [DbContext(typeof(AuthenticationDbContext))]
-    [Migration("20251107064737_Identity")]
-    partial class Identity
+    partial class AuthenticationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,68 +21,6 @@ namespace KartverketProject.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("KartverketProject.Models.Obstacle", b =>
-                {
-                    b.Property<int>("ObstacleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ObstacleId"));
-
-                    b.Property<string>("ObstacleDescription")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
-
-                    b.Property<double>("ObstacleHeight")
-                        .HasColumnType("double");
-
-                    b.Property<string>("ObstacleJSON")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ObstacleName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("ObstacleStatus")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<DateTime>("ObstacleSubmittedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("ObstacleId");
-
-                    b.ToTable("Obstacle");
-                });
-
-            modelBuilder.Entity("KartverketProject.Models.Report", b =>
-                {
-                    b.Property<int>("ReportId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ReportId"));
-
-                    b.Property<int>("ObstacleId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("ReportId");
-
-                    b.HasIndex("ObstacleId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Report");
-                });
 
             modelBuilder.Entity("KartverketProject.Models.User", b =>
                 {
@@ -102,10 +37,6 @@ namespace KartverketProject.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Department")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -113,9 +44,13 @@ namespace KartverketProject.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("FullName")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -167,20 +102,57 @@ namespace KartverketProject.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "594ebe79-030b-441a-8881-80c56366a266",
-                            Department = "IT",
+                            ConcurrencyStamp = "7d579b91-0128-4314-8a70-0ec0eb653181",
                             Email = "admin@gorm.no",
                             EmailConfirmed = false,
-                            FullName = "Administrator",
+                            FirstName = "John",
+                            LastName = "Doe",
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GORM.NO",
                             NormalizedUserName = "ADMIN@GORM.NO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIaJgZHo0o5YKvasXVnhrJBADiBNigmSiRLZQNIgGnNgo3ziawVx6znjoTBosD+FzA==",
-                            PhoneNumber = "12345678",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKB8SZ0t8CjLFap1O1MuTkGNHV2CKgSPxHdmqLVV7qhHE4L5dcS7Q4b/psUZ9wyvaA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "05f56e96-8146-4aaf-974c-4f4d14614e83",
+                            SecurityStamp = "ca58dc08-2ae3-424a-a662-bda4804305a8",
                             TwoFactorEnabled = false,
                             UserName = "admin@gorm.no"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            AccessFailedCount = 0,
+                            Active = true,
+                            ConcurrencyStamp = "0def8de9-c493-4c3f-9b9f-09446f2d51b2",
+                            Email = "reviewer@gorm.no",
+                            EmailConfirmed = false,
+                            FirstName = "Jane",
+                            LastName = "Doe",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "REVIEWER@GORM.NO",
+                            NormalizedUserName = "REVIEWER@GORM.NO",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAeUvO5NI3F5sbUtaGsc7fSYGzqD+rvz8GitNJ/XawLBUm5eJ8pkoc5uu+K35i3mgA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "998910ef-c060-4765-8d79-3fbbd07c0f40",
+                            TwoFactorEnabled = false,
+                            UserName = "reviewer@gorm.no"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            AccessFailedCount = 0,
+                            Active = true,
+                            ConcurrencyStamp = "7b485d7c-8a23-4210-8c76-b4616cbeaa41",
+                            Email = "user@gorm.no",
+                            EmailConfirmed = false,
+                            FirstName = "Bob",
+                            LastName = "Smith",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER@GORM.NO",
+                            NormalizedUserName = "USER@GORM.NO",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA/qrzbEPJYsTmzWUVVJXmYGfDgp/Z/oNjrsPrEawHLs+VMP0QAgO3mtcJowspEyPw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "96722530-38b0-41c8-a935-540f738cd882",
+                            TwoFactorEnabled = false,
+                            UserName = "user@gorm.no"
                         });
                 });
 
@@ -214,8 +186,22 @@ namespace KartverketProject.Migrations
                         {
                             Id = "1",
                             ConcurrencyStamp = "1",
-                            Name = "Administrator",
-                            NormalizedName = "admin"
+                            Name = "admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            ConcurrencyStamp = "2",
+                            Name = "reviewer",
+                            NormalizedName = "REVIEWER"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            ConcurrencyStamp = "3",
+                            Name = "user",
+                            NormalizedName = "USER"
                         });
                 });
 
@@ -310,6 +296,16 @@ namespace KartverketProject.Migrations
                         {
                             UserId = "1",
                             RoleId = "1"
+                        },
+                        new
+                        {
+                            UserId = "2",
+                            RoleId = "2"
+                        },
+                        new
+                        {
+                            UserId = "3",
+                            RoleId = "3"
                         });
                 });
 
@@ -330,25 +326,6 @@ namespace KartverketProject.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("KartverketProject.Models.Report", b =>
-                {
-                    b.HasOne("KartverketProject.Models.Obstacle", "Obstacle")
-                        .WithMany()
-                        .HasForeignKey("ObstacleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KartverketProject.Models.User", "User")
-                        .WithMany("ReportEntries")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Obstacle");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -400,11 +377,6 @@ namespace KartverketProject.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("KartverketProject.Models.User", b =>
-                {
-                    b.Navigation("ReportEntries");
                 });
 #pragma warning restore 612, 618
         }

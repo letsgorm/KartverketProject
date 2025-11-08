@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace KartverketProject.Migrations
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
+namespace KartverketProject.Migrations.AuthenticationDb
 {
     /// <inheritdoc />
-    public partial class Identity : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -40,9 +42,9 @@ namespace KartverketProject.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    FullName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
+                    FirstName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Department = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
+                    LastName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Active = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
@@ -71,29 +73,6 @@ namespace KartverketProject.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Obstacle",
-                columns: table => new
-                {
-                    ObstacleId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ObstacleName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ObstacleHeight = table.Column<double>(type: "double", nullable: false),
-                    ObstacleDescription = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ObstacleSubmittedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ObstacleJSON = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ObstacleStatus = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Obstacle", x => x.ObstacleId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -224,48 +203,35 @@ namespace KartverketProject.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
-                name: "Report",
-                columns: table => new
-                {
-                    ReportId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ObstacleId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Report", x => x.ReportId);
-                    table.ForeignKey(
-                        name: "FK_Report_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Report_Obstacle_ObstacleId",
-                        column: x => x.ObstacleId,
-                        principalTable: "Obstacle",
-                        principalColumn: "ObstacleId",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "1", "1", "Administrator", "admin" });
+                values: new object[,]
+                {
+                    { "1", "1", "admin", "ADMIN" },
+                    { "2", "2", "reviewer", "REVIEWER" },
+                    { "3", "3", "user", "USER" }
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Active", "ConcurrencyStamp", "Department", "Email", "EmailConfirmed", "FullName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", 0, true, "594ebe79-030b-441a-8881-80c56366a266", "IT", "admin@gorm.no", false, "Administrator", false, null, "ADMIN@GORM.NO", "ADMIN@GORM.NO", "AQAAAAIAAYagAAAAEIaJgZHo0o5YKvasXVnhrJBADiBNigmSiRLZQNIgGnNgo3ziawVx6znjoTBosD+FzA==", "12345678", false, "05f56e96-8146-4aaf-974c-4f4d14614e83", false, "admin@gorm.no" });
+                columns: new[] { "Id", "AccessFailedCount", "Active", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "1", 0, true, "7d579b91-0128-4314-8a70-0ec0eb653181", "admin@gorm.no", false, "John", "Doe", false, null, "ADMIN@GORM.NO", "ADMIN@GORM.NO", "AQAAAAIAAYagAAAAEKB8SZ0t8CjLFap1O1MuTkGNHV2CKgSPxHdmqLVV7qhHE4L5dcS7Q4b/psUZ9wyvaA==", null, false, "ca58dc08-2ae3-424a-a662-bda4804305a8", false, "admin@gorm.no" },
+                    { "2", 0, true, "0def8de9-c493-4c3f-9b9f-09446f2d51b2", "reviewer@gorm.no", false, "Jane", "Doe", false, null, "REVIEWER@GORM.NO", "REVIEWER@GORM.NO", "AQAAAAIAAYagAAAAEAeUvO5NI3F5sbUtaGsc7fSYGzqD+rvz8GitNJ/XawLBUm5eJ8pkoc5uu+K35i3mgA==", null, false, "998910ef-c060-4765-8d79-3fbbd07c0f40", false, "reviewer@gorm.no" },
+                    { "3", 0, true, "7b485d7c-8a23-4210-8c76-b4616cbeaa41", "user@gorm.no", false, "Bob", "Smith", false, null, "USER@GORM.NO", "USER@GORM.NO", "AQAAAAIAAYagAAAAEA/qrzbEPJYsTmzWUVVJXmYGfDgp/Z/oNjrsPrEawHLs+VMP0QAgO3mtcJowspEyPw==", null, false, "96722530-38b0-41c8-a935-540f738cd882", false, "user@gorm.no" }
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "1", "1" });
+                values: new object[,]
+                {
+                    { "1", "1" },
+                    { "2", "2" },
+                    { "3", "3" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -303,16 +269,6 @@ namespace KartverketProject.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Report_ObstacleId",
-                table: "Report",
-                column: "ObstacleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Report_UserId",
-                table: "Report",
-                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -334,16 +290,10 @@ namespace KartverketProject.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Report");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Obstacle");
         }
     }
 }

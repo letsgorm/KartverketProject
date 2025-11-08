@@ -1,11 +1,10 @@
 ﻿using KartverketProject.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
-// This is the CRUD service for Obstacles.
-// Edit the controller if you wish to make changes.
-
-// KC = KartverketController
-// OC = ObstacleController
+// This is the CRUD service for Obstacle.
+// KartverketController
+// ObstacleController
 
 public class ObstacleService
 {
@@ -18,38 +17,44 @@ public class ObstacleService
     }
 
     // gi alle hindre som liste
-    // KC: OverviewAll
-    // OC: GetObstacles
     public async Task<List<Obstacle>> GetAllObstaclesAsync()
     {
-        return await _context.Obstacles
+        return await _context.Obstacle
+            .Include(o => o.ReportEntries)
+                .ThenInclude(r => r.User)
             .ToListAsync();
     }
 
     // finn hindre etter id som gir data eller default data
-    // KC: Overview
-    // OC: GetObstacleById
     public async Task<Obstacle?> GetObstacleByIdAsync(int id)
     {
-        return await _context.Obstacles
+        return await _context.Obstacle
+            .Include(o => o.ReportEntries)
+                .ThenInclude(r => r.User)
             .FirstOrDefaultAsync(o => o.ObstacleId == id);
     }
 
     // returner hindre -> DataForm
-    // KC: AddObstacle
-    public async Task<Obstacle> AddObstacleAsync(Obstacle obstacle)
+    public async Task<Obstacle> AddObstacleAsync(Obstacle obstacle, string userId)
     {
-        _context.Obstacles.Add(obstacle); // lag hindre forst foor data
+        _context.Obstacle.Add(obstacle);
         await _context.SaveChangesAsync();
 
+        var report = new Report
+        {
+            ObstacleId = obstacle.ObstacleId,
+            UserId = userId
+        };
+        _context.Report.Add(report);
+        await _context.SaveChangesAsync();
+        
         return obstacle;
     }
 
-    // oppdater hindre gjennom dto
-    // OC: UpdateStatus
+    // oppdater hindre
     public async Task UpdateObstacleAsync(Obstacle updatedObstacle)
     {
-        var obstacle = await _context.Obstacles.FindAsync(updatedObstacle.ObstacleId);
+        var obstacle = await _context.Obstacle.FindAsync(updatedObstacle.ObstacleId);
         if (obstacle != null)
         {
             obstacle.ObstacleName = updatedObstacle.ObstacleName;
@@ -62,12 +67,10 @@ public class ObstacleService
         }
     }
 
-    // oppdater statusen til hindre gjennom dto -> UpdateStatus
-    // OC: UpdateStatus
-    // KC: UpdateObstacleStatus
+    // oppdater statusen til hindre -> UpdateStatus
     public async Task UpdateObstacleStatusAsync(int id, string newStatus)
     {
-        var obstacle = await _context.Obstacles.FindAsync(id);
+        var obstacle = await _context.Obstacle.FindAsync(id);
         if (obstacle != null)
         {
             obstacle.ObstacleStatus = newStatus;
@@ -76,13 +79,12 @@ public class ObstacleService
     }
 
     // slett hindre
-    // KC: RemoveObstacle
     public async Task DeleteObstacleAsync(int id)
     {
-        var obstacle = await _context.Obstacles.FindAsync(id);
+        var obstacle = await _context.Obstacle.FindAsync(id);
         if (obstacle != null)
         {
-            _context.Obstacles.Remove(obstacle);
+            _context.Obstacle.Remove(obstacle);
             await _context.SaveChangesAsync();
         }
     }

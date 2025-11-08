@@ -26,5 +26,7 @@ namespace KartverketProject.Models
         [Required]
         [MaxLength(50)]
         public string ObstacleStatus { get; set; } = "Pending";
+
+        public ICollection<Report> ReportEntries { get; set; } = new List<Report>();
     }
 }

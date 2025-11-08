@@ -52,7 +52,7 @@ function addPoint(latlng) {
 
 function updatePolyline() {
     if (!poly) {
-        poly = L.polyline(points, { color: "blue" });
+        poly = L.polyline(points, { color: "green" });
     } else {
         poly.setLatLngs(points);
     }
