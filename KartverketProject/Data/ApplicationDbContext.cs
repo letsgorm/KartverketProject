@@ -12,6 +12,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
     // lag rapport og obstacle, ignorer user pga inheritance IdentityUser
     public DbSet<Report> Report => Set<Report>();
     public DbSet<Obstacle> Obstacle => Set<Obstacle>();
+    public DbSet<ReportShare> ReportShare => Set<ReportShare>();
 
     // skap rolle
     private static IdentityRole CreateRole(string id, string email)
@@ -25,7 +26,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
         };
     }
     // skap bruker
-    private static User CreateUser(string id, string email, string firstname, string lastname, string password)
+    private static User CreateUser(string id, string email, string firstname, string lastname, string password, string department)
     {
         var user = new User
         {
@@ -35,7 +36,8 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             Email = email,
             NormalizedEmail = email.ToUpper(),
             FirstName = firstname,
-            LastName = lastname
+            LastName = lastname,
+            Department = department
         };
         // skap enkryptert passord
         user.PasswordHash = new PasswordHasher<User>().HashPassword(user, password);
@@ -59,7 +61,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             .HasOne(r => r.User)
             .WithMany()
             .HasForeignKey(r => r.UserId)
-            .IsRequired(false); // valgfritt, siden noen rapporter kanskje ikke har bruker
+            .OnDelete(DeleteBehavior.SetNull); // keep report even if user is deleted
 
         modelBuilder.Entity<Report>()
             .HasOne(r => r.Obstacle) // holder kolleksjonen
@@ -67,8 +69,96 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             .HasForeignKey(r => r.ObstacleId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<ReportShare>()
+            .HasKey(rs => rs.ReportShareId);
+
+        modelBuilder.Entity<ReportShare>()
+            .HasOne(rs => rs.Report)
+            .WithMany(r => r.SharedWith)
+            .HasForeignKey(rs => rs.ReportId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ReportShare>()
+            .HasOne(rs => rs.SharedWithUser)
+            .WithMany()
+            .HasForeignKey(rs => rs.SharedWithUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
         modelBuilder.Entity<User>().ToTable("AspNetUsers");
 
+        // fjerner hardkodet ID for roller
+        var adminRoleId = "11111111-1111-1111-1111-111111111111";
+        var reviewerRoleId = "22222222-2222-2222-2222-222222222222";
+        var userRoleId = "33333333-3333-3333-3333-333333333333";
+
+        // fjerner hardkodet ID for brukere
+        // NLA
+        var adminIdNla = "33333333-3333-3333-3333-333333333333";
+        var reviewerIdNla = "44444444-4444-4444-4444-444444444444";
+        var userIdNla = "66666666-6666-6666-6666-666666666666";
+
+        // Luftsforsvaret
+        var reviewerIdLuft = "77777777-7777-7777-7777-777777777777";
+
+        // roleId, name
+        var roles = new List<IdentityRole>
+            {
+                CreateRole(adminRoleId, "admin"),
+                CreateRole(reviewerRoleId, "reviewer"),
+                CreateRole(userRoleId, "user")
+            };
+
+        // id, email, role, firstname, lastname, password, department
+        // NLA
+        var adminUserNrl = CreateUser(adminIdNla, "admin@nla.no", "John", "Doe", "admin", "NLA");
+        var reviewerUserNrl = CreateUser(reviewerIdNla, "reviewer@nla.no", "Jane", "Doe", "admin", "NLA");
+        var userUserNrl = CreateUser(userIdNla, "user@nla.no", "Bob", "Smith", "admin", "NLA");
+
+        // id, email, role, firstname, lastname, password, department
+        // Luftsforsvaret
+        var reviewerUserLuft = CreateUser(reviewerIdLuft, "reviewer@luftsforsvaret.no", "Janice", "Doe", "admin", "Luftsforsvaret");
+
+        // seed data for rollene
+        modelBuilder.Entity<IdentityRole>().HasData(roles);
+
+        // bruker egen model for admin brukeren
+        modelBuilder.Entity<User>().HasData(
+            adminUserNrl, 
+            reviewerUserNrl, 
+            userUserNrl, 
+            reviewerUserLuft
+            );
+
+        // legg til roller
+        var mapRoles = new List<IdentityUserRole<string>>
+            {
+                new IdentityUserRole<string>
+                {
+                    RoleId = adminRoleId,
+                    UserId = adminIdNla
+                },
+                new IdentityUserRole<string>
+                {
+                    RoleId = reviewerRoleId,
+                    UserId = reviewerIdNla
+                },
+                new IdentityUserRole<string>
+                {
+                    RoleId = userRoleId,
+                    UserId = userIdNla
+                },
+                new IdentityUserRole<string>
+                {
+                    RoleId = reviewerRoleId,
+                    UserId = reviewerIdLuft
+                },
+            };
+
+        // seed rolle
+        modelBuilder.Entity<IdentityUserRole<string>>().HasData(mapRoles);
+
+        // lag et hindre
         modelBuilder.Entity<Obstacle>().HasData(
             new Obstacle
             {
@@ -82,56 +172,11 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             }
         );
 
-        // fjerner hardkodet ID for roller
-        var adminRoleId = Guid.NewGuid().ToString();
-        var reviewerRoleId = Guid.NewGuid().ToString();
-        var userRoleId = Guid.NewGuid().ToString();
-
-        // fjerner hardkodet ID for brukere
-        var adminId = Guid.NewGuid().ToString();
-        var reviewerId = Guid.NewGuid().ToString();
-        var userId = Guid.NewGuid().ToString();
-
-        // roleId, name
-        var roles = new List<IdentityRole>
-            {
-                CreateRole(adminRoleId, "admin"),
-                CreateRole(reviewerRoleId, "reviewer"),
-                CreateRole(userRoleId, "user")
-            };
-
-        // id, email, role, firstname, lastname, password
-        var adminUser = CreateUser(adminId, "admin@gorm.no", "John", "Doe", "admin");
-        var reviewerUser = CreateUser(reviewerId, "reviewer@gorm.no", "Jane", "Doe", "admin");
-        var userUser = CreateUser(userId, "user@gorm.no", "Bob", "Smith", "admin");
-
-        // seed data for rollene
-        modelBuilder.Entity<IdentityRole>().HasData(roles);
-
-        // bruker egen model for admin brukeren
-        modelBuilder.Entity<User>().HasData(adminUser, reviewerUser, userUser);
-
-        // legg til roller
-        var adminRoles = new List<IdentityUserRole<string>>
-            {
-                new IdentityUserRole<string>
-                {
-                    RoleId = adminRoleId,
-                    UserId = adminId
-                },
-                new IdentityUserRole<string>
-                {
-                    RoleId = reviewerRoleId,
-                    UserId = reviewerId
-                },
-                new IdentityUserRole<string>
-                {
-                    RoleId = userRoleId,
-                    UserId = userId
-                },
-            };
-
-        // seed rolle
-        modelBuilder.Entity<IdentityUserRole<string>>().HasData(adminRoles);
+        modelBuilder.Entity<Report>().HasData(new Report
+        {
+            ReportId = 1,
+            ObstacleId = 1,
+            UserId = reviewerIdLuft, // links to seeded user
+        });
     }
 }

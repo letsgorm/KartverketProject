@@ -1,0 +1,109 @@
+﻿@model IEnumerable<KartverketProject.Models.Obstacle>
+@{
+    ViewData["Title"] = "All Obstacles";
+    var selectedStatus = ViewData["SelectedStatus"] as string ?? "All";
+    var sortOrder = ViewData["SortOrder"] as string ?? "";
+}
+
+<section class="mx-auto max-w-6xl px-6 py-8">
+    <header class="mb-6">
+        <h1 class="text-3xl font-semibold text-gray-800">All Obstacles</h1>
+    </header>
+
+    <!-- Status filter -->
+    <div class="mb-4 flex items-center space-x-3">
+        <label for="statusFilter" class="text-gray-700 font-medium">Filter by status:</label>
+        <form asp-controller="Account" asp-action="OverviewAll" method="get" class="inline">
+            <select id="statusFilter" name="statusFilter" onchange="this.form.submit()"
+                    class="rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <option value="All" selected="@("All" == selectedStatus)">All</option>
+                <option value="Pending" selected="@("Pending" == selectedStatus)">Pending</option>
+                <option value="Approved" selected="@("Approved" == selectedStatus)">Approved</option>
+                <option value="Rejected" selected="@("Rejected" == selectedStatus)">Rejected</option>
+            </select>
+        </form>
+    </div>
+
+    <!-- Obstacles table -->
+    <div class="overflow-x-auto rounded-lg shadow ring-1 ring-gray-200">
+        <table class="min-w-full border-collapse bg-white">
+            <thead class="bg-gray-100 border-b">
+                <tr class="text-left text-gray-700 font-medium">
+                    <th class="px-4 py-3">Obstacle</th>
+                    <th class="px-4 py-3">Department</th>
+                    <th class="px-4 py-3">Username</th>
+                    <th class="px-4 py-3">Submitted</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3 text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obstacle in Model)
+                {
+                    var report = obstacle.ReportEntries.FirstOrDefault();
+                    var department = report?.User?.Department ?? "—";
+                    var email = report?.User?.Email ?? "—";
+                    var sharedWith = report?.SharedWith.Select(s => s.SharedWithUser.Email).ToList() ?? new List<string>();
+
+                    <tr class="border-b hover:bg-gray-50 transition">
+                        <td class="px-4 py-3">@obstacle.ObstacleName</td>
+                        <td class="px-4 py-3">@department</td>
+                        <td class="px-4 py-3">@email</td>
+                        <td class="px-4 py-3">@obstacle.ObstacleSubmittedDate.ToString("yyyy-MM-dd")</td>
+                        <td class="px-4 py-3 font-medium">
+                            @if (obstacle.ObstacleStatus == "Approved")
+                            {
+                                <span class="text-green-600">Approved</span>
+                            }
+                            else if (obstacle.ObstacleStatus == "Rejected")
+                            {
+                                <span class="text-red-600">Rejected</span>
+                            }
+                            else
+                            {
+                                <span class="text-yellow-600">Pending</span>
+                            }
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button class="text-sm font-medium text-blue-700 hover:underline" onclick="openViewPanel(@obstacle.ObstacleId)">View</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Bottom Panel for View -->
+<div id="viewPanel" class="fixed bottom-0 left-0 w-full max-h-[80vh] bg-white shadow-lg border-t border-gray-300 transform translate-y-full transition-transform duration-300 z-50 overflow-y-auto">
+    <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold" id="panelObstacleName">Obstacle Name</h2>
+            <button onclick="closeViewPanel()" class="text-gray-500 hover:text-gray-700">&times;</button>
+        </div>
+
+        <div id="panelObstacleDetails" class="mb-4"></div>
+        <div id="panelObstacleMap" class="w-full h-64 mb-4 rounded border"></div>
+
+        <div class="flex space-x-2 mb-4">
+            <button id="approveBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Approve</button>
+            <button id="rejectBtn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Reject</button>
+            <button id="shareBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
+        </div>
+
+        <!-- Inline share selector (hidden by default) -->
+        <form id="shareFormInline" method="post" asp-action="ShareReport" class="hidden flex flex-col space-y-2">
+            <input type="hidden" id="reportIdInput" name="reportId" />
+            <label class="font-medium">Select reviewers:</label>
+            <select id="reviewersSelect" name="selectedUserIds" multiple class="w-full border rounded-md p-2 h-32 overflow-y-auto"></select>
+            <div class="flex space-x-2">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
+                <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400" onclick="closeShareInline()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/view.js"></script>
+}

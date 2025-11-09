@@ -55,15 +55,16 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/map.js"></script>
     <script>
-        // initialize map with existing markers from the obstacle JSON
+        // hent jsondata
         const jsonData = @Html.Raw(Model.ObstacleJSON ?? "{}");
 
+        // hvis jsondata er storre enn null
         if (jsonData.features && jsonData.features.length > 0) {
             const geoLayer = L.geoJSON(jsonData).addTo(group);
             map.fitBounds(geoLayer.getBounds());
         }
 
-        // before submitting form, update hidden ObstacleJSON field
+        // oppdater hiddenjson
         document.querySelector("form").addEventListener("submit", function () {
             const geoJSON = group.toGeoJSON();
             document.getElementById("ObstacleJSON").value = JSON.stringify(geoJSON);

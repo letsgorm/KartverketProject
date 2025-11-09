@@ -15,12 +15,18 @@ namespace KartverketProject.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ApplicationDbContext _context;
+        private readonly ObstacleService _service;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDbContext context)
+        public AccountController(
+            UserManager<User> userManager, 
+            SignInManager<User> signInManager, 
+            ApplicationDbContext context, 
+            ObstacleService service)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _service = service;
         }
 
         // GET: /Account/Register
@@ -176,6 +182,151 @@ namespace KartverketProject.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Reports");
+        }
+
+        // GET: /Account/OverviewAll
+        [HttpGet]
+        public async Task<IActionResult> OverviewAll(string statusFilter, string sortOrder)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var userDepartment = currentUser?.Department;
+            var userId = currentUser?.Id;
+
+            var obstacles = await _context.Obstacle
+                .Include(o => o.ReportEntries)
+                    .ThenInclude(r => r.User)
+                .Include(o => o.ReportEntries)
+                    .ThenInclude(r => r.SharedWith)
+                        .ThenInclude(rs => rs.SharedWithUser)
+                .ToListAsync();
+
+            obstacles = obstacles
+                .Where(o => o.ReportEntries.Any(r =>
+                        r.User.Department == userDepartment ||
+                        r.SharedWith.Any(rs => rs.SharedWithUserId == userId)
+                ))
+                .ToList();
+
+            if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "All")
+            {
+                obstacles = obstacles
+                    .Where(o => o.ObstacleStatus == statusFilter)
+                    .ToList();
+            }
+
+            obstacles = sortOrder switch
+            {
+                "name_desc" => obstacles.OrderByDescending(o => o.ObstacleName).ToList(),
+                "name_asc" or "name" => obstacles.OrderBy(o => o.ObstacleName).ToList(),
+
+                "department_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User?.Department).ToList(),
+                "department_asc" or "department" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User?.Department).ToList(),
+
+                "email_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User?.Email).ToList(),
+                "email_asc" or "email" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User?.Email).ToList(),
+
+                "date_desc" => obstacles.OrderByDescending(o => o.ObstacleSubmittedDate).ToList(),
+                "date_asc" or "date" => obstacles.OrderBy(o => o.ObstacleSubmittedDate).ToList(),
+
+                "status_desc" => obstacles.OrderByDescending(o => o.ObstacleStatus).ToList(),
+                "status_asc" or "status" => obstacles.OrderBy(o => o.ObstacleStatus).ToList(),
+
+                _ => obstacles.OrderBy(o => o.ObstacleName).ToList()
+            };
+
+            ViewData["SelectedStatus"] = statusFilter;
+            ViewData["SortOrder"] = sortOrder;
+
+            return View(obstacles);
+        }
+
+        // GET: /Account/UpdateStatus/newStatus=Approved
+        [HttpGet]
+        public async Task<IActionResult> UpdateStatus(int id, string newStatus)
+        {
+            await _service.UpdateObstacleStatusAsync(id, newStatus);
+            return RedirectToAction("OverviewAll");
+        }
+
+        // GET: /Account/GetReviewersForSharing
+        [HttpGet]
+        public async Task<IActionResult> GetReviewersForSharing(int obstacleId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var currentDepartment = currentUser?.Department;
+
+            var reviewers = await _context.Users
+                .Where(u => u.Department != currentDepartment)
+                .Select(u => new { u.Id, u.Email })
+                .ToListAsync();
+
+            return Json(reviewers);
+        }
+
+        // POST: /Account/ShareReport
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ShareReport(int reportId, List<string> selectedUserIds)
+        {
+            foreach (var userId in selectedUserIds)
+            {
+                var exists = await _context.ReportShare
+                    .AnyAsync(rs => rs.ReportId == reportId && rs.SharedWithUserId == userId);
+                if (!exists)
+                {
+                    _context.ReportShare.Add(new ReportShare
+                    {
+                        ReportId = reportId,
+                        SharedWithUserId = userId
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("OverviewAll");
+        }
+
+        // POST: /Account/StopSharing
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> StopSharing(int reportId)
+        {
+            var shares = _context.ReportShare.Where(rs => rs.ReportId == reportId);
+            _context.ReportShare.RemoveRange(shares);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        // NEW: GET obstacle details for View panel
+        [HttpGet]
+        public async Task<IActionResult> GetObstacleDetails(int obstacleId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var userId = currentUser?.Id;
+
+            var obstacle = await _context.Obstacle
+                .Include(o => o.ReportEntries)
+                    .ThenInclude(r => r.User)
+                .Include(o => o.ReportEntries)
+                    .ThenInclude(r => r.SharedWith)
+                        .ThenInclude(rs => rs.SharedWithUser)
+                .FirstOrDefaultAsync(o => o.ObstacleId == obstacleId);
+
+            if (obstacle == null) return NotFound();
+
+            var report = obstacle.ReportEntries.FirstOrDefault();
+
+            return Json(new
+            {
+                obstacleName = obstacle.ObstacleName,
+                department = report?.User?.Department ?? "—",
+                email = report?.User?.Email ?? "—",
+                date = obstacle.ObstacleSubmittedDate.ToString("yyyy-MM-dd"),
+                status = obstacle.ObstacleStatus,
+                description = obstacle.ObstacleDescription,
+                obstacleJSON = obstacle.ObstacleJSON,
+                sharedWith = report?.SharedWith.Select(s => s.SharedWithUser.Email).ToList() ?? new List<string>()
+            });
         }
     }
 }
