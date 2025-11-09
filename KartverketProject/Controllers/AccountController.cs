@@ -1,5 +1,6 @@
 ﻿using KartverketProject.Dtos;
 using KartverketProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -185,6 +186,7 @@ namespace KartverketProject.Controllers
         }
 
         // GET: /Account/OverviewAll
+        [Authorize(Roles = "admin, reviewer")] 
         [HttpGet]
         public async Task<IActionResult> OverviewAll(string statusFilter, string sortOrder)
         {
@@ -240,6 +242,13 @@ namespace KartverketProject.Controllers
             return View(obstacles);
         }
 
+        //Access Denied page
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         // GET: /Account/UpdateStatus/newStatus=Approved
         [HttpGet]
         public async Task<IActionResult> UpdateStatus(int id, string newStatus)
@@ -262,6 +271,8 @@ namespace KartverketProject.Controllers
 
             return Json(reviewers);
         }
+
+       
 
         // POST: /Account/ShareReport
         [HttpPost]
@@ -327,6 +338,9 @@ namespace KartverketProject.Controllers
                 obstacleJSON = obstacle.ObstacleJSON,
                 sharedWith = report?.SharedWith.Select(s => s.SharedWithUser.Email).ToList() ?? new List<string>()
             });
+
+       
+
         }
     }
 }
