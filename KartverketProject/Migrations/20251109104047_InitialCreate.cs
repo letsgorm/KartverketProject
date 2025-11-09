@@ -37,46 +37,6 @@ namespace KartverketProject.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    FirstName = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastName = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Active = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    NormalizedEmail = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    SecurityStamp = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ConcurrencyStamp = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Obstacle",
                 columns: table => new
                 {
@@ -121,6 +81,52 @@ namespace KartverketProject.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FirstName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Active = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ObstacleId = table.Column<int>(type: "int", nullable: true),
+                    UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    NormalizedEmail = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SecurityStamp = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ConcurrencyStamp = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PhoneNumber = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Obstacle_ObstacleId",
+                        column: x => x.ObstacleId,
+                        principalTable: "Obstacle",
+                        principalColumn: "ObstacleId");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -258,19 +264,19 @@ namespace KartverketProject.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "08425d60-cadd-4254-9acd-388f9feee44a", "08425d60-cadd-4254-9acd-388f9feee44a", "user", "USER" },
-                    { "23c2e4b5-df62-43fc-831b-22136ed83684", "23c2e4b5-df62-43fc-831b-22136ed83684", "admin", "ADMIN" },
-                    { "8d436dab-628d-4da2-82b5-53863f0f558c", "8d436dab-628d-4da2-82b5-53863f0f558c", "reviewer", "REVIEWER" }
+                    { "0c4abffe-e542-42df-93ce-b52088163b42", "0c4abffe-e542-42df-93ce-b52088163b42", "user", "USER" },
+                    { "1d1e3dc2-8b05-4d5c-bb2e-757be34153e0", "1d1e3dc2-8b05-4d5c-bb2e-757be34153e0", "reviewer", "REVIEWER" },
+                    { "ee335a58-4c0c-481e-9d35-f65e98177375", "ee335a58-4c0c-481e-9d35-f65e98177375", "admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Active", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "Active", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "ObstacleId", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1", 0, true, "942e219f-4101-492f-95d2-8f084328b738", "admin@gorm.no", false, "John", "Doe", false, null, "ADMIN@GORM.NO", "ADMIN@GORM.NO", "AQAAAAIAAYagAAAAEHK7hSrjSnhCZKkl3M0Tea9qdf8GVAndMmbZlQnicqBiHfxKh2mxnU4R4ltm+MKYaQ==", null, false, "c3b0301a-46e1-43fd-a04f-1e8c97a19d45", false, "admin@gorm.no" },
-                    { "2", 0, true, "eb8bf9cb-3ed6-4c2d-a656-1562aa367979", "reviewer@gorm.no", false, "Jane", "Doe", false, null, "REVIEWER@GORM.NO", "REVIEWER@GORM.NO", "AQAAAAIAAYagAAAAEK9ILQmBAb4ZOEAFYMQg6nmfPaAVE3O725Eb9URw62DLvz/ND3lqvzJ2e4j362ILRg==", null, false, "2b338268-17e0-4c1c-a35f-1e8ad481fde8", false, "reviewer@gorm.no" },
-                    { "3", 0, true, "f161c33e-6498-4918-8049-366b25e9aab9", "user@gorm.no", false, "Bob", "Smith", false, null, "USER@GORM.NO", "USER@GORM.NO", "AQAAAAIAAYagAAAAEKiswwW+cJP2KJq3WR1DkakwOv1O4FHttB64f+/J9cJ18SGZXblGqHkTeN3Pdb1NyA==", null, false, "aae48ad0-4baa-4ac1-9278-f158ca25db18", false, "user@gorm.no" }
+                    { "609e2f47-1d3e-4c0d-833f-472ab0bc80e6", 0, true, "c90c12cb-72b8-422c-9f2f-b143d6d14f7b", "user@gorm.no", false, "Bob", "Smith", false, null, "USER@GORM.NO", "USER@GORM.NO", null, "AQAAAAIAAYagAAAAEARHW+BtWbUAyx62fNfw3NtcuxKynm7SQOy92coLRJ32F1b5O5Z1szIyhNzZ+TU53Q==", null, false, "392bff9a-fa37-4484-9883-06b6d54111de", false, "user@gorm.no" },
+                    { "6155a463-dd5f-4b4e-84e0-eaf342405f26", 0, true, "c9470ef7-7ee3-4ee2-8903-0f9994208a67", "reviewer@gorm.no", false, "Jane", "Doe", false, null, "REVIEWER@GORM.NO", "REVIEWER@GORM.NO", null, "AQAAAAIAAYagAAAAENkjFINx4Dz6ZuzMKAJ2aQQp6sKNle9+MfMgHXYNNbtFaUoFQNM0Q7zyrb41qOVvXA==", null, false, "966e0daf-2a52-4573-a3a7-ebc9f764bbc5", false, "reviewer@gorm.no" },
+                    { "f8daf892-95fa-43b3-bb10-bccb8658636f", 0, true, "5f96dd80-7b33-468d-837b-f1dabc23edeb", "admin@gorm.no", false, "John", "Doe", false, null, "ADMIN@GORM.NO", "ADMIN@GORM.NO", null, "AQAAAAIAAYagAAAAEHCAS5pGrGzIMWD4ChFmDDV9Kr7QsKi2MzA9h9RdCvHdZrpEpyr8vmc99AumvXtIBw==", null, false, "b4059e46-eced-4613-8c55-283daf05fa3c", false, "admin@gorm.no" }
                 });
 
             migrationBuilder.InsertData(
@@ -283,9 +289,9 @@ namespace KartverketProject.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "23c2e4b5-df62-43fc-831b-22136ed83684", "1" },
-                    { "8d436dab-628d-4da2-82b5-53863f0f558c", "2" },
-                    { "08425d60-cadd-4254-9acd-388f9feee44a", "3" }
+                    { "0c4abffe-e542-42df-93ce-b52088163b42", "609e2f47-1d3e-4c0d-833f-472ab0bc80e6" },
+                    { "1d1e3dc2-8b05-4d5c-bb2e-757be34153e0", "6155a463-dd5f-4b4e-84e0-eaf342405f26" },
+                    { "ee335a58-4c0c-481e-9d35-f65e98177375", "f8daf892-95fa-43b3-bb10-bccb8658636f" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -318,6 +324,11 @@ namespace KartverketProject.Migrations
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_ObstacleId",
+                table: "AspNetUsers",
+                column: "ObstacleId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
