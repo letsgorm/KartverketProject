@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KartverketProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251109111118_DoesItBreak")]
-    partial class DoesItBreak
+    [Migration("20251109134713_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,6 +95,14 @@ namespace KartverketProject.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Report");
+
+                    b.HasData(
+                        new
+                        {
+                            ReportId = 1,
+                            ObstacleId = 1,
+                            UserId = "77777777-7777-7777-7777-777777777777"
+                        });
                 });
 
             modelBuilder.Entity("KartverketProject.Models.User", b =>
@@ -110,6 +118,9 @@ namespace KartverketProject.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Department")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Email")
@@ -139,9 +150,6 @@ namespace KartverketProject.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
-                    b.Property<int?>("ObstacleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext");
 
@@ -170,67 +178,88 @@ namespace KartverketProject.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.HasIndex("ObstacleId");
-
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = "dc969c07-8c9f-4d13-83cf-9652cb2f2f6a",
+                            Id = "33333333-3333-3333-3333-333333333333",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "7133b2f5-d9e1-4bc9-a431-b8b2de7e0327",
-                            Email = "admin@gorm.no",
+                            ConcurrencyStamp = "b6b254d3-a819-4c90-8eef-f0c3754d9257",
+                            Department = "NLA",
+                            Email = "admin@nla.no",
                             EmailConfirmed = false,
                             FirstName = "John",
                             LastName = "Doe",
                             LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@GORM.NO",
-                            NormalizedUserName = "ADMIN@GORM.NO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGHsPIM3djXJi6cv47IyweGHxw3aW38vTdhXF/yV8rs3dXQsLbvK1iQG3YNec5AW5A==",
+                            NormalizedEmail = "ADMIN@NLA.NO",
+                            NormalizedUserName = "ADMIN@NLA.NO",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJOtLRm2hnIYTBXC6XXYw/x4uIhrxUENBy27BmsT7tY8nHYVoF1qUnxzWGVRjjYgeg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d1ddc0a5-6760-440d-afbc-93e6b789364e",
+                            SecurityStamp = "9a6c088b-fda8-410f-8801-1c9182a4d9d3",
                             TwoFactorEnabled = false,
-                            UserName = "admin@gorm.no"
+                            UserName = "admin@nla.no"
                         },
                         new
                         {
-                            Id = "11b152a5-3487-43a7-b296-13834de767b8",
+                            Id = "44444444-4444-4444-4444-444444444444",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "b87d0062-7f14-4a4e-8a9a-8d7be755f99b",
-                            Email = "reviewer@gorm.no",
+                            ConcurrencyStamp = "6e26e724-262d-4a98-9062-df175ba3e9f6",
+                            Department = "NLA",
+                            Email = "reviewer@nla.no",
                             EmailConfirmed = false,
                             FirstName = "Jane",
                             LastName = "Doe",
                             LockoutEnabled = false,
-                            NormalizedEmail = "REVIEWER@GORM.NO",
-                            NormalizedUserName = "REVIEWER@GORM.NO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJ2MtEwlRUFW7pyUj95imiaft0kFZl0m2GxVCLZFrHYUrrlIWAvMvcMBnFkHspnPKA==",
+                            NormalizedEmail = "REVIEWER@NLA.NO",
+                            NormalizedUserName = "REVIEWER@NLA.NO",
+                            PasswordHash = "AQAAAAIAAYagAAAAED8duSKaXIBxK7LKjz/c/A1lJmslPdQhoEfgWlfrISEM/9osEhiJFPJKJgIuqFG6Tw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c9aef6e9-c9e9-4364-8b6a-3d124178cc92",
+                            SecurityStamp = "c642e253-aa37-40cb-a564-228e770453e0",
                             TwoFactorEnabled = false,
-                            UserName = "reviewer@gorm.no"
+                            UserName = "reviewer@nla.no"
                         },
                         new
                         {
-                            Id = "1960dcea-fb8b-45d7-b793-8c66016dc206",
+                            Id = "66666666-6666-6666-6666-666666666666",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "34c1987d-f040-4b67-ad0f-72d762370fc2",
-                            Email = "user@gorm.no",
+                            ConcurrencyStamp = "5c63f0c4-6877-4d2e-8763-15691eeaa4a0",
+                            Department = "NLA",
+                            Email = "user@nla.no",
                             EmailConfirmed = false,
                             FirstName = "Bob",
                             LastName = "Smith",
                             LockoutEnabled = false,
-                            NormalizedEmail = "USER@GORM.NO",
-                            NormalizedUserName = "USER@GORM.NO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOS0A98ecL3v3E7fi8w2zupfGMZeuvP2E3z+Rga5FmIC7uNrOp9p1S8o02bGbMGq3w==",
+                            NormalizedEmail = "USER@NLA.NO",
+                            NormalizedUserName = "USER@NLA.NO",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKUOLjASjvUPw0IezFWCgzXckUwvJ6b4GXhW2L8h6XwI5uGI1D183WirR6fpO2BJiA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "51a71a2b-7b72-454c-9c94-dd8697460a38",
+                            SecurityStamp = "5eb8e1f0-c4b2-4018-a2fe-2f52675533bf",
                             TwoFactorEnabled = false,
-                            UserName = "user@gorm.no"
+                            UserName = "user@nla.no"
+                        },
+                        new
+                        {
+                            Id = "77777777-7777-7777-7777-777777777777",
+                            AccessFailedCount = 0,
+                            Active = true,
+                            ConcurrencyStamp = "839d60e2-dd6c-4836-b3a5-4b3df7dc20c0",
+                            Department = "Luftsforsvaret",
+                            Email = "reviewer@luftsforsvaret.no",
+                            EmailConfirmed = false,
+                            FirstName = "Janice",
+                            LastName = "Doe",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "REVIEWER@LUFTSFORSVARET.NO",
+                            NormalizedUserName = "REVIEWER@LUFTSFORSVARET.NO",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDUeGDPqcT8gR8VFIeKirLq6GJ/XpsYJj3m66ZKqpfuiUDyW35TgRyzTfhyN7mEvxg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "5863db1f-38f8-4ce6-80a0-2975c8359292",
+                            TwoFactorEnabled = false,
+                            UserName = "reviewer@luftsforsvaret.no"
                         });
                 });
 
@@ -262,22 +291,22 @@ namespace KartverketProject.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3960ead6-fd90-45a8-befd-553274ae75eb",
-                            ConcurrencyStamp = "3960ead6-fd90-45a8-befd-553274ae75eb",
+                            Id = "11111111-1111-1111-1111-111111111111",
+                            ConcurrencyStamp = "11111111-1111-1111-1111-111111111111",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "bdc96db9-c30a-4ab6-8ede-d51eae1515fb",
-                            ConcurrencyStamp = "bdc96db9-c30a-4ab6-8ede-d51eae1515fb",
+                            Id = "22222222-2222-2222-2222-222222222222",
+                            ConcurrencyStamp = "22222222-2222-2222-2222-222222222222",
                             Name = "reviewer",
                             NormalizedName = "REVIEWER"
                         },
                         new
                         {
-                            Id = "d5433837-8221-4cf0-919c-60ea210e3285",
-                            ConcurrencyStamp = "d5433837-8221-4cf0-919c-60ea210e3285",
+                            Id = "33333333-3333-3333-3333-333333333333",
+                            ConcurrencyStamp = "33333333-3333-3333-3333-333333333333",
                             Name = "user",
                             NormalizedName = "USER"
                         });
@@ -372,18 +401,23 @@ namespace KartverketProject.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "dc969c07-8c9f-4d13-83cf-9652cb2f2f6a",
-                            RoleId = "3960ead6-fd90-45a8-befd-553274ae75eb"
+                            UserId = "33333333-3333-3333-3333-333333333333",
+                            RoleId = "11111111-1111-1111-1111-111111111111"
                         },
                         new
                         {
-                            UserId = "11b152a5-3487-43a7-b296-13834de767b8",
-                            RoleId = "bdc96db9-c30a-4ab6-8ede-d51eae1515fb"
+                            UserId = "44444444-4444-4444-4444-444444444444",
+                            RoleId = "22222222-2222-2222-2222-222222222222"
                         },
                         new
                         {
-                            UserId = "1960dcea-fb8b-45d7-b793-8c66016dc206",
-                            RoleId = "d5433837-8221-4cf0-919c-60ea210e3285"
+                            UserId = "66666666-6666-6666-6666-666666666666",
+                            RoleId = "33333333-3333-3333-3333-333333333333"
+                        },
+                        new
+                        {
+                            UserId = "77777777-7777-7777-7777-777777777777",
+                            RoleId = "22222222-2222-2222-2222-222222222222"
                         });
                 });
 
@@ -406,6 +440,30 @@ namespace KartverketProject.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ReportShare", b =>
+                {
+                    b.Property<int>("ReportShareId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ReportShareId"));
+
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SharedWithUserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("ReportShareId");
+
+                    b.HasIndex("ReportId");
+
+                    b.HasIndex("SharedWithUserId");
+
+                    b.ToTable("ReportShare");
+                });
+
             modelBuilder.Entity("KartverketProject.Models.Report", b =>
                 {
                     b.HasOne("KartverketProject.Models.Obstacle", "Obstacle")
@@ -416,18 +474,12 @@ namespace KartverketProject.Migrations
 
                     b.HasOne("KartverketProject.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Obstacle");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("KartverketProject.Models.User", b =>
-                {
-                    b.HasOne("KartverketProject.Models.Obstacle", null)
-                        .WithMany("AssignedReviewers")
-                        .HasForeignKey("ObstacleId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -481,11 +533,33 @@ namespace KartverketProject.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ReportShare", b =>
+                {
+                    b.HasOne("KartverketProject.Models.Report", "Report")
+                        .WithMany("SharedWith")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KartverketProject.Models.User", "SharedWithUser")
+                        .WithMany()
+                        .HasForeignKey("SharedWithUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Report");
+
+                    b.Navigation("SharedWithUser");
+                });
+
             modelBuilder.Entity("KartverketProject.Models.Obstacle", b =>
                 {
-                    b.Navigation("AssignedReviewers");
-
                     b.Navigation("ReportEntries");
+                });
+
+            modelBuilder.Entity("KartverketProject.Models.Report", b =>
+                {
+                    b.Navigation("SharedWith");
                 });
 #pragma warning restore 612, 618
         }

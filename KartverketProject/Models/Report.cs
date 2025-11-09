@@ -7,16 +7,17 @@ namespace KartverketProject.Models
     {
         public int ReportId { get; set; }
 
-        public string UserId { get; set; } // FK
+        public string? UserId { get; set; } // FK, null siden rapport kan eksistere uten bruker
 
         public int ObstacleId { get; set; } // FK
 
-        // stopp stack overflow 
-        [JsonIgnore]
-        public User User { get; set; } // navigering egenskap
 
-        // stopp stack overflow 
         [JsonIgnore]
-        public Obstacle Obstacle { get; set; } // navigering egenskap
+        public User User { get; set; } 
+
+        [JsonIgnore]
+        public Obstacle Obstacle { get; set; }
+
+        public ICollection<ReportShare> SharedWith { get; set; } = new List<ReportShare>();
     }
 }

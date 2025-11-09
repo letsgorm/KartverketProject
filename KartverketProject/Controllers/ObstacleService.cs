@@ -38,6 +38,7 @@ public class ObstacleService
     {
         _context.Obstacle.Add(obstacle);
         await _context.SaveChangesAsync();
+        var user = await _context.Users.FindAsync(userId);
 
         var report = new Report
         {

@@ -43,28 +43,4 @@ public class ObstacleController : Controller
 
         return View(obstacle);
     }
-
-    // GET: /Obstacle/OverviewAll
-    // hent alle hindre uansett status
-    [HttpGet]
-    public async Task<IActionResult> OverviewAll(string statusFilter)
-    {
-        var obstacles = await _service.GetAllObstaclesAsync();
-        if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "All")
-        {
-            obstacles = obstacles.Where(o => o.ObstacleStatus == statusFilter).ToList();
-        }
-
-        ViewData["SelectedStatus"] = statusFilter;
-        return View(obstacles);
-    }
-
-    // GET: /Obstacle/UpdateStatus/newStatus=Approved
-    // hent alle hindre med status filter
-    [HttpGet]
-    public async Task<IActionResult> UpdateStatus(int id, string newStatus)
-    {
-        await _service.UpdateObstacleStatusAsync(id, newStatus);
-        return RedirectToAction("OverviewAll");
-    }
 }
