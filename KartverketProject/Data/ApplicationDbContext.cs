@@ -64,7 +64,8 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
         modelBuilder.Entity<Report>()
             .HasOne(r => r.Obstacle) // holder kolleksjonen
             .WithMany(o => o.ReportEntries) // holder navigering egenskapene
-            .HasForeignKey(r => r.ObstacleId);
+            .HasForeignKey(r => r.ObstacleId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<User>().ToTable("AspNetUsers");
 

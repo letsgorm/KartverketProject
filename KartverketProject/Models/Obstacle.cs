@@ -28,5 +28,6 @@ namespace KartverketProject.Models
         public string ObstacleStatus { get; set; } = "Pending";
 
         public ICollection<Report> ReportEntries { get; set; } = new List<Report>();
+        public ICollection<User> AssignedReviewers { get; set; } = new List<User>();
     }
 }

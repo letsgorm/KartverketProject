@@ -1,0 +1,37 @@
+﻿@model IEnumerable<KartverketProject.Models.Report>
+
+<h2 class="text-2xl font-semibold mb-4">My Reports</h2>
+
+@if (!Model.Any())
+{
+    <p>You haven’t submitted any reports yet.</p>
+}
+else
+{
+    <table class="table-auto w-full border-collapse border border-gray-300">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="border border-gray-300 px-4 py-2 text-left">Obstacle</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">Submitted By</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in Model)
+            {
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2">@report.Obstacle?.ObstacleName</td>
+                    <td class="border border-gray-300 px-4 py-2">@report.User?.Email</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <a asp-controller="Account"
+                           asp-action="EditReport"
+                           asp-route-id="@report.ReportId"
+                           class="text-blue-600 hover:underline">
+                            Edit
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

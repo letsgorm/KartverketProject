@@ -1,0 +1,72 @@
+﻿@model KartverketProject.Models.Obstacle
+@{
+    ViewData["Title"] = "Edit Report";
+}
+
+<link rel="stylesheet" href="~/css/map.css" />
+
+<h2 class="text-2xl font-semibold mb-4">Edit Obstacle Report</h2>
+
+<form asp-action="EditReport" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="ObstacleId" />
+    <input type="hidden" asp-for="ObstacleJSON" id="ObstacleJSON" />
+
+    <div class="grid gap-4 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+            <label asp-for="ObstacleName" class="block text-sm font-medium text-gray-800 mb-1">Name</label>
+            <input asp-for="ObstacleName" class="w-full rounded-lg border-gray-300 px-3 py-2" />
+            <span asp-validation-for="ObstacleName" class="text-sm text-red-600"></span>
+        </div>
+
+        <div>
+            <label asp-for="ObstacleHeight" class="block text-sm font-medium text-gray-800 mb-1">Height (m)</label>
+            <input asp-for="ObstacleHeight" type="number" step="0.01" min="0"
+                   class="w-full rounded-lg border-gray-300 px-3 py-2" />
+            <span asp-validation-for="ObstacleHeight" class="text-sm text-red-600"></span>
+        </div>
+
+        <div class="sm:col-span-2">
+            <label asp-for="ObstacleDescription" class="block text-sm font-medium text-gray-800 mb-1">Description</label>
+            <textarea asp-for="ObstacleDescription" rows="4"
+                      class="w-full rounded-lg border-gray-300 px-3 py-2"></textarea>
+            <span asp-validation-for="ObstacleDescription" class="text-sm text-red-600"></span>
+        </div>
+    </div>
+
+    <div id="map" style="height: 400px;" class="my-4 rounded-lg border"></div>
+
+    <div class="flex gap-2 mt-2">
+        <button type="submit"
+                class="inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700">
+            Save Changes
+        </button>
+
+        <a asp-action="DeleteReport" asp-route-id="@Model.ReportEntries.FirstOrDefault()?.ReportId"
+           class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+            Delete Report
+        </a>
+
+    </div>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/map.js"></script>
+    <script>
+        // initialize map with existing markers from the obstacle JSON
+        const jsonData = @Html.Raw(Model.ObstacleJSON ?? "{}");
+
+        if (jsonData.features && jsonData.features.length > 0) {
+            const geoLayer = L.geoJSON(jsonData).addTo(group);
+            map.fitBounds(geoLayer.getBounds());
+        }
+
+        // before submitting form, update hidden ObstacleJSON field
+        document.querySelector("form").addEventListener("submit", function () {
+            const geoJSON = group.toGeoJSON();
+            document.getElementById("ObstacleJSON").value = JSON.stringify(geoJSON);
+        });
+    </script>
+}

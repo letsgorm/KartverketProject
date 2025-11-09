@@ -38,58 +38,6 @@
         <!-- Optional dark overlay for readability -->
         <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-blue-900/40 to-black/60"></div>
 
-        
-        <!-- Transparent navbar with hover background -->
-        <header class="absolute top-0 left-0 w-full flex justify-between items-center px-10 py-6 z-20 text-white transition-all duration-500 bg-transparent hover:bg-black/30 backdrop-blur-sm">
-            <a href="/" class="flex items-center space-x-3">
-                <img src="/images/logo/last_ned__2_-removebg-preview.png" alt="Kartverket Logo" class="h-10 w-auto opacity-0 animate-fadeIn delay-100">
-                <span class="text-2xl font-bold tracking-wide opacity-0 animate-fadeIn delay-200">Kartverket</span>
-            </a>
-            <nav class="space-x-6 opacity-0 animate-fadeIn delay-300 flex items-center">
-                <!-- Home -->
-                <a href="/"
-                   class="group inline-flex items-center justify-center px-3 py-2 rounded-full transition-all duration-300 hover:bg-white/15 hover:backdrop-blur-sm hover:scale-110">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                         stroke-width="1.5" stroke="currentColor"
-                         class="w-6 h-6 mr-1 text-white group-hover:text-blue-300 transition-colors duration-300">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                    </svg>
-                    <span class="text-white group-hover:text-blue-300 transition-colors duration-300">Home</span>
-                </a>
-
-                <!-- Map -->
-                <a href="/Obstacle/DataForm"
-                   class="group inline-flex items-center justify-center px-3 py-2 rounded-full transition-all duration-300 hover:bg-white/15 hover:backdrop-blur-sm hover:scale-110">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                         stroke-width="1.5" stroke="currentColor"
-                         class="w-6 h-6 mr-1 text-white group-hover:text-blue-300 transition-colors duration-300">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M12 11.25c1.242 0 2.25-1.008 2.25-2.25S13.242 6.75 12 6.75 9.75 7.758 9.75 9s1.008 2.25 2.25 2.25z" />
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M12 2.25c4.556 0 8.25 3.694 8.25 8.25 0 5.25-8.25 11.25-8.25 11.25S3.75 15.75 3.75 10.5C3.75 5.944 7.444 2.25 12 2.25z" />
-                    </svg>
-                    <span class="text-white group-hover:text-blue-300 transition-colors duration-300">Map</span>
-                </a>
-
-                <!-- Login -->
-                <a href="/Account/Register"
-                   class="group inline-flex items-center justify-center px-3 py-2 rounded-full transition-all duration-300 hover:bg-white/15 hover:backdrop-blur-sm hover:scale-110">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                         stroke-width="1.5" stroke="currentColor"
-                         class="w-6 h-6 mr-1 text-white group-hover:text-blue-300 transition-colors duration-300">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M15.75 9A3.75 3.75 0 1112 5.25 3.75 3.75 0 0115.75 9zM4.5 19.125a8.625 8.625 0 0115 0" />
-                    </svg>
-                    <span class="text-white group-hover:text-blue-300 transition-colors duration-300">Login</span>
-                </a>
-            </nav>
-
-
-
-        </header>
-
-
         <!-- Centered welcome text -->
         <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white z-10">
             <h1 class="text-5xl md:text-7xl font-extrabold mb-4 animate-fadeIn">Welcome to Kartverket Project</h1>
@@ -98,7 +46,7 @@
             </p>
             <a asp-controller="Obstacle" asp-action="DataForm"
                class="inline-block bg-green-600 hover:bg-green-600 text-white font-semibold px-8 py-3 rounded-full text-lg shadow-lg animate-fadeIn delay-300">
-                Register Obstacle
+                Start Your Journey
             </a>
         </div>
     </div>
@@ -136,12 +84,9 @@
         }
 
         @@keyframes videoFadeIn {
-            to
-
-        {
-            opacity: 1;
-        }
-
+            to {
+                opacity: 1;
+            }
         }
     </style>
 
