@@ -1,16 +1,46 @@
 ﻿using KartverketProject.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
-    // Dine egne tabeller (Identity-tabeller legges til automatisk)
+    // lag rapport og obstacle, ignorer user pga inheritance IdentityUser
     public DbSet<Report> Report => Set<Report>();
     public DbSet<Obstacle> Obstacle => Set<Obstacle>();
-    
+
+    // skap rolle
+    private static IdentityRole CreateRole(string id, string email)
+    {
+        return new IdentityRole
+        {
+            Id = id,
+            Name = email,
+            NormalizedName = email.ToUpper(),
+            ConcurrencyStamp = id
+        };
+    }
+    // skap bruker
+    private static User CreateUser(string id, string email, string firstname, string lastname, string password)
+    {
+        var user = new User
+        {
+            Id = id,
+            UserName = email,
+            NormalizedUserName = email.ToUpper(),
+            Email = email,
+            NormalizedEmail = email.ToUpper(),
+            FirstName = firstname,
+            LastName = lastname
+        };
+        // skap enkryptert passord
+        user.PasswordHash = new PasswordHasher<User>().HashPassword(user, password);
+        return user;
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,9 +68,6 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<User>().ToTable("AspNetUsers");
 
-        // Fjern manuell seeding av Identity-brukere (Identity håndterer det selv)
-        // Du kan fortsatt seede testdata for Obstacle og Report om du vil:
-
         modelBuilder.Entity<Obstacle>().HasData(
             new Obstacle
             {
@@ -54,13 +81,56 @@ public class ApplicationDbContext : DbContext
             }
         );
 
-        modelBuilder.Entity<Report>().HasData(
-            new Report
+        // fjerner hardkodet ID for roller
+        var adminRoleId = Guid.NewGuid().ToString();
+        var reviewerRoleId = Guid.NewGuid().ToString();
+        var userRoleId = Guid.NewGuid().ToString();
+
+        // fjerner hardkodet ID for brukere
+        var adminId = Guid.NewGuid().ToString();
+        var reviewerId = Guid.NewGuid().ToString();
+        var userId = Guid.NewGuid().ToString();
+
+        // roleId, name
+        var roles = new List<IdentityRole>
             {
-                ReportId = 1,
-                ObstacleId = 1,
-                UserId = null
-            }
-        );
+                CreateRole(adminRoleId, "admin"),
+                CreateRole(reviewerRoleId, "reviewer"),
+                CreateRole(userRoleId, "user")
+            };
+
+        // id, email, role, firstname, lastname, password
+        var adminUser = CreateUser(adminId, "admin@gorm.no", "John", "Doe", "admin");
+        var reviewerUser = CreateUser(reviewerId, "reviewer@gorm.no", "Jane", "Doe", "admin");
+        var userUser = CreateUser(userId, "user@gorm.no", "Bob", "Smith", "admin");
+
+        // seed data for rollene
+        modelBuilder.Entity<IdentityRole>().HasData(roles);
+
+        // bruker egen model for admin brukeren
+        modelBuilder.Entity<User>().HasData(adminUser, reviewerUser, userUser);
+
+        // legg til roller
+        var adminRoles = new List<IdentityUserRole<string>>
+            {
+                new IdentityUserRole<string>
+                {
+                    RoleId = adminRoleId,
+                    UserId = adminId
+                },
+                new IdentityUserRole<string>
+                {
+                    RoleId = reviewerRoleId,
+                    UserId = reviewerId
+                },
+                new IdentityUserRole<string>
+                {
+                    RoleId = userRoleId,
+                    UserId = userId
+                },
+            };
+
+        // seed rolle
+        modelBuilder.Entity<IdentityUserRole<string>>().HasData(adminRoles);
     }
 }

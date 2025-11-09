@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using KartverketProject.Models;
-using KartverketProject.Data;
-using Pomelo.EntityFrameworkCore.MySql.Internal;
 
 namespace KartverketProject
 {
@@ -26,15 +24,9 @@ namespace KartverketProject
                     new MySqlServerVersion(new Version(11, 8, 3))
             ));
 
-            builder.Services.AddDbContext<AuthenticationDbContext>(options =>
-                options.UseMySql(
-                    builder.Configuration.GetConnectionString("DefaultConnection"),
-                    new MySqlServerVersion(new Version(11, 8, 3))
-            ));
-
             // Core Identity
             builder.Services.AddIdentity<User, IdentityRole>()
-            .AddEntityFrameworkStores<AuthenticationDbContext>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
             // MVC & other services

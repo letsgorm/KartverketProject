@@ -1,6 +1,5 @@
 ﻿using KartverketProject.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 // This is the CRUD service for Obstacle.
 // KartverketController
@@ -45,6 +44,7 @@ public class ObstacleService
             ObstacleId = obstacle.ObstacleId,
             UserId = userId
         };
+
         _context.Report.Add(report);
         await _context.SaveChangesAsync();
         

@@ -36,6 +36,7 @@ services:
       - "8080:8080"
     volumes:
       - ./KartverketProject/wwwroot:/wwwroot
+      - ./KartverketProject/tiles-cache:/data
     command: ["tileserver-gl", "--file", "/wwwroot/norway.mbtiles"]
 
 volumes:

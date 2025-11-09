@@ -53,12 +53,12 @@
         </header>
 
         <form asp-action="DataForm" method="post" class="space-y-5">
+            @Html.AntiForgeryToken()
+
             <div class="grid gap-5 sm:grid-cols-2">
 
-                <!-- ObstacleJSON -->
                 <input type="hidden" asp-for="ObstacleJSON" id="ObstacleJSON" />
 
-                <!-- ObstacleSubmittedDate -->
                 <input type="hidden" asp-for="ObstacleSubmittedDate" id="ObstacleSubmittedDate" />
 
                 <!-- ObstacleName -->

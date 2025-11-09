@@ -7,15 +7,15 @@ namespace KartverketProject.Models
     {
         public int ObstacleId { get; set; }
 
-        [Required(ErrorMessage = "Field is required")]
+        [Required(ErrorMessage = "Please set a name")]
         [MaxLength(100)]
         public string ObstacleName { get; set; }
 
-        [Required(ErrorMessage = "Field is required")]
+        [Required(ErrorMessage = "Please set a height")]
         [Range(0, 200)]
         public double ObstacleHeight { get; set; }
 
-        [Required(ErrorMessage = "Field is required")]
+        [Required(ErrorMessage = "Please set a description")]
         [MaxLength(1000)]
         public string ObstacleDescription { get; set; }
 
