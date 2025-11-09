@@ -2,6 +2,8 @@ using KartverketProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
+// API controller for Obstacle
+
 [Route("api/[controller]")]
 [ApiController]
 public class KartverketController : ControllerBase
@@ -37,6 +39,7 @@ public class KartverketController : ControllerBase
     // POST: /api/Kartverket
     // legg til hindre
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<ActionResult<Obstacle>> AddObstacle(Obstacle newObstacle)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
+// Site logic for submission
+
 [Authorize(Policy = "AuthenticatedAll")]
 public class ObstacleController : Controller
 {
@@ -25,7 +27,7 @@ public class ObstacleController : Controller
     [HttpPost]
     public async Task<IActionResult> DataForm(Obstacle obstacledata)
     {
-        if (!ModelState.IsValid) return View();
+        if (!ModelState.IsValid) return View(obstacledata);
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var saved = await _service.AddObstacleAsync(obstacledata, userId);
         return RedirectToAction("Overview", new { id = saved.ObstacleId});

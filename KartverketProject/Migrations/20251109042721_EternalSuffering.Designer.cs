@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KartverketProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251109042721_EternalSuffering")]
+    partial class EternalSuffering
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,10 +172,10 @@ namespace KartverketProject.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c3178c80-2c9b-4c3a-a18c-19ecdda97962",
+                            Id = "e0e945e9-25c4-42b2-bf70-2dd107f1ac10",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "ffc75c36-8569-4fd8-a09f-d92c3c7cb0a3",
+                            ConcurrencyStamp = "827dc74a-d7de-4c5e-ae58-fe50b373a964",
                             Email = "admin@gorm.no",
                             EmailConfirmed = false,
                             FirstName = "John",
@@ -180,18 +183,18 @@ namespace KartverketProject.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GORM.NO",
                             NormalizedUserName = "ADMIN@GORM.NO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOnuN5J7fOkScxJbmZyhYjEAG3QvEw2bTMaBRjhLAyJN7pnhHdm0dHmTmbAMcFjZMg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGOax5+IVIDQDRK923nHd/ktAjpMEaL6iL8DYlON+6gMJ0ESCC71aVmfB6rlCnh5uQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8c2029d4-87d8-4b3c-be58-e661a0cf906b",
+                            SecurityStamp = "9f830e97-ce45-4771-9b68-110e648eb9a1",
                             TwoFactorEnabled = false,
                             UserName = "admin@gorm.no"
                         },
                         new
                         {
-                            Id = "06973bec-c1da-4966-ab99-097087f1f52a",
+                            Id = "8835e129-c1aa-48b0-8a01-8743e016119f",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "969b9d88-a33f-4b16-8b8a-2361b12b6ba6",
+                            ConcurrencyStamp = "bf1bee17-a880-4049-8e7a-2e91133b6eee",
                             Email = "reviewer@gorm.no",
                             EmailConfirmed = false,
                             FirstName = "Jane",
@@ -199,18 +202,18 @@ namespace KartverketProject.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "REVIEWER@GORM.NO",
                             NormalizedUserName = "REVIEWER@GORM.NO",
-                            PasswordHash = "AQAAAAIAAYagAAAAENZ10VCqLnd/rZgt/pOr1RbdHcwQOR4WxO4QURtXO8p2O08oVLRhBLp2jTBC7LowQQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELVGTI+YKlXBbaTZYRYERfVlki089Hueh78THsDGswHba1Kpe5vMPU0IEh9aVG9cQA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cb5b4cb1-6a56-4714-a614-bc3c0727a99d",
+                            SecurityStamp = "cd68f17e-e75c-4490-aead-9052e15cbcb5",
                             TwoFactorEnabled = false,
                             UserName = "reviewer@gorm.no"
                         },
                         new
                         {
-                            Id = "14055a74-98b2-4266-bdaf-a507e715d2c5",
+                            Id = "4351701f-2d09-4d3c-998e-d7a4ce750882",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "bfd51045-e683-4756-9a2b-160a19066d75",
+                            ConcurrencyStamp = "e42047d3-71ed-4892-b621-a691543137ac",
                             Email = "user@gorm.no",
                             EmailConfirmed = false,
                             FirstName = "Bob",
@@ -218,9 +221,9 @@ namespace KartverketProject.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@GORM.NO",
                             NormalizedUserName = "USER@GORM.NO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGsCIOhDdhkvlIqyyhiRYxZKOOIPdsLrlpIbDBoYbg/XLy1LaQfF3iMseEB78zwwMA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOW8BL+lsvX6kePKy71HoR8ZFOjL9HaT6GVdqCcAQmMKKHQaEW4Q0DDSREfnc7kAQg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c5779abc-f804-40fe-8112-d2ebb4ea85c8",
+                            SecurityStamp = "607d5606-82fd-4852-ae64-3ee3d134ce5d",
                             TwoFactorEnabled = false,
                             UserName = "user@gorm.no"
                         });
@@ -254,22 +257,22 @@ namespace KartverketProject.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f895355f-4ddb-4a37-8dc0-de9ee7369adb",
-                            ConcurrencyStamp = "f895355f-4ddb-4a37-8dc0-de9ee7369adb",
+                            Id = "c544ddbc-6361-40d9-bb5f-78a2cfc02a58",
+                            ConcurrencyStamp = "c544ddbc-6361-40d9-bb5f-78a2cfc02a58",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "125598d6-2d34-4ead-9f4e-3e3d96b3e385",
-                            ConcurrencyStamp = "125598d6-2d34-4ead-9f4e-3e3d96b3e385",
+                            Id = "4f45df02-beed-417f-b31f-70986edfd3c2",
+                            ConcurrencyStamp = "4f45df02-beed-417f-b31f-70986edfd3c2",
                             Name = "reviewer",
                             NormalizedName = "REVIEWER"
                         },
                         new
                         {
-                            Id = "850fbe7f-5c70-4e45-a290-02a7817b2fe7",
-                            ConcurrencyStamp = "850fbe7f-5c70-4e45-a290-02a7817b2fe7",
+                            Id = "b72eec54-55d3-468d-94d0-5023a0af7469",
+                            ConcurrencyStamp = "b72eec54-55d3-468d-94d0-5023a0af7469",
                             Name = "user",
                             NormalizedName = "USER"
                         });
@@ -364,18 +367,18 @@ namespace KartverketProject.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "c3178c80-2c9b-4c3a-a18c-19ecdda97962",
-                            RoleId = "f895355f-4ddb-4a37-8dc0-de9ee7369adb"
+                            UserId = "e0e945e9-25c4-42b2-bf70-2dd107f1ac10",
+                            RoleId = "c544ddbc-6361-40d9-bb5f-78a2cfc02a58"
                         },
                         new
                         {
-                            UserId = "06973bec-c1da-4966-ab99-097087f1f52a",
-                            RoleId = "125598d6-2d34-4ead-9f4e-3e3d96b3e385"
+                            UserId = "8835e129-c1aa-48b0-8a01-8743e016119f",
+                            RoleId = "4f45df02-beed-417f-b31f-70986edfd3c2"
                         },
                         new
                         {
-                            UserId = "14055a74-98b2-4266-bdaf-a507e715d2c5",
-                            RoleId = "850fbe7f-5c70-4e45-a290-02a7817b2fe7"
+                            UserId = "4351701f-2d09-4d3c-998e-d7a4ce750882",
+                            RoleId = "b72eec54-55d3-468d-94d0-5023a0af7469"
                         });
                 });
 

@@ -1,5 +1,8 @@
-﻿using KartverketProject.Models;
+﻿using KartverketProject.Dtos;
+using KartverketProject.Models;
 using Microsoft.AspNetCore.Mvc;
+
+// API controller for User
 
 namespace KartverketProject.Controllers
 {
@@ -36,9 +39,6 @@ namespace KartverketProject.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var user = new User
             {
                 UserName = model.UserName,
@@ -59,7 +59,7 @@ namespace KartverketProject.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
-            var result = await _userService.UserLoginAsync(model.UserName, model.Password);
+            var result = await _userService.UserLoginAsync(model.Email, model.Password);
 
             if (result.Succeeded)
                 return Ok(new { Message = "Login successful!" });
@@ -85,21 +85,5 @@ namespace KartverketProject.Controllers
             await _userService.DeleteUserAsync(id);
             return NoContent();
         }
-    }
-
-    // DTO-klasser for innkommende request-data
-    public class RegisterRequest
-    {
-        public string UserName { get; set; } = "";
-        public string Email { get; set; } = "";
-        public string Password { get; set; } = "";
-        public string FirstName { get; set; } = "";
-        public string LastName { get; set; } = "";
-    }
-
-    public class LoginRequest
-    {
-        public string UserName { get; set; } = "";
-        public string Password { get; set; } = "";
     }
 }
