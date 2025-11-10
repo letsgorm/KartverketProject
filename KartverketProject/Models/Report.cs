@@ -11,6 +11,8 @@ namespace KartverketProject.Models
 
         public int ObstacleId { get; set; } // FK
 
+        public string? ReviewReason { get; set; }
+
 
         [JsonIgnore]
         public User User { get; set; } 

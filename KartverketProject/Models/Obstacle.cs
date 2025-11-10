@@ -14,7 +14,7 @@ namespace KartverketProject.Models
         public double? ObstacleHeight { get; set; }
 
         [MaxLength(1000)]
-        public string? ObstacleDescription { get; set; }
+        public string? ObstacleDescription { get;  set; }
 
         public DateTime ObstacleSubmittedDate { get; set; }
 
