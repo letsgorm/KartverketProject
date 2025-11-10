@@ -41,24 +41,28 @@ namespace KartverketProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterRequest model)
         {
-            if (ModelState.IsValid)
+            var user = new User { UserName = model.UserName, Email = model.Email, LockoutEnabled = true};
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
             {
-                var user = new User { UserName = model.Email, Email = model.Email, LockoutEnabled = true}
-            ;
-                var result = await _userManager.CreateAsync(user, model.Password);
-
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(user, "user"); // bruk same som NormalizedName
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
-                }
-
-                ModelState.AddModelError("", "The password must have an uppercase character, " +
-                    "lowercase character, a digit, and a non-alphanumeric character and be at least six characters long.");
-                return View(model);
+                await _userManager.AddToRoleAsync(user, "user");
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("DataForm", "Obstacle");
             }
-            ModelState.AddModelError("", "Please fill out all forms");
+
+            // Check if duplicate user/email
+            if (result.Errors.Any(e => e.Code.Contains("DuplicateUserName") || e.Code.Contains("DuplicateEmail")))
+            {
+                ModelState.AddModelError(string.Empty, "User already taken");
+            }
+            // Otherwise, password failed
+            else
+            {
+                ModelState.AddModelError(string.Empty, 
+                    "Password must have at least 6 characters, including an uppercase letter, a lowercase letter, a number, and a symbol.");
+            }
+
             return View(model);
         }
 
@@ -81,7 +85,7 @@ namespace KartverketProject.Controllers
             }
 
             var result = await _signInManager.PasswordSignInAsync(
-                model.Email,
+                model.UserName,
                 model.Password,
                 isPersistent: false,
                 lockoutOnFailure: true);

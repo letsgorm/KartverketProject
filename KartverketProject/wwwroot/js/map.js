@@ -43,7 +43,7 @@ function addPoint(latlng) {
         addMarker(latlng);
         // oppdater geojson
         updateGeoJSON();
-        // sjekk at lengden er over 2 eller lik 50
+        // sjekk at lengden er over 50
         checkLength();
     } else {
         return;
@@ -78,16 +78,7 @@ function updateGeoJSON() {
     layers = group.toGeoJSON();
 };
 
-function markerUndone() {
-    document.getElementById("noMarker").innerHTML = "Please add a marker";
-};
-
 function checkLength() {
-    if (points.length == 0) {
-        markerUndone();
-    } else {
-        document.getElementById("noMarker").innerHTML = "";
-    }
     if (points.length == 50) {
         // fjern alle lag
         group.clearLayers();

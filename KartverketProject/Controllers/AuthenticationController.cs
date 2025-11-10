@@ -42,9 +42,7 @@ namespace KartverketProject.Controllers
             var user = new User
             {
                 UserName = model.UserName,
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
+                Email = model.Email
             };
 
             var result = await _userService.AddUserAsync(user, model.Password);
@@ -59,7 +57,7 @@ namespace KartverketProject.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
-            var result = await _userService.UserLoginAsync(model.Email, model.Password);
+            var result = await _userService.UserLoginAsync(model.UserName, model.Password);
 
             if (result.Succeeded)
                 return Ok(new { Message = "Login successful!" });

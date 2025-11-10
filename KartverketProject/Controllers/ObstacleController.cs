@@ -25,13 +25,15 @@ public class ObstacleController : Controller
     // POST: /Obstacle/DataForm
     // blir kalt etter at vi trykker på "Submit Data" knapp i DataForm viewet
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> DataForm(Obstacle obstacledata)
     {
         if (!ModelState.IsValid) return View(obstacledata);
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var saved = await _service.AddObstacleAsync(obstacledata, userId);
-        return RedirectToAction("Overview", new { id = saved.ObstacleId});
+        return RedirectToAction("Overview", new { id = saved.ObstacleId });
     }
+
 
     // GET: /Obstacle/Overview/{id}
     // hent hindre med id

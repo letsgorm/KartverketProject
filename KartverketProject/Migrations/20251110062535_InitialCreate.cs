@@ -42,10 +42,6 @@ namespace KartverketProject.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    FirstName = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastName = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Department = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Active = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -84,13 +80,13 @@ namespace KartverketProject.Migrations
                 {
                     ObstacleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ObstacleName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    ObstacleName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ObstacleHeight = table.Column<double>(type: "double", nullable: false),
-                    ObstacleDescription = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false)
+                    ObstacleHeight = table.Column<double>(type: "double", nullable: true),
+                    ObstacleDescription = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ObstacleSubmittedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ObstacleJSON = table.Column<string>(type: "longtext", nullable: false)
+                    ObstacleJSON = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ObstacleStatus = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -296,13 +292,13 @@ namespace KartverketProject.Migrations
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Active", "ConcurrencyStamp", "Department", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "Active", "ConcurrencyStamp", "Department", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "33333333-3333-3333-3333-333333333333", 0, true, "b6b254d3-a819-4c90-8eef-f0c3754d9257", "NLA", "admin@nla.no", false, "John", "Doe", false, null, "ADMIN@NLA.NO", "ADMIN@NLA.NO", "AQAAAAIAAYagAAAAEJOtLRm2hnIYTBXC6XXYw/x4uIhrxUENBy27BmsT7tY8nHYVoF1qUnxzWGVRjjYgeg==", null, false, "9a6c088b-fda8-410f-8801-1c9182a4d9d3", false, "admin@nla.no" },
-                    { "44444444-4444-4444-4444-444444444444", 0, true, "6e26e724-262d-4a98-9062-df175ba3e9f6", "NLA", "reviewer@nla.no", false, "Jane", "Doe", false, null, "REVIEWER@NLA.NO", "REVIEWER@NLA.NO", "AQAAAAIAAYagAAAAED8duSKaXIBxK7LKjz/c/A1lJmslPdQhoEfgWlfrISEM/9osEhiJFPJKJgIuqFG6Tw==", null, false, "c642e253-aa37-40cb-a564-228e770453e0", false, "reviewer@nla.no" },
-                    { "66666666-6666-6666-6666-666666666666", 0, true, "5c63f0c4-6877-4d2e-8763-15691eeaa4a0", "NLA", "user@nla.no", false, "Bob", "Smith", false, null, "USER@NLA.NO", "USER@NLA.NO", "AQAAAAIAAYagAAAAEKUOLjASjvUPw0IezFWCgzXckUwvJ6b4GXhW2L8h6XwI5uGI1D183WirR6fpO2BJiA==", null, false, "5eb8e1f0-c4b2-4018-a2fe-2f52675533bf", false, "user@nla.no" },
-                    { "77777777-7777-7777-7777-777777777777", 0, true, "839d60e2-dd6c-4836-b3a5-4b3df7dc20c0", "Luftsforsvaret", "reviewer@luftsforsvaret.no", false, "Janice", "Doe", false, null, "REVIEWER@LUFTSFORSVARET.NO", "REVIEWER@LUFTSFORSVARET.NO", "AQAAAAIAAYagAAAAEDUeGDPqcT8gR8VFIeKirLq6GJ/XpsYJj3m66ZKqpfuiUDyW35TgRyzTfhyN7mEvxg==", null, false, "5863db1f-38f8-4ce6-80a0-2975c8359292", false, "reviewer@luftsforsvaret.no" }
+                    { "33333333-3333-3333-3333-333333333333", 0, true, "ec97eb68-d3b4-4593-9117-d2b9ccbe7a69", "NLA", "admin@nla.no", false, true, null, "ADMIN@NLA.NO", "JOHND", "AQAAAAIAAYagAAAAEIEHFcobse0q8AxB58FF1qz5PxeV7z7DjxYKR1L1Esm43p36oV92J5uSBPFflFif9A==", null, false, "c9a5dab6-e916-40b1-b4ec-028c51e47f90", false, "johnd" },
+                    { "44444444-4444-4444-4444-444444444444", 0, true, "97e5b8f1-466c-40e1-a709-a397ff271d1a", "NLA", "reviewer@nla.no", false, true, null, "REVIEWER@NLA.NO", "JANED", "AQAAAAIAAYagAAAAEP0F2Z7xOT5XDp9rZSGyghBvgb8ILDhil6saq0TBScyws0A12nJeghvKn3mGxVdggw==", null, false, "d1705f09-e406-4095-820d-528e42d80dcc", false, "janed" },
+                    { "66666666-6666-6666-6666-666666666666", 0, true, "eeb85f4f-f07c-4b66-af30-9cd6df1c8ebf", "NLA", "user@nla.no", false, true, null, "USER@NLA.NO", "BOBS", "AQAAAAIAAYagAAAAEBYM8xaBiUIjLXh4xhPZ9cGnEVP6Z93BvC6hyOPGwZ4F4hJjCWE0MqkTs1oQJZM+Qw==", null, false, "6c244b53-5f1d-4878-baff-a7c913e992f5", false, "bobs" },
+                    { "77777777-7777-7777-7777-777777777777", 0, true, "73c5c72f-f15a-4654-b4c6-565a079f271f", "Luftsforsvaret", "reviewer@luftsforsvaret.no", false, true, null, "REVIEWER@LUFTSFORSVARET.NO", "JANICED", "AQAAAAIAAYagAAAAEN0vIoMx+uYoRCWr/mV0m0yXqen4CVCy1Zx+CMQciRvtKUcVIz0Igv4vzsBrJfpCMA==", null, false, "85a41f66-41e8-4d67-930b-1590db8bafc1", false, "janiced" }
                 });
 
             migrationBuilder.InsertData(
