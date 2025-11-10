@@ -1,6 +1,7 @@
 using KartverketProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 // Site logic for submission
@@ -22,19 +23,6 @@ public class ObstacleController : Controller
     public ActionResult DataForm() => View();
 
 
-    // POST: /Obstacle/DataForm
-    // blir kalt etter at vi trykker på "Submit Data" knapp i DataForm viewet
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DataForm(Obstacle obstacledata)
-    {
-        if (!ModelState.IsValid) return View(obstacledata);
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var saved = await _service.AddObstacleAsync(obstacledata, userId);
-        return RedirectToAction("Overview", new { id = saved.ObstacleId });
-    }
-
-
     // GET: /Obstacle/Overview/{id}
     // hent hindre med id
     [HttpGet]
@@ -45,4 +33,44 @@ public class ObstacleController : Controller
 
         return View(obstacle);
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DataForm(Obstacle obstacle, IFormFile? ObstacleImage)
+    {
+        if (!ModelState.IsValid)
+            return View(obstacle);
+
+        // Håndter bildeopplasting
+        if (ObstacleImage != null && ObstacleImage.Length > 0)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(ObstacleImage.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await ObstacleImage.CopyToAsync(stream);
+            }
+
+            obstacle.ImagePath = "/images/" + uniqueFileName;
+        }
+
+        // Sett dato
+        obstacle.ObstacleSubmittedDate = DateTime.Now;
+
+        // Hent bruker-id
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        // Lagre via service (ikke direkte med _context)
+        var saved = await _service.AddObstacleAsync(obstacle, userId);
+
+        // Send brukeren til oversiktssiden for dette obstacle
+        return RedirectToAction("Overview", new { id = saved.ObstacleId });
+    }
+
+
 }
