@@ -47,8 +47,6 @@ public class UserService
             existingUser.Email = updatedUser.Email;
             existingUser.UserName = updatedUser.UserName;
             existingUser.Active = updatedUser.Active;
-            existingUser.FirstName = updatedUser.FirstName;
-            existingUser.LastName = updatedUser.LastName;
 
             await _userManager.UpdateAsync(existingUser);
         }

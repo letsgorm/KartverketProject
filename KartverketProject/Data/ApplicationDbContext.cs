@@ -15,28 +15,26 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
     public DbSet<ReportShare> ReportShare => Set<ReportShare>();
 
     // skap rolle
-    private static IdentityRole CreateRole(string id, string email)
+    private static IdentityRole CreateRole(string id, string name)
     {
         return new IdentityRole
         {
             Id = id,
-            Name = email,
-            NormalizedName = email.ToUpper(),
+            Name = name,
+            NormalizedName = name.ToUpper(),
             ConcurrencyStamp = id
         };
     }
     // skap bruker
-    private static User CreateUser(string id, string email, string firstname, string lastname, string password, string department)
+    private static User CreateUser(string id, string email, string username, string password, string department)
     {
         var user = new User
         {
             Id = id,
-            UserName = email,
-            NormalizedUserName = email.ToUpper(),
+            UserName = username,
+            NormalizedUserName = username.ToUpper(),
             Email = email,
             NormalizedEmail = email.ToUpper(),
-            FirstName = firstname,
-            LastName = lastname,
             Department = department,
             LockoutEnabled = true // brute force
         };
@@ -110,15 +108,15 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
                 CreateRole(userRoleId, "user")
             };
 
-        // id, email, role, firstname, lastname, password, department
-        // NLA
-        var adminUserNrl = CreateUser(adminIdNla, "admin@nla.no", "John", "Doe", "admin", "NLA");
-        var reviewerUserNrl = CreateUser(reviewerIdNla, "reviewer@nla.no", "Jane", "Doe", "admin", "NLA");
-        var userUserNrl = CreateUser(userIdNla, "user@nla.no", "Bob", "Smith", "admin", "NLA");
+        // string id, string email, string username, string password, string department
 
-        // id, email, role, firstname, lastname, password, department
+        // NLA
+        var adminUserNrl = CreateUser(adminIdNla, "admin@nla.no", "johnd", "admin", "NLA");
+        var reviewerUserNrl = CreateUser(reviewerIdNla, "reviewer@nla.no", "janed", "admin", "NLA");
+        var userUserNrl = CreateUser(userIdNla, "user@nla.no", "bobs", "admin", "NLA");
+
         // Luftsforsvaret
-        var reviewerUserLuft = CreateUser(reviewerIdLuft, "reviewer@luftsforsvaret.no", "Janice", "Doe", "admin", "Luftsforsvaret");
+        var reviewerUserLuft = CreateUser(reviewerIdLuft, "reviewer@luftsforsvaret.no", "janiced", "admin", "Luftsforsvaret");
 
         // seed data for rollene
         modelBuilder.Entity<IdentityRole>().HasData(roles);
