@@ -27,7 +27,7 @@ async function openViewPanel(obstacleId) {
     mapContainer.innerHTML = '';
 
     // Create map and a LayerGroup
-    obstacleMap = L.map(mapContainer).setView([0,0], 2);
+    obstacleMap = L.map(mapContainer).setView([0, 0], 2);
     const group = L.layerGroup().addTo(obstacleMap);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -41,13 +41,12 @@ async function openViewPanel(obstacleId) {
             // Check that there are features
             if (jsonData.features && jsonData.features.length > 0) {
                 const geoLayer = L.geoJSON(jsonData).addTo(group);
-                obstacleMap.fitBounds(geoLayer.getBounds(), { padding: [20,20] });
+                obstacleMap.fitBounds(geoLayer.getBounds(), { padding: [20, 20] });
             }
         } catch (err) {
             console.error('Invalid ObstacleJSON', err);
         }
     }
-
 
     // Buttons
     document.getElementById('approveBtn').onclick = () => window.location.href = `/Account/UpdateStatus?id=${currentObstacleId}&newStatus=Approved`;
@@ -65,9 +64,10 @@ async function openShareInline() {
     const form = document.getElementById('shareFormInline');
     form.classList.remove('hidden');
 
+    // Set the current report ID for both Share and Stop Sharing
     document.getElementById('reportIdInput').value = currentObstacleId;
 
-    // Fetch reviewers
+    // Fetch reviewers dynamically
     const response = await fetch(`/Account/GetReviewersForSharing?obstacleId=${currentObstacleId}`);
     const reviewers = await response.json();
 

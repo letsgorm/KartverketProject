@@ -37,7 +37,8 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             NormalizedEmail = email.ToUpper(),
             FirstName = firstname,
             LastName = lastname,
-            Department = department
+            Department = department,
+            LockoutEnabled = true // brute force
         };
         // skap enkryptert passord
         user.PasswordHash = new PasswordHasher<User>().HashPassword(user, password);
@@ -61,13 +62,13 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             .HasOne(r => r.User)
             .WithMany()
             .HasForeignKey(r => r.UserId)
-            .OnDelete(DeleteBehavior.SetNull); // keep report even if user is deleted
+            .OnDelete(DeleteBehavior.SetNull); // ha rapport selv om bruker er slettet
 
         modelBuilder.Entity<Report>()
             .HasOne(r => r.Obstacle) // holder kolleksjonen
             .WithMany(o => o.ReportEntries) // holder navigering egenskapene
             .HasForeignKey(r => r.ObstacleId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade); // slett hver nest
 
         modelBuilder.Entity<ReportShare>()
             .HasKey(rs => rs.ReportShareId);
@@ -82,7 +83,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             .HasOne(rs => rs.SharedWithUser)
             .WithMany()
             .HasForeignKey(rs => rs.SharedWithUserId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Restrict); // kan ikke slette bruker hvis reportshareid
 
 
         modelBuilder.Entity<User>().ToTable("AspNetUsers");
@@ -172,6 +173,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             }
         );
 
+        // lag et rapport med luftsforsvaret
         modelBuilder.Entity<Report>().HasData(new Report
         {
             ReportId = 1,

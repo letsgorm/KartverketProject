@@ -1,6 +1,7 @@
-using System.Diagnostics;
 using KartverketProject.Models;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace KartverketProject.Controllers
 {
@@ -23,10 +24,10 @@ namespace KartverketProject.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [Route("Home/Error")]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(); 
         }
     }
 }

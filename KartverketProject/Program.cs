@@ -29,6 +29,14 @@ namespace KartverketProject
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+            // Anti brute force
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+            });
+
             // MVC & other services
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<ObstacleService>();
