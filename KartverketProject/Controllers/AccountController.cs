@@ -219,6 +219,22 @@ namespace KartverketProject.Controllers
                 ))
                 .ToList(); // allerede i memory
 
+            // sorter stigende og synkende
+            obstacles = sortOrder switch
+            {
+                "name_asc" => obstacles.OrderBy(o => o.ObstacleName).ToList(),
+                "name_desc" => obstacles.OrderByDescending(o => o.ObstacleName).ToList(),
+                "department_asc" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User.Department).ToList(),
+                "department_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User.Department).ToList(),
+                "username_asc" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User.UserName).ToList(),
+                "username_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User.UserName).ToList(),
+                "date_asc" => obstacles.OrderBy(o => o.ObstacleSubmittedDate).ToList(),
+                "date_desc" => obstacles.OrderByDescending(o => o.ObstacleSubmittedDate).ToList(),
+                "status_asc" => obstacles.OrderBy(o => o.ObstacleStatus).ToList(),
+                "status_desc" => obstacles.OrderByDescending(o => o.ObstacleStatus).ToList(),
+                _ => obstacles.OrderByDescending(o => o.ObstacleSubmittedDate).ToList(),
+            };
+
             // sorter statusFilter
             if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "All")
             {
