@@ -89,4 +89,9 @@ public class ObstacleService
             await _context.SaveChangesAsync();
         }
     }
+
+    internal async Task UpdateObstacleStatusAsync(int id, string newStatus, string? reportReason)
+    {
+        throw new NotImplementedException();
+    }
 }

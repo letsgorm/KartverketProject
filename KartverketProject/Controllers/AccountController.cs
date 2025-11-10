@@ -259,11 +259,20 @@ namespace KartverketProject.Controllers
         // GET: /Account/UpdateStatus/newStatus=Approved
         // endre til post for reportreason men dette brekker det. finn annen losning?
         [HttpGet]
-        public async Task<IActionResult> UpdateStatus(int id, string newStatus)
+        [HttpPost]
+        public async Task<IActionResult> ReportStatus([FromBody] ReportStatusDto dto)
         {
-            await _service.UpdateObstacleStatusAsync(id, newStatus);
-            return RedirectToAction("OverviewAll");
+            await _service.UpdateObstacleStatusAsync(dto.Id, dto.NewStatus, dto.ReportReason);
+            return Ok();
         }
+
+        public class ReportStatusDto
+        {
+            public int Id { get; set; }
+            public string NewStatus { get; set; } = string.Empty;
+            public string? ReportReason { get; set; }
+        }
+
 
         // GET: /Account/GetReviewersForSharing
         [HttpGet]

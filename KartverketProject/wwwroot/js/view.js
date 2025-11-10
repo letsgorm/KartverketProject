@@ -49,9 +49,39 @@ async function openViewPanel(obstacleId) {
     }
 
     // Buttons
-    document.getElementById('approveBtn').onclick = () => window.location.href = `/Account/UpdateStatus?id=${currentObstacleId}&newStatus=Approved`;
-    document.getElementById('rejectBtn').onclick = () => window.location.href = `/Account/UpdateStatus?id=${currentObstacleId}&newStatus=Rejected`;
-    document.getElementById('shareBtn').onclick = openShareInline;
+    document.getElementById('approveBtn').onclick = async () => {
+        const dto = {
+            id: currentObstacleId,
+            newStatus: "Approved",
+            reportReason: null
+        };
+
+        await fetch('/Account/ReportStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dto)
+        });
+
+        window.location.reload();
+    };
+
+    document.getElementById('rejectBtn').onclick = async () => {
+        const reason = prompt("Enter reason for rejection:");
+        const dto = {
+            id: currentObstacleId,
+            newStatus: "Rejected",
+            reportReason: reason
+        };
+
+        await fetch('/Account/ReportStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dto)
+        });
+
+        window.location.reload();
+    };
+
 }
 
 function closeViewPanel() {
