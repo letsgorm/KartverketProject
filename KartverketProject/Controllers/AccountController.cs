@@ -3,17 +3,17 @@ using KartverketProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 // Site logic for login and register
 
 namespace KartverketProject.Controllers
 {
-    // Use UserService to handle user authentication and registration logic
     public class AccountController : Controller
     {
+        // registrert identity
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        // registrer obstacle og user context
         private readonly ApplicationDbContext _context;
         private readonly ObstacleService _service;
 
@@ -43,7 +43,8 @@ namespace KartverketProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.Email, Email = model.Email };
+                var user = new User { UserName = model.Email, Email = model.Email, LockoutEnabled = true}
+            ;
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
@@ -73,24 +74,31 @@ namespace KartverketProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequest model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-                int attempts = TempData["LoginAttempts"] as int? ?? 0;
-
-                if (result.Succeeded)
-                {
-                    TempData.Remove("LoginAttempts");
-                    return RedirectToAction("DataForm", "Obstacle");
-                }
-                attempts++;
-                TempData["LoginAttempts"] = attempts;
-                ModelState.AddModelError("", $"Invalid login attempt {attempts}");
+                ModelState.AddModelError("", "Please fill out all forms");
                 return View(model);
             }
-            ModelState.AddModelError("", "Please fill out all forms");
+
+            var result = await _signInManager.PasswordSignInAsync(
+                model.Email,
+                model.Password,
+                isPersistent: false,
+                lockoutOnFailure: true);
+
+            if (result.Succeeded)
+                return RedirectToAction("DataForm", "Obstacle");
+
+            if (result.IsLockedOut)
+            {
+                ModelState.AddModelError("", "Account locked due to too many failed attempts. Try again later.");
+                return View(model);
+            }
+
+            ModelState.AddModelError("", "Invalid login attempt");
             return View(model);
         }
+
 
         // GET: /Account/Logout
         [HttpGet]
@@ -194,7 +202,7 @@ namespace KartverketProject.Controllers
 
             var obstacles = await _context.Obstacle
                 .Include(o => o.ReportEntries)
-                    .ThenInclude(r => r.User)
+                    .ThenInclude(r => r.User) // nesting med thenInclude
                 .Include(o => o.ReportEntries)
                     .ThenInclude(r => r.SharedWith)
                         .ThenInclude(rs => rs.SharedWithUser)
@@ -202,11 +210,12 @@ namespace KartverketProject.Controllers
 
             obstacles = obstacles
                 .Where(o => o.ReportEntries.Any(r =>
-                        r.User.Department == userDepartment ||
+                        r.User.Department == userDepartment || // tilhorer org eller delt med
                         r.SharedWith.Any(rs => rs.SharedWithUserId == userId)
                 ))
-                .ToList();
+                .ToList(); // allerede i memory
 
+            // sorter statusFilter
             if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "All")
             {
                 obstacles = obstacles
@@ -214,26 +223,7 @@ namespace KartverketProject.Controllers
                     .ToList();
             }
 
-            obstacles = sortOrder switch
-            {
-                "name_desc" => obstacles.OrderByDescending(o => o.ObstacleName).ToList(),
-                "name_asc" or "name" => obstacles.OrderBy(o => o.ObstacleName).ToList(),
-
-                "department_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User?.Department).ToList(),
-                "department_asc" or "department" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User?.Department).ToList(),
-
-                "email_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User?.Email).ToList(),
-                "email_asc" or "email" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User?.Email).ToList(),
-
-                "date_desc" => obstacles.OrderByDescending(o => o.ObstacleSubmittedDate).ToList(),
-                "date_asc" or "date" => obstacles.OrderBy(o => o.ObstacleSubmittedDate).ToList(),
-
-                "status_desc" => obstacles.OrderByDescending(o => o.ObstacleStatus).ToList(),
-                "status_asc" or "status" => obstacles.OrderBy(o => o.ObstacleStatus).ToList(),
-
-                _ => obstacles.OrderBy(o => o.ObstacleName).ToList()
-            };
-
+            // et respons kun med ViewData
             ViewData["SelectedStatus"] = statusFilter;
             ViewData["SortOrder"] = sortOrder;
 
@@ -285,19 +275,33 @@ namespace KartverketProject.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("OverviewAll");
         }
-
         // POST: /Account/StopSharing
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> StopSharing(int reportId)
         {
-            var shares = _context.ReportShare.Where(rs => rs.ReportId == reportId);
-            _context.ReportShare.RemoveRange(shares);
+            var currentUserId = _userManager.GetUserId(User);
+
+            var report = await _context.Report
+                .Include(r => r.SharedWith)
+                .FirstOrDefaultAsync(r => r.ReportId == reportId);
+
+            if (report == null)
+                return NotFound();
+
+            // Only the report owner can stop sharing
+            if (report.UserId != currentUserId)
+                return Forbid();
+
+            // Remove all shares
+            _context.ReportShare.RemoveRange(report.SharedWith);
             await _context.SaveChangesAsync();
-            return Ok();
+
+            // Redirect back to OverviewAll
+            return RedirectToAction("OverviewAll");
         }
 
-        // NEW: GET obstacle details for View panel
+        // GET: /Account/GetObstacleDetails
         [HttpGet]
         public async Task<IActionResult> GetObstacleDetails(int obstacleId)
         {

@@ -1,4 +1,4 @@
-﻿@using Ganss.Xss
+﻿@using System.Text.Json
 @model Obstacle
 
 @{
@@ -45,27 +45,39 @@
         </div>
     </div>
 </section>
+
 @{
-    var sanitizer = new HtmlSanitizer();
-    string sanitizedJson = sanitizer.Sanitize(Model.ObstacleJSON);
+    // default
+    string geoJsonForJs = "{}";
+    try
+    {
+        var geoDataObj = JsonSerializer.Deserialize<object>(Model.ObstacleJSON);
+        geoJsonForJs = JsonSerializer.Serialize(geoDataObj);
+    }
+    catch
+    {
+        geoJsonForJs = "{}";
+    }
 }
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <!-- vanlig json inkludering funker ikke pga escape -->
     <script>
+        // Initialize map
         var map = L.map('map-overview').setView([0, 0], 2);
+
+        // Tile layer
         L.tileLayer('http://localhost:8080/styles/basic-preview/512/{z}/{x}/{y}.png', {
             maxZoom: 18,
             attribution: 'OpenStreetMap'
         }).addTo(map);
 
-        var sanitizedJson = JSON.parse('@Html.Raw(sanitizedJson.Replace("'", "\\'"))');
+        // Inject safe GeoJSON
+        var geoData = JSON.parse('@Html.Raw(geoJsonForJs)');
 
-        // legg til ny kart
-        if (sanitizedJson) {
-            var layer = L.geoJSON(sanitizedJson).addTo(map);
-            map.fitBounds(layer.getBounds());
+        // Add to map if valid
+        if (geoData && geoData.features && geoData.features.length > 0) {
+            var layer = L.geoJSON(geoData).addTo(map);
+            map.fitBounds(layer.getBounds(), { padding: [20, 20] });
         } else {
             console.warn("No geometry data found");
         }

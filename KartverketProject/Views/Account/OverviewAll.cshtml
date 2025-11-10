@@ -91,14 +91,28 @@
             <button id="shareBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
         </div>
 
-        <!-- Inline share selector (hidden by default) -->
-        <form id="shareFormInline" method="post" asp-action="ShareReport" class="hidden flex flex-col space-y-2">
+        <!-- del med reviewer -->
+        <form id="shareFormInline" method="post" class="hidden flex flex-col space-y-2">
+            @Html.AntiForgeryToken()
             <input type="hidden" id="reportIdInput" name="reportId" />
             <label class="font-medium">Select reviewers:</label>
             <select id="reviewersSelect" name="selectedUserIds" multiple class="w-full border rounded-md p-2 h-32 overflow-y-auto"></select>
+
             <div class="flex space-x-2">
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
-                <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400" onclick="closeShareInline()">Cancel</button>
+                <!-- Share button -->
+                <button type="submit" asp-action="ShareReport" asp-controller="Account" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Share
+                </button>
+
+                <!-- Stop Sharing button -->
+                <button type="submit" asp-action="StopSharing" asp-controller="Account" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                    Stop sharing
+                </button>
+
+                <!-- Cancel button -->
+                <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400" onclick="closeShareInline()">
+                    Cancel
+                </button>
             </div>
         </form>
     </div>
