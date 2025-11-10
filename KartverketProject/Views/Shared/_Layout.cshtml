@@ -56,32 +56,12 @@
 
 
     <!-- Main -->
-    <div class="container flex-1 w-full pt-24">
-        <main role="main" class="py-6">
+    <div class="container flex-1 w-full pt-[7rem] md:pt-[9rem]">
+        <main role="main" class="py-6 min-h-[calc(100vh-9rem)]">
             @RenderBody()
         </main>
     </div>
-  
 
-
-            <!-- Mobile menu button -->
-            <button id="navToggle"
-                    class="inline-flex items-center justify-center rounded-md p-2 ring-1 ring-gray-300 hover:bg-gray-100 md:hidden"
-                    aria-controls="primaryNav"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-
-    <!-- Main -->
-    <div class="container flex-1 w-full">
-        <main role="main" class="py-6">
-            @RenderBody()
-        </main>
-    </div>
 
     <!-- Footer -->
     <footer class="border-t bg-white text-sm text-gray-600">
@@ -95,18 +75,6 @@
     </footer>
 
     <!-- Scripts -->
-    <script>
-        // Simple mobile nav toggle (no Bootstrap)
-        const navToggle = document.getElementById('navToggle');
-        const primaryNav = document.getElementById('primaryNav');
-        if (navToggle && primaryNav) {
-          navToggle.addEventListener('click', () => {
-            const expanded = navToggle.getAttribute('aria-expanded') === 'true';
-            navToggle.setAttribute('aria-expanded', String(!expanded));
-            primaryNav.classList.toggle('hidden');
-          });
-        }
-    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/css/site.css"></script>
     <script src="~/js/map.js"></script>
