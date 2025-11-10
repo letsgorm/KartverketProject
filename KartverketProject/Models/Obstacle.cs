@@ -24,5 +24,8 @@ namespace KartverketProject.Models
         public string ObstacleStatus { get; set; } = "Pending";
 
         public ICollection<Report> ReportEntries { get; set; } = new List<Report>();
+
+        // Path to the image file associated with the obstacle
+        public string? ImagePath { get; set; }
     }
 }

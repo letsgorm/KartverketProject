@@ -25,13 +25,12 @@
             <p class="text-gray-600 mt-1">Please register an obstacle:</p>
         </header>
 
-        <form asp-action="DataForm" method="post" class="space-y-5">
+        <form asp-action="DataForm" method="post" enctype="multipart/form-data" class="space-y-5">
             @Html.AntiForgeryToken()
 
             <div class="grid gap-5 sm:grid-cols-2">
 
                 <input type="hidden" asp-for="ObstacleJSON" id="ObstacleJSON" />
-
                 <input type="hidden" asp-for="ObstacleSubmittedDate" id="ObstacleSubmittedDate" />
 
                 <!-- ObstacleName -->
@@ -64,6 +63,22 @@
                               placeholder="Describe the obstacle, materials, location, etc."></textarea>
                     <span asp-validation-for="ObstacleDescription" class="text-sm text-red-600"></span>
                 </div>
+
+                <!-- Image Upload -->
+                <div class="sm:col-span-2">
+                    <label for="ObstacleImage" class="block text-sm font-medium text-gray-800 mb-1">
+                        Upload Image of Obstacle
+                    </label>
+                    <input type="file" name="ObstacleImage" accept="image/*" capture="camera"
+                           class="block w-full rounded-lg border-gray-300 focus:border-indigo-600 focus:ring-indigo-600 px-3 py-2 bg-gray-50" />
+                    <p class="text-xs text-gray-500 mt-1">Accepted formats: JPG, PNG, max 5 MB.</p>
+                   
+                    <!-- Forhåndsvisning av bilde -->
+                    <div class="mt-3">
+                        <img id="imagePreview" src="#" alt="Image preview"
+                             class="hidden max-h-48 rounded-lg border border-gray-300 shadow-sm" />
+                    </div>
+                 </div>
             </div>
 
             <div class="pt-2">
@@ -73,6 +88,7 @@
                 </button>
             </div>
         </form>
+
     </div>
     <div class="pt-4 flex items-center justify-end">
         <button type="button" id="darkModeToggle"
@@ -80,6 +96,28 @@
             Toggle Dark Mode
         </button>
     </div>
+    
+    <!-- Hent input og preview-elementet -->
+    <script>
+        const imageInput = document.querySelector('input[name="ObstacleImage"]');
+        const preview = document.getElementById('imagePreview');
+
+        imageInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "#";
+                preview.classList.add('hidden');
+            }
+        });
+    </script>
+
 </section>
 
 @section Scripts {

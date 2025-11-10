@@ -5,7 +5,7 @@
 namespace KartverketProject.Migrations
 {
     /// <inheritdoc />
-    public partial class reason : Migration
+    public partial class AddImagePathToObstacleData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,33 +17,47 @@ namespace KartverketProject.Migrations
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.AddColumn<string>(
+                name: "ImagePath",
+                table: "Obstacle",
+                type: "longtext",
+                nullable: true)
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "33333333-3333-3333-3333-333333333333",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "173706c5-e926-4ac9-a25b-e0a3e2592f3f", "AQAAAAIAAYagAAAAEGd9HWyfu0PAxooXo2kS/ahxI30wUs/zYlytezF1SeTXtOVwU9Y9BySo+7tbXny22A==", "a613b538-9378-433f-8220-059b025f20b2" });
+                values: new object[] { "c023cdb5-2279-479c-a0d5-62c5e0dc1e03", "AQAAAAIAAYagAAAAEBvIuG+qYr9jZRXlmJ50iD6LGR5i3Ef6z4o4LZoHvg0VH5rebdg9eq5EIPh9FPvAyg==", "cd75d281-3afd-42d4-82f3-fccb4601ae2c" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "44444444-4444-4444-4444-444444444444",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "69f88824-1dd8-4956-bbc6-e8876191d382", "AQAAAAIAAYagAAAAEPlwzx5XQp9IDHgnIiBHgqUk76vgBQqkBORFN+CU2AOhsgcHaCdAhw6VC9sI29CNJg==", "85a6bf58-0bcb-4242-ba6f-5e8abe042a59" });
+                values: new object[] { "b6f75e0f-e936-4cc9-a116-7275a068d6a2", "AQAAAAIAAYagAAAAEAhIl4jTlJlzyiCwM7GIeZSh13ScnHRgFIzNcmGC7NtiHkHpY4qnYd+xOVGk4Ut/9Q==", "20cfd151-0d66-4d60-9ae7-b2a48005c7ff" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "66666666-6666-6666-6666-666666666666",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "ea90fac5-4a26-497a-963c-3b73205b83ba", "AQAAAAIAAYagAAAAEFEPOO9Yd6DXr0yhHv5/kTgxF4sbjhrrSwrsiJtebJEcBGOjKBK7EKWE0LNX5om18Q==", "514be756-950d-439f-8563-f2d3e316efab" });
+                values: new object[] { "461bf45e-bfa1-422a-9dfb-fc964b11f902", "AQAAAAIAAYagAAAAEBzru9tZmH7CBvf6PnYm4i2q98tofb//ps5swjl8+wtgTaCwnd36vNkOJFpPO1ROkg==", "a1985b82-a18c-4ffb-808e-8276aa65d89f" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "77777777-7777-7777-7777-777777777777",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "8bcbaee4-e3aa-4528-9520-d2665715d637", "AQAAAAIAAYagAAAAEPkfSCJZfL2PnaTRYxglHKV78N/w+55NOBOCqIaQGBGES76x14ANkQmoGh8V1H6y/g==", "2445d66a-2482-4333-99da-7b9c793b81dc" });
+                values: new object[] { "ab61d9e8-2bb1-4f59-8f37-0bcf8d5fbe3d", "AQAAAAIAAYagAAAAEObGbTCoGYxbkxmFCqSWzuXsI1kWcd0id0H8JQpQ4jBdRwZUOqkI+ic7RCckd4BKmA==", "e66abac2-d902-4e5c-ae38-c848d7a12cd7" });
+
+            migrationBuilder.UpdateData(
+                table: "Obstacle",
+                keyColumn: "ObstacleId",
+                keyValue: 1,
+                column: "ImagePath",
+                value: null);
 
             migrationBuilder.UpdateData(
                 table: "Report",
@@ -59,6 +73,10 @@ namespace KartverketProject.Migrations
             migrationBuilder.DropColumn(
                 name: "ReportReason",
                 table: "Report");
+
+            migrationBuilder.DropColumn(
+                name: "ImagePath",
+                table: "Obstacle");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
