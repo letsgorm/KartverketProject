@@ -11,7 +11,7 @@ namespace KartverketProject.Models
 
         public int ObstacleId { get; set; } // FK
 
-        public string? ReviewReason { get; set; }
+        public string? ReportReason { get; set; } // ma virke med view.js
 
 
         [JsonIgnore]

@@ -177,6 +177,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             ReportId = 1,
             ObstacleId = 1,
             UserId = reviewerIdLuft, // links to seeded user
+            ReportReason = "This is the reason."
         });
     }
 }

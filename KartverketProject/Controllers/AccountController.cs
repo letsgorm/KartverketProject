@@ -29,6 +29,8 @@ namespace KartverketProject.Controllers
             _service = service;
         }
 
+         // ULOGGET
+
         // GET: /Account/Register
         [HttpGet]
         public IActionResult Register()
@@ -111,6 +113,8 @@ namespace KartverketProject.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
+
+        // BRUKER LOGGET INN
 
         // GET: /Account/Reports
         [HttpGet]
@@ -196,6 +200,8 @@ namespace KartverketProject.Controllers
             return RedirectToAction("Reports");
         }
 
+        // REVIEWER DEL
+
         // GET: /Account/OverviewAll
         [HttpGet]
         public async Task<IActionResult> OverviewAll(string statusFilter, string sortOrder)
@@ -251,6 +257,7 @@ namespace KartverketProject.Controllers
         }
 
         // GET: /Account/UpdateStatus/newStatus=Approved
+        // endre til post for reportreason men dette brekker det. finn annen losning?
         [HttpGet]
         public async Task<IActionResult> UpdateStatus(int id, string newStatus)
         {
