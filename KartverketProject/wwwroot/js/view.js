@@ -28,8 +28,9 @@ async function openViewPanel(obstacleId) {
     obstacleMap = L.map(mapContainer).setView([0, 0], 2);
     const group = L.layerGroup().addTo(obstacleMap);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
+    L.tileLayer('http://localhost:8080/styles/basic-preview/512/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: 'OpenStreetMap'
     }).addTo(obstacleMap);
 
     if (data.obstacleJSON) {
