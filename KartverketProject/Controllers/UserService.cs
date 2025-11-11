@@ -1,4 +1,5 @@
 ﻿using KartverketProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KartverketProject.Controllers
 {
+    [Authorize(Roles = "admin")] // kun admin!
     public class UserService
     {
         private readonly UserManager<User> _userManager;
