@@ -96,19 +96,26 @@
         <div id="panelObstacleDetails" class="mb-4"></div>
         <div id="panelObstacleMap" class="w-full h-64 mb-4 rounded border"></div>
 
-        <div class="mb-4">
-            <label for="reportReason" class="block text-gray-700 font-medium mb-1">Reason (optional):</label>
-            <textarea id="ReportReason" name="reportReason" rows="4"
-                      class="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Enter a reason"></textarea>
-        </div>
+        <form id="updateStatusForm" method="post" action="/Account/UpdateStatus">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="statusReportIdInput" name="reportId" />
+            <input type="hidden" id="statusNewStatusInput" name="newStatus" />
+            <div class="mb-4">
+                <label for="ReportReason" class="block text-gray-700 font-medium mb-1">Reason (optional):</label>
+                <textarea id="ReportReason" name="reportReason" rows="4"
+                          class="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Enter a reason"></textarea>
+            </div>
+        </form>
+
 
         <!-- lagrer ikke enna. fiks -->
         <div class="flex space-x-2 mb-4">
-            <button id="approveBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Approve</button>
-            <button id="rejectBtn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Reject</button>
-            <button id="shareBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
+            <button type="button" id="approveBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Approve</button>
+            <button type="button" id="rejectBtn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Reject</button>
+            <button type="button" id="shareBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
         </div>
+
 
         <!-- Share form -->
         <form id="shareFormInline" method="post" class="hidden flex flex-col space-y-2">
