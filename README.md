@@ -181,12 +181,15 @@ Right now unsafe eval in CSP allows for XSS be injected, but most forms are secu
 
 [View ZAP report](security/zapscan.html)
 
+Download the ZAP report above to see the security issues.
+
 ## Stack trace
 
 Stack trace can reveal errors which can be used for error-based SQL or XSS.
-By using an exception handler, it redirects the user to an error page rather than showing the stack trace.
 
 ![dockercompose](images/stacktrace16.png)
+
+By using an exception handler, it redirects the user to an error page rather than showing the stack trace.
 
 ## Brute force
 
@@ -198,7 +201,7 @@ In insecure web pages, attackers can find out the username due to
 In this website, we are only showing "Invalid login attempt" and restricting attempted logins to 5 only;
 which then locks the account for 15 minutes until the attacker can log in again.
 
-![dockercompose](images/locked22.png)
+![dockercompose](images/brute20.png)
 
 This renders brute force essentially useless.
 
