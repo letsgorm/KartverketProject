@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using KartverketProject.Models;
+using KartverketProject.Controllers;
 
 namespace KartverketProject
 {

@@ -1,5 +1,6 @@
 ﻿using KartverketProject.Dtos;
 using KartverketProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +19,9 @@ namespace KartverketProject.Controllers
         private readonly ObstacleService _service;
 
         public AccountController(
-            UserManager<User> userManager, 
-            SignInManager<User> signInManager, 
-            ApplicationDbContext context, 
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            ApplicationDbContext context,
             ObstacleService service)
         {
             _userManager = userManager;
@@ -29,7 +30,7 @@ namespace KartverketProject.Controllers
             _service = service;
         }
 
-         // ULOGGET
+        // ULOGGET
 
         // GET: /Account/Register
         [HttpGet]
@@ -43,7 +44,7 @@ namespace KartverketProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterRequest model)
         {
-            var user = new User { UserName = model.UserName, Email = model.Email, LockoutEnabled = true};
+            var user = new User { UserName = model.UserName, Email = model.Email, LockoutEnabled = true };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
@@ -61,7 +62,7 @@ namespace KartverketProject.Controllers
             // Otherwise, password failed
             else
             {
-                ModelState.AddModelError(string.Empty, 
+                ModelState.AddModelError(string.Empty,
                     "Password must have at least 6 characters, including an uppercase letter, a lowercase letter, a number, and a symbol.");
             }
 
@@ -117,6 +118,7 @@ namespace KartverketProject.Controllers
         // BRUKER LOGGET INN
 
         // GET: /Account/Reports
+        [Authorize(Roles = "AuthenticatedAll")]
         [HttpGet]
         public async Task<IActionResult> Reports()
         {
@@ -130,6 +132,7 @@ namespace KartverketProject.Controllers
             return View(reports);
         }
 
+        [Authorize(Roles = "AuthenticatedAll")]
         [HttpGet("EditReport/{id}")]
         public async Task<IActionResult> EditReport(int id)
         {
@@ -145,12 +148,23 @@ namespace KartverketProject.Controllers
             return View("~/Views/Account/EditReport.cshtml", report.Obstacle);
         }
 
+        // POST: /Account/EditReport/{id}
+        [Authorize(Roles = "AuthenticatedAll")]
         [HttpPost("EditReport/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditReport(int id, Obstacle obstacle)
         {
             if (!ModelState.IsValid)
                 return View("~/Views/Account/EditReport.cshtml", obstacle);
+
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            // Ensure the user owns the report before updating
+            var report = await _context.Report
+                .FirstOrDefaultAsync(r => r.ReportId == id && r.UserId == currentUser.Id);
+
+            if (report == null)
+                return Forbid();
 
             var existing = await _context.Obstacle.FindAsync(obstacle.ObstacleId);
             if (existing == null)
@@ -170,6 +184,7 @@ namespace KartverketProject.Controllers
         }
 
         // GET: /Account/DeleteReport/{id}
+        [Authorize(Roles = "AuthenticatedAll")]
         [HttpGet("DeleteReport/{id}")]
         public async Task<IActionResult> DeleteReport(int id)
         {
@@ -184,6 +199,7 @@ namespace KartverketProject.Controllers
         }
 
         // POST: /Account/DeleteReportConfirmed
+        [Authorize(Roles = "AuthenticatedAll")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteReportConfirmed(int reportId)
@@ -203,6 +219,7 @@ namespace KartverketProject.Controllers
         // REVIEWER DEL
 
         // GET: /Account/OverviewAll
+        [Authorize(Roles = "AuthenticatedHigh")]
         [HttpGet]
         public async Task<IActionResult> OverviewAll(string statusFilter, string sortOrder)
         {
@@ -257,20 +274,52 @@ namespace KartverketProject.Controllers
         }
 
         // GET: /Account/UpdateStatus/newStatus=Approved
-        // endre til post for reportreason men dette brekker det. finn annen losning?
+        [Authorize(Roles = "AuthenticatedHigh")]
         [HttpGet]
         public async Task<IActionResult> UpdateStatus(int id, string newStatus)
         {
+            var currentUserId = _userManager.GetUserId(User);
+
+            // Get the report including shared-with
+            var report = await _context.Report
+                .Include(r => r.SharedWith)
+                .FirstOrDefaultAsync(r => r.ReportId == id);
+
+            if (report == null)
+                return NotFound();
+
+            // Owner or shared-with reviewer can update status
+            var isOwner = report.UserId == currentUserId;
+            var isSharedWithReviewer = report.SharedWith.Any(rs => rs.SharedWithUserId == currentUserId);
+
+            if (!isOwner && !isSharedWithReviewer)
+                return Forbid();
+
             await _service.UpdateObstacleStatusAsync(id, newStatus);
             return RedirectToAction("OverviewAll");
         }
 
+
         // GET: /Account/GetReviewersForSharing
+        [Authorize(Roles = "AuthenticatedHigh")]
         [HttpGet]
         public async Task<IActionResult> GetReviewersForSharing(int obstacleId)
         {
-            var currentUser = await _userManager.GetUserAsync(User);
-            var currentDepartment = currentUser?.Department;
+            var currentUserId = _userManager.GetUserId(User);
+
+            // Get the report associated with this obstacle
+            var report = await _context.Report
+                .Include(r => r.Obstacle)
+                .FirstOrDefaultAsync(r => r.Obstacle.ObstacleId == obstacleId);
+
+            if (report == null)
+                return NotFound();
+
+            // Only the owner can see reviewers
+            if (report.UserId != currentUserId)
+                return Forbid();
+
+            var currentDepartment = (await _userManager.GetUserAsync(User))?.Department;
 
             var reviewers = await _context.Users
                 .Where(u => u.Department != currentDepartment)
@@ -280,11 +329,21 @@ namespace KartverketProject.Controllers
             return Json(reviewers);
         }
 
+
         // POST: /Account/ShareReport
+        [Authorize(Roles = "AuthenticatedHigh")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ShareReport(int reportId, List<string> selectedUserIds)
         {
+            var currentUserId = _userManager.GetUserId(User);
+
+            var report = await _context.Report.FirstOrDefaultAsync(r => r.ReportId == reportId);
+            if (report == null) return NotFound();
+
+            // Only the report owner can share
+            if (report.UserId != currentUserId) return Forbid();
+
             foreach (var userId in selectedUserIds)
             {
                 var exists = await _context.ReportShare
@@ -303,12 +362,14 @@ namespace KartverketProject.Controllers
             return RedirectToAction("OverviewAll");
         }
         // POST: /Account/StopSharing
+        [Authorize(Roles = "AuthenticatedHigh")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> StopSharing(int reportId)
         {
             var currentUserId = _userManager.GetUserId(User);
 
+            // Sikre at det er eier
             var report = await _context.Report
                 .Include(r => r.SharedWith)
                 .FirstOrDefaultAsync(r => r.ReportId == reportId);
@@ -316,7 +377,7 @@ namespace KartverketProject.Controllers
             if (report == null)
                 return NotFound();
 
-            // Only the report owner can stop sharing
+            // Kun eier kan
             if (report.UserId != currentUserId)
                 return Forbid();
 
@@ -329,11 +390,11 @@ namespace KartverketProject.Controllers
         }
 
         // GET: /Account/GetObstacleDetails
+        [Authorize(Roles = "AuthenticatedHigh")]
         [HttpGet]
         public async Task<IActionResult> GetObstacleDetails(int obstacleId)
         {
-            var currentUser = await _userManager.GetUserAsync(User);
-            var userId = currentUser?.Id;
+            var currentUserId = _userManager.GetUserId(User);
 
             var obstacle = await _context.Obstacle
                 .Include(o => o.ReportEntries)
@@ -346,17 +407,29 @@ namespace KartverketProject.Controllers
             if (obstacle == null) return NotFound();
 
             var report = obstacle.ReportEntries.FirstOrDefault();
+            if (report == null) return NotFound();
+
+            // Only the owner or shared-with users can access details
+            var isOwner = report.UserId == currentUserId;
+            var isShared = report.SharedWith.Any(rs => rs.SharedWithUserId == currentUserId);
+
+            if (!isOwner && !isShared) return Forbid();
+
+            var sharedWith = report.SharedWith
+                .Where(s => s.SharedWithUser != null)
+                .Select(s => s.SharedWithUser.Email)
+                .ToList();
 
             return Json(new
             {
                 obstacleName = obstacle.ObstacleName,
-                department = report?.User?.Department ?? "—",
-                email = report?.User?.Email ?? "—",
+                department = report.User?.Department ?? "—",
+                email = report.User?.Email ?? "—",
                 date = obstacle.ObstacleSubmittedDate.ToString("yyyy-MM-dd"),
                 status = obstacle.ObstacleStatus,
                 description = obstacle.ObstacleDescription,
                 obstacleJSON = obstacle.ObstacleJSON,
-                sharedWith = report?.SharedWith.Select(s => s.SharedWithUser.Email).ToList() ?? new List<string>()
+                sharedWith = sharedWith
             });
         }
     }

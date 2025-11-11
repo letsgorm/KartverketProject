@@ -5,44 +5,47 @@ using System.Security.Claims;
 
 // Site logic for submission
 
-[Authorize(Policy = "AuthenticatedAll")]
-public class ObstacleController : Controller
+namespace KartverketProject.Controllers
 {
-    // registrer service som gir loos kobling
-    private readonly ObstacleService _service;
-
-    public ObstacleController(ObstacleService service)
+    [Authorize(Policy = "AuthenticatedAll")] // Kun for bruker, reviewer, admin
+    public class ObstacleController : Controller
     {
-        _service = service;
-    }
+        // registrer service som gir loos kobling
+        private readonly ObstacleService _service;
 
-    // GET: /Obstacle/DataForm
-    // blir kalt etter at vi trykker på "Register Obstacle" lenken i Index viewet
-    [HttpGet]
-    public ActionResult DataForm() => View();
+        public ObstacleController(ObstacleService service)
+        {
+            _service = service;
+        }
 
-
-    // POST: /Obstacle/DataForm
-    // blir kalt etter at vi trykker på "Submit Data" knapp i DataForm viewet
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DataForm(Obstacle obstacledata)
-    {
-        if (!ModelState.IsValid) return View(obstacledata);
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var saved = await _service.AddObstacleAsync(obstacledata, userId);
-        return RedirectToAction("Overview", new { id = saved.ObstacleId });
-    }
+        // GET: /Obstacle/DataForm
+        // blir kalt etter at vi trykker på "Register Obstacle" lenken i Index viewet
+        [HttpGet]
+        public ActionResult DataForm() => View();
 
 
-    // GET: /Obstacle/Overview/{id}
-    // hent hindre med id
-    [HttpGet]
-    public async Task<IActionResult> Overview(int id)
-    {
-        var obstacle = await _service.GetObstacleByIdAsync(id);
-        if (obstacle == null) return NotFound();
+        // POST: /Obstacle/DataForm
+        // blir kalt etter at vi trykker på "Submit Data" knapp i DataForm viewet
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DataForm(Obstacle obstacledata)
+        {
+            if (!ModelState.IsValid) return View(obstacledata);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var saved = await _service.AddObstacleAsync(obstacledata, userId);
+            return RedirectToAction("Overview", new { id = saved.ObstacleId });
+        }
 
-        return View(obstacle);
+
+        // GET: /Obstacle/Overview/{id}
+        // hent hindre med id
+        [HttpGet]
+        public async Task<IActionResult> Overview(int id)
+        {
+            var obstacle = await _service.GetObstacleByIdAsync(id);
+            if (obstacle == null) return NotFound();
+
+            return View(obstacle);
+        }
     }
 }
