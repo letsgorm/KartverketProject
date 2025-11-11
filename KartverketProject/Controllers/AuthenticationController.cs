@@ -1,11 +1,13 @@
 ﻿using KartverketProject.Dtos;
 using KartverketProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // API controller for User
 
 namespace KartverketProject.Controllers
 {
+    [Authorize(Roles = "admin")] // Kun for admin
     [ApiController]
     [Route("api/[controller]")]
     public class AuthenticationController : ControllerBase

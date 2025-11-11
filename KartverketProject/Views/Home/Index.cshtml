@@ -27,27 +27,43 @@
         <!-- Buttons -->
         <div class="flex flex-col md:flex-row gap-6">
 
-            <!-- Login Button -->
-            <a asp-controller="Account" asp-action="Login"
-               class="flex items-center gap-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M15 12H3m12 0l-4-4m4 4l-4 4m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2h6a2 2 0 012 2v1" />
-                </svg>
-                Login
-            </a>
+            @if (User?.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <!-- Back to Map Button -->
+                <a asp-controller="Obstacle" asp-action="DataForm"
+                   class="flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M9 20l-5.447-2.724A2 2 0 013 15.382V5.618a2 2 0 011.105-1.79L9 1l6 3 6-3v13.764a2 2 0 01-1.105 1.79L15 21l-6-3z" />
+                    </svg>
+                    Back to Map
+                </a>
+            }
+            else
+            {
+                <!-- Login Button -->
+                <a asp-controller="Account" asp-action="Login"
+                   class="flex items-center gap-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M15 12H3m12 0l-4-4m4 4l-4 4m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2h6a2 2 0 012 2v1" />
+                    </svg>
+                    Login
+                </a>
 
-            <!-- Register Button -->
-            <a asp-controller="Account" asp-action="Register"
-               class="flex items-center gap-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M16 21v-2a4 4 0 00-8 0v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
-                </svg>
-                Register
-            </a>
+                <!-- Register Button -->
+                <a asp-controller="Account" asp-action="Register"
+                   class="flex items-center gap-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M16 21v-2a4 4 0 00-8 0v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
+                    </svg>
+                    Register
+                </a>
+            }
 
         </div>
 
