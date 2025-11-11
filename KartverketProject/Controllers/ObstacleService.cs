@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KartverketProject.Controllers
 {
-    [Authorize(Policy ="AuthenticatedAll")]
+    [Authorize(Policy ="AuthenticationHigh")] // kun admin og reviewer
     public class ObstacleService
     {
         private readonly ApplicationDbContext _context;

@@ -118,7 +118,7 @@ namespace KartverketProject.Controllers
         // BRUKER LOGGET INN
 
         // GET: /Account/Reports
-        [Authorize(Roles = "AuthenticatedAll")]
+        [Authorize(Policy = "AuthenticatedAll")]
         [HttpGet]
         public async Task<IActionResult> Reports()
         {
@@ -132,7 +132,7 @@ namespace KartverketProject.Controllers
             return View(reports);
         }
 
-        [Authorize(Roles = "AuthenticatedAll")]
+        [Authorize(Policy = "AuthenticatedAll")]
         [HttpGet("EditReport/{id}")]
         public async Task<IActionResult> EditReport(int id)
         {
@@ -149,7 +149,7 @@ namespace KartverketProject.Controllers
         }
 
         // POST: /Account/EditReport/{id}
-        [Authorize(Roles = "AuthenticatedAll")]
+        [Authorize(Policy = "AuthenticatedAll")]
         [HttpPost("EditReport/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditReport(int id, Obstacle obstacle)
@@ -184,7 +184,7 @@ namespace KartverketProject.Controllers
         }
 
         // GET: /Account/DeleteReport/{id}
-        [Authorize(Roles = "AuthenticatedAll")]
+        [Authorize(Policy = "AuthenticatedAll")]
         [HttpGet("DeleteReport/{id}")]
         public async Task<IActionResult> DeleteReport(int id)
         {
@@ -199,7 +199,7 @@ namespace KartverketProject.Controllers
         }
 
         // POST: /Account/DeleteReportConfirmed
-        [Authorize(Roles = "AuthenticatedAll")]
+        [Authorize(Policy = "AuthenticatedAll")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteReportConfirmed(int reportId)
@@ -219,7 +219,7 @@ namespace KartverketProject.Controllers
         // REVIEWER DEL
 
         // GET: /Account/OverviewAll
-        [Authorize(Roles = "AuthenticatedHigh")]
+        [Authorize(Policy = "AuthenticatedHigh")]
         [HttpGet]
         public async Task<IActionResult> OverviewAll(string statusFilter, string sortOrder)
         {
@@ -281,7 +281,7 @@ namespace KartverketProject.Controllers
         }
 
         // GET: /Account/UpdateStatus/newStatus=Approved
-        [Authorize(Roles = "AuthenticatedHigh")]
+        [Authorize(Policy = "AuthenticatedHigh")]
         [HttpGet]
         public async Task<IActionResult> UpdateStatus(int id, string newStatus)
         {
@@ -308,7 +308,7 @@ namespace KartverketProject.Controllers
 
 
         // GET: /Account/GetReviewersForSharing
-        [Authorize(Roles = "AuthenticatedHigh")]
+        [Authorize(Policy = "AuthenticatedHigh")]
         [HttpGet]
         public async Task<IActionResult> GetReviewersForSharing(int obstacleId)
         {
@@ -338,7 +338,7 @@ namespace KartverketProject.Controllers
 
 
         // POST: /Account/ShareReport
-        [Authorize(Roles = "AuthenticatedHigh")]
+        [Authorize(Policy = "AuthenticatedHigh")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ShareReport(int reportId, List<string> selectedUserIds)
@@ -369,7 +369,7 @@ namespace KartverketProject.Controllers
             return RedirectToAction("OverviewAll");
         }
         // POST: /Account/StopSharing
-        [Authorize(Roles = "AuthenticatedHigh")]
+        [Authorize(Policy = "AuthenticatedHigh")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> StopSharing(int reportId)
@@ -397,7 +397,7 @@ namespace KartverketProject.Controllers
         }
 
         // GET: /Account/GetObstacleDetails
-        [Authorize(Roles = "AuthenticatedHigh")]
+        [Authorize(Policy = "AuthenticatedHigh")]
         [HttpGet]
         public async Task<IActionResult> GetObstacleDetails(int obstacleId)
         {
