@@ -30,19 +30,16 @@ namespace KartverketProject.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ObstacleId"));
 
                     b.Property<string>("ObstacleDescription")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
-                    b.Property<double>("ObstacleHeight")
+                    b.Property<double?>("ObstacleHeight")
                         .HasColumnType("double");
 
                     b.Property<string>("ObstacleJSON")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("ObstacleName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
@@ -82,6 +79,9 @@ namespace KartverketProject.Migrations
                     b.Property<int>("ObstacleId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ReportReason")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
 
@@ -98,6 +98,7 @@ namespace KartverketProject.Migrations
                         {
                             ReportId = 1,
                             ObstacleId = 1,
+                            ReportReason = "This is the reason.",
                             UserId = "77777777-7777-7777-7777-777777777777"
                         });
                 });
@@ -126,12 +127,6 @@ namespace KartverketProject.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("longtext");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -183,80 +178,72 @@ namespace KartverketProject.Migrations
                             Id = "33333333-3333-3333-3333-333333333333",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "b6b254d3-a819-4c90-8eef-f0c3754d9257",
+                            ConcurrencyStamp = "173706c5-e926-4ac9-a25b-e0a3e2592f3f",
                             Department = "NLA",
                             Email = "admin@nla.no",
                             EmailConfirmed = false,
-                            FirstName = "John",
-                            LastName = "Doe",
-                            LockoutEnabled = false,
+                            LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@NLA.NO",
-                            NormalizedUserName = "ADMIN@NLA.NO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJOtLRm2hnIYTBXC6XXYw/x4uIhrxUENBy27BmsT7tY8nHYVoF1qUnxzWGVRjjYgeg==",
+                            NormalizedUserName = "JOHND",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGd9HWyfu0PAxooXo2kS/ahxI30wUs/zYlytezF1SeTXtOVwU9Y9BySo+7tbXny22A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9a6c088b-fda8-410f-8801-1c9182a4d9d3",
+                            SecurityStamp = "a613b538-9378-433f-8220-059b025f20b2",
                             TwoFactorEnabled = false,
-                            UserName = "admin@nla.no"
+                            UserName = "johnd"
                         },
                         new
                         {
                             Id = "44444444-4444-4444-4444-444444444444",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "6e26e724-262d-4a98-9062-df175ba3e9f6",
+                            ConcurrencyStamp = "69f88824-1dd8-4956-bbc6-e8876191d382",
                             Department = "NLA",
                             Email = "reviewer@nla.no",
                             EmailConfirmed = false,
-                            FirstName = "Jane",
-                            LastName = "Doe",
-                            LockoutEnabled = false,
+                            LockoutEnabled = true,
                             NormalizedEmail = "REVIEWER@NLA.NO",
-                            NormalizedUserName = "REVIEWER@NLA.NO",
-                            PasswordHash = "AQAAAAIAAYagAAAAED8duSKaXIBxK7LKjz/c/A1lJmslPdQhoEfgWlfrISEM/9osEhiJFPJKJgIuqFG6Tw==",
+                            NormalizedUserName = "JANED",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPlwzx5XQp9IDHgnIiBHgqUk76vgBQqkBORFN+CU2AOhsgcHaCdAhw6VC9sI29CNJg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c642e253-aa37-40cb-a564-228e770453e0",
+                            SecurityStamp = "85a6bf58-0bcb-4242-ba6f-5e8abe042a59",
                             TwoFactorEnabled = false,
-                            UserName = "reviewer@nla.no"
+                            UserName = "janed"
                         },
                         new
                         {
                             Id = "66666666-6666-6666-6666-666666666666",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "5c63f0c4-6877-4d2e-8763-15691eeaa4a0",
+                            ConcurrencyStamp = "ea90fac5-4a26-497a-963c-3b73205b83ba",
                             Department = "NLA",
                             Email = "user@nla.no",
                             EmailConfirmed = false,
-                            FirstName = "Bob",
-                            LastName = "Smith",
-                            LockoutEnabled = false,
+                            LockoutEnabled = true,
                             NormalizedEmail = "USER@NLA.NO",
-                            NormalizedUserName = "USER@NLA.NO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKUOLjASjvUPw0IezFWCgzXckUwvJ6b4GXhW2L8h6XwI5uGI1D183WirR6fpO2BJiA==",
+                            NormalizedUserName = "BOBS",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFEPOO9Yd6DXr0yhHv5/kTgxF4sbjhrrSwrsiJtebJEcBGOjKBK7EKWE0LNX5om18Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5eb8e1f0-c4b2-4018-a2fe-2f52675533bf",
+                            SecurityStamp = "514be756-950d-439f-8563-f2d3e316efab",
                             TwoFactorEnabled = false,
-                            UserName = "user@nla.no"
+                            UserName = "bobs"
                         },
                         new
                         {
                             Id = "77777777-7777-7777-7777-777777777777",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "839d60e2-dd6c-4836-b3a5-4b3df7dc20c0",
+                            ConcurrencyStamp = "8bcbaee4-e3aa-4528-9520-d2665715d637",
                             Department = "Luftsforsvaret",
                             Email = "reviewer@luftsforsvaret.no",
                             EmailConfirmed = false,
-                            FirstName = "Janice",
-                            LastName = "Doe",
-                            LockoutEnabled = false,
+                            LockoutEnabled = true,
                             NormalizedEmail = "REVIEWER@LUFTSFORSVARET.NO",
-                            NormalizedUserName = "REVIEWER@LUFTSFORSVARET.NO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDUeGDPqcT8gR8VFIeKirLq6GJ/XpsYJj3m66ZKqpfuiUDyW35TgRyzTfhyN7mEvxg==",
+                            NormalizedUserName = "JANICED",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPkfSCJZfL2PnaTRYxglHKV78N/w+55NOBOCqIaQGBGES76x14ANkQmoGh8V1H6y/g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5863db1f-38f8-4ce6-80a0-2975c8359292",
+                            SecurityStamp = "2445d66a-2482-4333-99da-7b9c793b81dc",
                             TwoFactorEnabled = false,
-                            UserName = "reviewer@luftsforsvaret.no"
+                            UserName = "janiced"
                         });
                 });
 

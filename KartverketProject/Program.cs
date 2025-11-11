@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using KartverketProject.Models;
+using KartverketProject.Controllers;
 
 namespace KartverketProject
 {
@@ -41,6 +42,17 @@ namespace KartverketProject
                 options.LogoutPath = "/Account/Logout";
             });
 
+            // Configure Identity options
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                // User settings
+                options.User.RequireUniqueEmail = true;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+            });
 
             // MVC & other services
             builder.Services.AddControllersWithViews();

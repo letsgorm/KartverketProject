@@ -2,7 +2,7 @@ var map = L.map('map').fitWorld();
 
 // hent offline kart fra lokal tileserver-gl
 L.tileLayer('http://localhost:8080/styles/basic-preview/512/{z}/{x}/{y}.png', {
-    maxZoom: 18, // originalt 13 zoom
+    maxZoom: 18,
     attribution: 'OpenStreetMap'
 }).addTo(map);
 
@@ -10,7 +10,6 @@ L.tileLayer('http://localhost:8080/styles/basic-preview/512/{z}/{x}/{y}.png', {
 map.locate({ setView: true, maxZoom: 18 });
 
 function onLocationFound(e) {
-    // bruker innen stedet
     var radius = e.accuracy;
 
     L.marker(e.latlng).addTo(map)
@@ -20,98 +19,65 @@ function onLocationFound(e) {
 }
 
 map.on('locationfound', onLocationFound);
-
-function onLocationError(e) {
-    alert(e.message);
-}
-
-map.on('locationerror', onLocationError);
+map.on('locationerror', function (e) { alert(e.message); });
 
 // globale variabler
 var points = [];
 var group = L.layerGroup().addTo(map);
-var draw = false;
 var poly = null;
 
 function addPoint(latlng) {
-    if (draw) {
-        // legg til lat og lng for polyline
-        points.push(latlng);
-        // oppdater polyline
-        updatePolyline();
-        // legg til marker med egen ikon
-        addMarker(latlng);
-        // oppdater geojson
-        updateGeoJSON();
-        // sjekk at lengden er over 2 eller lik 50
-        checkLength();
-    } else {
-        return;
-    }
-};
+    // legg til lat og lng for polyline
+    points.push(latlng);
+
+    // oppdater polyline
+    updatePolyline();
+
+    // legg til marker med click-event
+    addMarker(latlng);
+
+    // oppdater geojson
+    updateGeoJSON();
+
+    // sjekk at lengden er over 50
+    checkLength();
+}
 
 function updatePolyline() {
     if (!poly) {
         poly = L.polyline(points, { color: "green" });
+        group.addLayer(poly);
     } else {
         poly.setLatLngs(points);
     }
-};
+}
 
 function addMarker(latlng) {
-    const dotIcon = L.divIcon({
-        iconSize: [10, 10],
-        iconAnchor: [5, 5]
-    });
+    const marker = L.marker(latlng);
 
-    var marker = L.marker(latlng, {
-        icon: dotIcon
-    });
-
-    // legg til lag i gruppen
-    group.addLayer(poly);
-    group.addLayer(marker);
-};
-
-function updateGeoJSON() {
-    // lagre objektet til json
-    layers = group.toGeoJSON();
-};
-
-function markerUndone() {
-    document.getElementById("noMarker").innerHTML = "Please add a marker";
-};
-
-function checkLength() {
-    if (points.length == 0) {
-        markerUndone();
-    } else {
-        document.getElementById("noMarker").innerHTML = "";
-    }
-    if (points.length == 50) {
-        // fjern alle lag
+    // when marker is clicked, remove marker + polyline
+    marker.on('click', function () {
         group.clearLayers();
         points = [];
+        poly = null;
+    });
+
+    group.addLayer(marker);
+}
+
+function updateGeoJSON() {
+    layers = group.toGeoJSON();
+}
+
+function checkLength() {
+    if (points.length >= 50) {
+        group.clearLayers();
+        points = [];
+        poly = null;
     }
-};
+}
 
 // legg til punkt hvis draw mode er aktivert
 map.on('click', function (e) {
     addPoint(e.latlng);
-});
-
-const markTool = document.getElementById('markerIcon');
-const trashTool = document.getElementById('trashIcon');
-
-markTool.addEventListener("click", function () {
-    // hvis draw er true, sett draw til false og motsatt
-    draw = !draw;
-    this.classList.toggle('fade-out');
-});
-
-trashTool.addEventListener("click", function () {
-    // fjern alle lag
-    group.clearLayers();
-    points = [];
-    markerUndone();
 });

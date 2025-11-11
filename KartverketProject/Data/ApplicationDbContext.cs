@@ -15,29 +15,28 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
     public DbSet<ReportShare> ReportShare => Set<ReportShare>();
 
     // skap rolle
-    private static IdentityRole CreateRole(string id, string email)
+    private static IdentityRole CreateRole(string id, string name)
     {
         return new IdentityRole
         {
             Id = id,
-            Name = email,
-            NormalizedName = email.ToUpper(),
+            Name = name,
+            NormalizedName = name.ToUpper(),
             ConcurrencyStamp = id
         };
     }
     // skap bruker
-    private static User CreateUser(string id, string email, string firstname, string lastname, string password, string department)
+    private static User CreateUser(string id, string email, string username, string password, string department)
     {
         var user = new User
         {
             Id = id,
-            UserName = email,
-            NormalizedUserName = email.ToUpper(),
+            UserName = username,
+            NormalizedUserName = username.ToUpper(),
             Email = email,
             NormalizedEmail = email.ToUpper(),
-            FirstName = firstname,
-            LastName = lastname,
-            Department = department
+            Department = department,
+            LockoutEnabled = true // brute force
         };
         // skap enkryptert passord
         user.PasswordHash = new PasswordHasher<User>().HashPassword(user, password);
@@ -61,13 +60,13 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             .HasOne(r => r.User)
             .WithMany()
             .HasForeignKey(r => r.UserId)
-            .OnDelete(DeleteBehavior.SetNull); // keep report even if user is deleted
+            .OnDelete(DeleteBehavior.SetNull); // ha rapport selv om bruker er slettet
 
         modelBuilder.Entity<Report>()
             .HasOne(r => r.Obstacle) // holder kolleksjonen
             .WithMany(o => o.ReportEntries) // holder navigering egenskapene
             .HasForeignKey(r => r.ObstacleId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade); // slett hver nest
 
         modelBuilder.Entity<ReportShare>()
             .HasKey(rs => rs.ReportShareId);
@@ -82,7 +81,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             .HasOne(rs => rs.SharedWithUser)
             .WithMany()
             .HasForeignKey(rs => rs.SharedWithUserId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Restrict); // kan ikke slette bruker hvis reportshareid
 
 
         modelBuilder.Entity<User>().ToTable("AspNetUsers");
@@ -109,15 +108,15 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
                 CreateRole(userRoleId, "user")
             };
 
-        // id, email, role, firstname, lastname, password, department
-        // NLA
-        var adminUserNrl = CreateUser(adminIdNla, "admin@nla.no", "John", "Doe", "admin", "NLA");
-        var reviewerUserNrl = CreateUser(reviewerIdNla, "reviewer@nla.no", "Jane", "Doe", "admin", "NLA");
-        var userUserNrl = CreateUser(userIdNla, "user@nla.no", "Bob", "Smith", "admin", "NLA");
+        // string id, string email, string username, string password, string department
 
-        // id, email, role, firstname, lastname, password, department
+        // NLA
+        var adminUserNrl = CreateUser(adminIdNla, "admin@nla.no", "johnd", "admin", "NLA");
+        var reviewerUserNrl = CreateUser(reviewerIdNla, "reviewer@nla.no", "janed", "admin", "NLA");
+        var userUserNrl = CreateUser(userIdNla, "user@nla.no", "bobs", "admin", "NLA");
+
         // Luftsforsvaret
-        var reviewerUserLuft = CreateUser(reviewerIdLuft, "reviewer@luftsforsvaret.no", "Janice", "Doe", "admin", "Luftsforsvaret");
+        var reviewerUserLuft = CreateUser(reviewerIdLuft, "reviewer@luftsforsvaret.no", "janiced", "admin", "Luftsforsvaret");
 
         // seed data for rollene
         modelBuilder.Entity<IdentityRole>().HasData(roles);
@@ -172,11 +171,13 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             }
         );
 
+        // lag et rapport med luftsforsvaret
         modelBuilder.Entity<Report>().HasData(new Report
         {
             ReportId = 1,
             ObstacleId = 1,
             UserId = reviewerIdLuft, // links to seeded user
+            ReportReason = "This is the reason."
         });
     }
 }

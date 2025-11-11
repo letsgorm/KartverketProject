@@ -8,87 +8,71 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kartverket Project</title>
-    <link href="~/css/site.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        window.addEventListener('scroll', () => {
-          const nav = document.querySelector('header');
-          if (window.scrollY > 50) {
-            nav.classList.add('bg-white', 'text-black', 'shadow-md');
-            nav.classList.remove('text-white');
-          } else {
-            nav.classList.remove('bg-white', 'text-black', 'shadow-md');
-            nav.classList.add('text-white');
-          }
-        });
-    </script>
-
 </head>
-<body class="m-0 p-0">
+<body class="m-0 p-0 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100">
 
-    <!-- Fullscreen Background Video -->
-    <div class="relative h-screen w-full overflow-hidden">
+    <!-- Landing / Start Page -->
+    <div class="min-h-screen flex flex-col items-center justify-center text-center px-4">
 
-        <!-- Background video -->
-        <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
-            <source src="/videos/3577871-hd_1920_1080_25fps.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        <!-- Hero Title -->
+        <h1 class="text-5xl md:text-6xl font-extrabold mb-6 text-gray-900 drop-shadow-lg">
+            Welcome to Kartverket Project
+        </h1>
 
-        <!-- Optional dark overlay for readability -->
-        <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-blue-900/40 to-black/60"></div>
+        <p class="text-lg md:text-2xl mb-12 text-gray-700 max-w-xl drop-shadow-sm">
+            Explore obstacles, view the map, or create your account.
+        </p>
 
-        <!-- Centered welcome text -->
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white z-10">
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-4 animate-fadeIn">Welcome to Kartverket Project</h1>
-            <p class="text-lg md:text-2xl mb-6 animate-fadeIn delay-200">
-                Seamlessly register and view obstacles on the map - even offline.
-            </p>
-            <a asp-controller="Obstacle" asp-action="DataForm"
-               class="inline-block bg-green-600 hover:bg-green-600 text-white font-semibold px-8 py-3 rounded-full text-lg shadow-lg animate-fadeIn delay-300">
-                Start Your Journey
-            </a>
+        <!-- Buttons -->
+        <div class="flex flex-col md:flex-row gap-6">
+
+            @if (User?.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <!-- Back to Map Button -->
+                <a asp-controller="Obstacle" asp-action="DataForm"
+                   class="flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M9 20l-5.447-2.724A2 2 0 013 15.382V5.618a2 2 0 011.105-1.79L9 1l6 3 6-3v13.764a2 2 0 01-1.105 1.79L15 21l-6-3z" />
+                    </svg>
+                    Back to Map
+                </a>
+            }
+            else
+            {
+                <!-- Login Button -->
+                <a asp-controller="Account" asp-action="Login"
+                   class="flex items-center gap-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M15 12H3m12 0l-4-4m4 4l-4 4m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2h6a2 2 0 012 2v1" />
+                    </svg>
+                    Login
+                </a>
+
+                <!-- Register Button -->
+                <a asp-controller="Account" asp-action="Register"
+                   class="flex items-center gap-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transform transition duration-300 hover:-translate-y-1 hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M16 21v-2a4 4 0 00-8 0v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
+                    </svg>
+                    Register
+                </a>
+            }
+
         </div>
+
+        <!-- Footer / optional credit -->
+        <p class="mt-12 text-gray-500 text-sm">
+            &copy; 2025 Kartverket Project
+        </p>
+
     </div>
-
-
-    <!-- Animations -->
-    <style>
-        @@keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fadeIn {
-            animation: fadeIn 1s ease forwards;
-        }
-
-        .delay-200 {
-            animation-delay: 0.2s;
-        }
-
-        .delay-300 {
-            animation-delay: 0.3s;
-        }
-
-        video {
-            opacity: 0;
-            animation: videoFadeIn 2s ease forwards;
-        }
-
-        @@keyframes videoFadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-    </style>
 
 </body>
 </html>

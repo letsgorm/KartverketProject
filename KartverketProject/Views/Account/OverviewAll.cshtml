@@ -21,6 +21,7 @@
                 <option value="Approved" selected="@("Approved" == selectedStatus)">Approved</option>
                 <option value="Rejected" selected="@("Rejected" == selectedStatus)">Rejected</option>
             </select>
+            <input type="hidden" name="sortOrder" value="@sortOrder" />
         </form>
     </div>
 
@@ -29,11 +30,21 @@
         <table class="min-w-full border-collapse bg-white">
             <thead class="bg-gray-100 border-b">
                 <tr class="text-left text-gray-700 font-medium">
-                    <th class="px-4 py-3">Obstacle</th>
-                    <th class="px-4 py-3">Department</th>
-                    <th class="px-4 py-3">Username</th>
-                    <th class="px-4 py-3">Submitted</th>
-                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">
+                        <a asp-action="OverviewAll" asp-route-sortOrder="@((sortOrder == "name_asc") ? "name_desc" : "name_asc")" class="hover:underline">Obstacle</a>
+                    </th>
+                    <th class="px-4 py-3">
+                        <a asp-action="OverviewAll" asp-route-sortOrder="@((sortOrder == "department_asc") ? "department_desc" : "department_asc")" class="hover:underline">Department</a>
+                    </th>
+                    <th class="px-4 py-3">
+                        <a asp-action="OverviewAll" asp-route-sortOrder="@((sortOrder == "username_asc") ? "username_desc" : "username_asc")" class="hover:underline">Username</a>
+                    </th>
+                    <th class="px-4 py-3">
+                        <a asp-action="OverviewAll" asp-route-sortOrder="@((sortOrder == "date_asc") ? "date_desc" : "date_asc")" class="hover:underline">Submitted</a>
+                    </th>
+                    <th class="px-4 py-3">
+                        <a asp-action="OverviewAll" asp-route-sortOrder="@((sortOrder == "status_asc") ? "status_desc" : "status_asc")" class="hover:underline">Status</a>
+                    </th>
                     <th class="px-4 py-3 text-center">Actions</th>
                 </tr>
             </thead>
@@ -85,20 +96,37 @@
         <div id="panelObstacleDetails" class="mb-4"></div>
         <div id="panelObstacleMap" class="w-full h-64 mb-4 rounded border"></div>
 
+        <div class="mb-4">
+            <label for="reportReason" class="block text-gray-700 font-medium mb-1">Reason (optional):</label>
+            <textarea id="ReportReason" name="reportReason" rows="4"
+                      class="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter a reason"></textarea>
+        </div>
+
+        <!-- lagrer ikke enna. fiks -->
         <div class="flex space-x-2 mb-4">
             <button id="approveBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Approve</button>
             <button id="rejectBtn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Reject</button>
             <button id="shareBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
         </div>
 
-        <!-- Inline share selector (hidden by default) -->
-        <form id="shareFormInline" method="post" asp-action="ShareReport" class="hidden flex flex-col space-y-2">
+        <!-- Share form -->
+        <form id="shareFormInline" method="post" class="hidden flex flex-col space-y-2">
+            @Html.AntiForgeryToken()
             <input type="hidden" id="reportIdInput" name="reportId" />
             <label class="font-medium">Select reviewers:</label>
             <select id="reviewersSelect" name="selectedUserIds" multiple class="w-full border rounded-md p-2 h-32 overflow-y-auto"></select>
+
             <div class="flex space-x-2">
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
-                <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400" onclick="closeShareInline()">Cancel</button>
+                <button type="submit" asp-action="ShareReport" asp-controller="Account" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Share
+                </button>
+                <button type="submit" asp-action="StopSharing" asp-controller="Account" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                    Stop sharing
+                </button>
+                <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400" onclick="closeShareInline()">
+                    Cancel
+                </button>
             </div>
         </form>
     </div>
