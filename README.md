@@ -3,7 +3,7 @@
 ## Description
 Seamlessly register and view obstacles on the map even offline.
 
-### Offline map
+## Offline map
 
 To be able to see the map, download the 1.17 GB ZIP below.
 
@@ -12,9 +12,9 @@ http://github.com/letsgorm/KartverketProject/releases/latest/download/norway.zip
 Unzip the folder and place the norway.mbtiles file in KartverketProject/KartverketProject/wwwroot/
 
 
-### Seeded data
+## Seeded data
 
-## Format
+### Format
 username:password
 
 1. johnd:admin (NLA, admin)
