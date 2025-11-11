@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 // Site logic for login and register
 
@@ -117,12 +118,22 @@ namespace KartverketProject.Controllers
 
         // BRUKER LOGGET INN
 
+        // GET: /Account/Login
+        [Authorize(Policy = "AuthenticatedAll")]
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return View(user);
+        }
+
         // GET: /Account/Reports
         [Authorize(Policy = "AuthenticatedAll")]
         [HttpGet]
         public async Task<IActionResult> Reports()
         {
             var user = await _userManager.GetUserAsync(User);
+
             var reports = await _context.Report
                 .Include(r => r.Obstacle)
                 .Include(r => r.User)
@@ -136,14 +147,22 @@ namespace KartverketProject.Controllers
         [HttpGet("EditReport/{id}")]
         public async Task<IActionResult> EditReport(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var currentUser = await _userManager.GetUserAsync(User);
 
             var report = await _context.Report
+                .Include(r => r.User)
                 .Include(r => r.Obstacle)
-                .FirstOrDefaultAsync(r => r.ReportId == id && r.UserId == user.Id);
+                .FirstOrDefaultAsync(r => r.ReportId == id);
 
             if (report == null)
+            {
                 return NotFound();
+            }
+
+            if (report.UserId != currentUser?.Id)
+            {
+                return Forbid();
+            }
 
             return View("~/Views/Account/EditReport.cshtml", report.Obstacle);
         }
@@ -159,18 +178,31 @@ namespace KartverketProject.Controllers
 
             var currentUser = await _userManager.GetUserAsync(User);
 
-            // Ensure the user owns the report before updating
+            // sjekk om rapport eksisterer
             var report = await _context.Report
-                .FirstOrDefaultAsync(r => r.ReportId == id && r.UserId == currentUser.Id);
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.ReportId == id);
 
             if (report == null)
+            {
+                return NotFound();
+            }
+
+            // sjekk om bruker eier rapport
+            if (report.UserId != currentUser?.Id)
+            {
                 return Forbid();
+            }
 
             var existing = await _context.Obstacle.FindAsync(obstacle.ObstacleId);
-            if (existing == null)
-                return NotFound();
 
-            // Update obstacle fields
+            // sjekk om hindre eksisterer
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+            // oppdater hindre
             existing.ObstacleName = obstacle.ObstacleName;
             existing.ObstacleHeight = obstacle.ObstacleHeight;
             existing.ObstacleDescription = obstacle.ObstacleDescription;
@@ -188,12 +220,22 @@ namespace KartverketProject.Controllers
         [HttpGet("DeleteReport/{id}")]
         public async Task<IActionResult> DeleteReport(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var currentUser = await _userManager.GetUserAsync(User);
             var report = await _context.Report
+                .Include(r => r.User)
                 .Include(r => r.Obstacle)
-                .FirstOrDefaultAsync(r => r.ReportId == id && r.UserId == user.Id);
+                .FirstOrDefaultAsync(r => r.ReportId == id);
 
-            if (report == null) return NotFound();
+            if (report == null)
+            {
+                return NotFound();
+            }
+
+            // sjekk om bruker eier rapport
+            if (report.UserId != currentUser?.Id)
+            {
+                return Forbid();
+            }
 
             return View(report);
         }
@@ -204,11 +246,19 @@ namespace KartverketProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteReportConfirmed(int reportId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var report = await _context.Report
-                .FirstOrDefaultAsync(r => r.ReportId == reportId && r.UserId == user.Id);
+            var currentUser = await _userManager.GetUserAsync(User);
 
-            if (report == null) return NotFound();
+            var report = await _context.Report
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.ReportId == reportId);
+
+            if (report == null) 
+                return NotFound();
+
+            if (report.UserId != currentUser?.Id)
+            {
+                return Forbid();
+            }
 
             _context.Report.Remove(report);
             await _context.SaveChangesAsync();
@@ -280,41 +330,53 @@ namespace KartverketProject.Controllers
             return View();
         }
 
-        // GET: /Account/UpdateStatus/newStatus=Approved
+        // POST: /Account/UpdateStatus
         [Authorize(Policy = "AuthenticatedHigh")]
-        [HttpGet]
-        public async Task<IActionResult> UpdateStatus(int id, string newStatus)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStatus(int reportId, string newStatus, string reportReason)
         {
             var currentUserId = _userManager.GetUserId(User);
 
-            // Get the report including shared-with
             var report = await _context.Report
+                .Include(r => r.User)
                 .Include(r => r.SharedWith)
-                .FirstOrDefaultAsync(r => r.ReportId == id);
+                    .ThenInclude(rs => rs.SharedWithUser)
+                .FirstOrDefaultAsync(r => r.ReportId == reportId);
 
             if (report == null)
                 return NotFound();
 
-            // Owner or shared-with reviewer can update status
+            // Eier av rapport, delt med eller same org kan kun oppdatere status
+            var currentUser = await _userManager.GetUserAsync(User);
             var isOwner = report.UserId == currentUserId;
-            var isSharedWithReviewer = report.SharedWith.Any(rs => rs.SharedWithUserId == currentUserId);
+            var isShared = report.SharedWith.Any(rs => rs.SharedWithUserId == currentUserId);
+            var isSameDepartment = report.User.Department == currentUser?.Department;
 
-            if (!isOwner && !isSharedWithReviewer)
+            // Vis 403
+            if (!isOwner && !isShared && !isSameDepartment)
                 return Forbid();
 
-            await _service.UpdateObstacleStatusAsync(id, newStatus);
+            // Save the status and reason
+            await _service.UpdateObstacleStatusAsync(report.ObstacleId, newStatus);
+
+            // Save the reason to the report
+            report.ReportReason = reportReason;
+            _context.Update(report);
+            await _context.SaveChangesAsync();
+
             return RedirectToAction("OverviewAll");
         }
-
 
         // GET: /Account/GetReviewersForSharing
         [Authorize(Policy = "AuthenticatedHigh")]
         [HttpGet]
         public async Task<IActionResult> GetReviewersForSharing(int obstacleId)
         {
-            var currentUserId = _userManager.GetUserId(User);
+            var currentUser = await _userManager.GetUserAsync(User);
+            var currentDepartment = currentUser?.Department;
 
-            // Get the report associated with this obstacle
+            // Hent ut rapport
             var report = await _context.Report
                 .Include(r => r.Obstacle)
                 .FirstOrDefaultAsync(r => r.Obstacle.ObstacleId == obstacleId);
@@ -322,19 +384,26 @@ namespace KartverketProject.Controllers
             if (report == null)
                 return NotFound();
 
-            // Only the owner can see reviewers
-            if (report.UserId != currentUserId)
-                return Forbid();
-
-            var currentDepartment = (await _userManager.GetUserAsync(User))?.Department;
-
-            var reviewers = await _context.Users
+            // Hent alle som IKKE er i org
+            var otherUsers = await _context.Users
                 .Where(u => u.Department != currentDepartment)
-                .Select(u => new { u.Id, u.Email })
                 .ToListAsync();
+
+            var reviewers = new List<object>();
+
+            foreach (var user in otherUsers)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                // Vis kun admin eller reviewer, ikke brukere
+                if (roles.Contains("reviewer") || roles.Contains("admin")) 
+                {
+                    reviewers.Add(new { user.Id, user.Email });
+                }
+            }
 
             return Json(reviewers);
         }
+
 
 
         // POST: /Account/ShareReport
@@ -345,11 +414,19 @@ namespace KartverketProject.Controllers
         {
             var currentUserId = _userManager.GetUserId(User);
 
-            var report = await _context.Report.FirstOrDefaultAsync(r => r.ReportId == reportId);
+            var report = await _context.Report
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.ReportId == reportId);
             if (report == null) return NotFound();
 
-            // Only the report owner can share
-            if (report.UserId != currentUserId) return Forbid();
+            // Kun eier eller org kan dele
+            var currentUser = await _userManager.GetUserAsync(User);
+            var isOwner = report.UserId == currentUserId;
+            var isSameDepartment = report.User.Department == currentUser?.Department;
+
+            // Vis 403
+            if (!isOwner && !isSameDepartment) 
+                return Forbid();
 
             foreach (var userId in selectedUserIds)
             {
@@ -368,6 +445,7 @@ namespace KartverketProject.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("OverviewAll");
         }
+
         // POST: /Account/StopSharing
         [Authorize(Policy = "AuthenticatedHigh")]
         [HttpPost]
@@ -376,16 +454,22 @@ namespace KartverketProject.Controllers
         {
             var currentUserId = _userManager.GetUserId(User);
 
-            // Sikre at det er eier
+            // Hent ut rapport
             var report = await _context.Report
+                .Include(r => r.User)
                 .Include(r => r.SharedWith)
                 .FirstOrDefaultAsync(r => r.ReportId == reportId);
 
             if (report == null)
                 return NotFound();
 
-            // Kun eier kan
-            if (report.UserId != currentUserId)
+            // Kun eier eller org kan dele
+            var currentUser = await _userManager.GetUserAsync(User);
+            var isOwner = report.UserId == currentUserId;
+            var isSameDepartment = report.User.Department == currentUser?.Department;
+
+            // Vis 403
+            if (!isOwner && !isSameDepartment) 
                 return Forbid();
 
             // Remove all shares
@@ -414,13 +498,18 @@ namespace KartverketProject.Controllers
             if (obstacle == null) return NotFound();
 
             var report = obstacle.ReportEntries.FirstOrDefault();
+
             if (report == null) return NotFound();
 
-            // Only the owner or shared-with users can access details
+            // Kun bruker, delt med eller org kan hente detaljer
+            var currentUser = await _userManager.GetUserAsync(User);
             var isOwner = report.UserId == currentUserId;
             var isShared = report.SharedWith.Any(rs => rs.SharedWithUserId == currentUserId);
+            var isSameDepartment = report.User.Department == currentUser?.Department;
 
-            if (!isOwner && !isShared) return Forbid();
+            // Vis 403
+            if (!isOwner && !isShared && !isSameDepartment) 
+                return Forbid();
 
             var sharedWith = report.SharedWith
                 .Where(s => s.SharedWithUser != null)
@@ -438,9 +527,6 @@ namespace KartverketProject.Controllers
                 obstacleJSON = obstacle.ObstacleJSON,
                 sharedWith = sharedWith
             });
-
-       
-
         }
     }
 }

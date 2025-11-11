@@ -4,7 +4,7 @@ let obstacleMap;
 async function openViewPanel(obstacleId) {
     currentObstacleId = obstacleId;
 
-    // Fetch obstacle details from server
+    // Fetch obstacle details
     const response = await fetch(`/Account/GetObstacleDetails?obstacleId=${obstacleId}`);
     const data = await response.json();
 
@@ -18,15 +18,13 @@ async function openViewPanel(obstacleId) {
         <p><strong>Shared with:</strong> ${data.sharedWith.join(', ') || '—'}</p>
     `;
 
+    // Show panel
     const panel = document.getElementById('viewPanel');
     panel.classList.remove('translate-y-full');
 
     // Render map
-    // Render Leaflet map inside openViewPanel()
     const mapContainer = document.getElementById('panelObstacleMap');
     mapContainer.innerHTML = '';
-
-    // Create map and a LayerGroup
     obstacleMap = L.map(mapContainer).setView([0, 0], 2);
     const group = L.layerGroup().addTo(obstacleMap);
 
@@ -37,8 +35,6 @@ async function openViewPanel(obstacleId) {
     if (data.obstacleJSON) {
         try {
             const jsonData = JSON.parse(data.obstacleJSON);
-
-            // Check that there are features
             if (jsonData.features && jsonData.features.length > 0) {
                 const geoLayer = L.geoJSON(jsonData).addTo(group);
                 obstacleMap.fitBounds(geoLayer.getBounds(), { padding: [20, 20] });
@@ -48,23 +44,42 @@ async function openViewPanel(obstacleId) {
         }
     }
 
-    // Buttons
-    document.getElementById('approveBtn').onclick = () => window.location.href = `/Account/UpdateStatus?id=${currentObstacleId}&newStatus=Approved`;
-    document.getElementById('rejectBtn').onclick = () => window.location.href = `/Account/UpdateStatus?id=${currentObstacleId}&newStatus=Rejected`;
-    document.getElementById('shareBtn').onclick = openShareInline;
+    // Approve / Reject buttons submit form
+    document.getElementById('approveBtn').onclick = () => {
+        document.getElementById('statusReportIdInput').value = currentObstacleId;
+        document.getElementById('statusNewStatusInput').value = 'Approved';
+        document.getElementById('updateStatusForm').submit();
+    };
+
+    document.getElementById('rejectBtn').onclick = () => {
+        document.getElementById('statusReportIdInput').value = currentObstacleId;
+        document.getElementById('statusNewStatusInput').value = 'Rejected';
+        document.getElementById('updateStatusForm').submit();
+    };
+
+    // Add this to hook up share button
+    document.getElementById('shareBtn').onclick = () => {
+        openShareInline();
+    };
+
 }
 
 function closeViewPanel() {
-    const panel = document.getElementById('viewPanel');
-    panel.classList.add('translate-y-full');
+    document.getElementById('viewPanel').classList.add('translate-y-full');
     closeShareInline();
+}
+
+function submitStatus(newStatus) {
+    const form = document.getElementById('updateStatusForm');
+    document.getElementById('statusReportIdInput').value = currentObstacleId;
+    document.getElementById('statusNewStatusInput').value = newStatus;
+    form.submit();
 }
 
 async function openShareInline() {
     const form = document.getElementById('shareFormInline');
     form.classList.remove('hidden');
 
-    // Set the current report ID for both Share and Stop Sharing
     document.getElementById('reportIdInput').value = currentObstacleId;
 
     // Fetch reviewers dynamically
