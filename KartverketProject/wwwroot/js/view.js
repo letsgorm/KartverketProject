@@ -11,7 +11,7 @@ async function openViewPanel(obstacleId) {
     document.getElementById('panelObstacleName').innerText = data.obstacleName;
     document.getElementById('panelObstacleDetails').innerHTML = `
         <p><strong>Department:</strong> ${data.department}</p>
-        <p><strong>User:</strong> ${data.email}</p>
+        <p><strong>User:</strong> ${data.username}</p>
         <p><strong>Submitted:</strong> ${data.date}</p>
         <p><strong>Status:</strong> ${data.status}</p>
         <p><strong>Description:</strong> ${data.description}</p>
@@ -62,6 +62,11 @@ async function openViewPanel(obstacleId) {
         openShareInline();
     };
 
+    const reasonBox = document.getElementById('ReportReason')
+    if (reasonBox) {
+        reasonBox.value = data.reportReason || "";
+    }
+
 }
 
 function closeViewPanel() {
@@ -91,7 +96,7 @@ async function openShareInline() {
     reviewers.forEach(r => {
         const option = document.createElement('option');
         option.value = r.id;
-        option.text = r.email;
+        option.text = r.username;
         select.appendChild(option);
     });
 }

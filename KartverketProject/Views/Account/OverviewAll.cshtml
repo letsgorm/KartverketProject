@@ -53,26 +53,32 @@
                 {
                     var report = obstacle.ReportEntries.FirstOrDefault();
                     var department = report?.User?.Department ?? "—";
-                    var email = report?.User?.Email ?? "—";
+                    var username = report?.User?.UserName ?? "—";
                     var sharedWith = report?.SharedWith.Select(s => s.SharedWithUser.Email).ToList() ?? new List<string>();
 
                     <tr class="border-b hover:bg-gray-50 transition">
                         <td class="px-4 py-3">@obstacle.ObstacleName</td>
                         <td class="px-4 py-3">@department</td>
-                        <td class="px-4 py-3">@email</td>
+                        <td class="px-4 py-3">@username</td>
                         <td class="px-4 py-3">@obstacle.ObstacleSubmittedDate.ToString("yyyy-MM-dd")</td>
-                        <td class="px-4 py-3 font-medium">
+                        <td class="px-4 py-3">
                             @if (obstacle.ObstacleStatus == "Approved")
                             {
-                                <span class="text-green-600">Approved</span>
+                                <span class="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                    Approved
+                                </span>
                             }
                             else if (obstacle.ObstacleStatus == "Rejected")
                             {
-                                <span class="text-red-600">Rejected</span>
+                                <span class="inline-block bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                    Rejected
+                                </span>
                             }
                             else
                             {
-                                <span class="text-yellow-600">Pending</span>
+                                <span class="inline-block bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                    Pending
+                                </span>
                             }
                         </td>
                         <td class="px-4 py-3 text-center">
@@ -108,14 +114,11 @@
             </div>
         </form>
 
-
-        <!-- lagrer ikke enna. fiks -->
         <div class="flex space-x-2 mb-4">
             <button type="button" id="approveBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Approve</button>
             <button type="button" id="rejectBtn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Reject</button>
             <button type="button" id="shareBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
         </div>
-
 
         <!-- Share form -->
         <form id="shareFormInline" method="post" class="hidden flex flex-col space-y-2">

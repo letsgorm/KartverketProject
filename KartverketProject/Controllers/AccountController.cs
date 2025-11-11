@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 // Site logic for login and register
@@ -95,7 +96,34 @@ namespace KartverketProject.Controllers
                 lockoutOnFailure: true);
 
             if (result.Succeeded)
+            {
+                var currentUser = await _userManager.FindByNameAsync(model.UserName);
+
+                // Fetch unseen report reasons
+                var unseenReports = await _context.Report
+                    .Where(r => r.UserId == currentUser.Id
+                                && !r.ReportReasonSeen
+                                && !string.IsNullOrEmpty(r.ReportReason))
+                    .ToListAsync();
+
+                if (unseenReports.Any())
+                {
+                    // Send to TempData for first page load
+                    TempData["UnseenReportReasons"] = JsonSerializer.Serialize(
+                        unseenReports.Select(r => new { r.ReportId, r.ReportReason })
+                    );
+
+                    // Mark as seen in DB immediately so it doesn't show again
+                    foreach (var report in unseenReports)
+                    {
+                        report.ReportReasonSeen = true;
+                    }
+                    _context.UpdateRange(unseenReports);
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction("DataForm", "Obstacle");
+            }
 
             if (result.IsLockedOut)
             {
@@ -105,6 +133,25 @@ namespace KartverketProject.Controllers
 
             ModelState.AddModelError("", "Invalid login attempt");
             return View(model);
+        }
+
+
+        // POST: /Account/MarkReportReasonSeen
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkReportReasonSeen([FromBody] int reportId)
+        {
+            var report = await _context.Report.FindAsync(reportId);
+            if (report == null) return NotFound();
+
+            var currentUserId = _userManager.GetUserId(User);
+            if (report.UserId != currentUserId) return Forbid();
+
+            report.ReportReasonSeen = true;
+            _context.Update(report);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
 
@@ -397,7 +444,7 @@ namespace KartverketProject.Controllers
                 // Vis kun admin eller reviewer, ikke brukere
                 if (roles.Contains("reviewer") || roles.Contains("admin")) 
                 {
-                    reviewers.Add(new { user.Id, user.Email });
+                    reviewers.Add(new { user.Id, user.UserName });
                 }
             }
 
@@ -513,19 +560,20 @@ namespace KartverketProject.Controllers
 
             var sharedWith = report.SharedWith
                 .Where(s => s.SharedWithUser != null)
-                .Select(s => s.SharedWithUser.Email)
+                .Select(s => s.SharedWithUser.UserName)
                 .ToList();
 
             return Json(new
             {
                 obstacleName = obstacle.ObstacleName,
                 department = report.User?.Department ?? "—",
-                email = report.User?.Email ?? "—",
+                username = report.User?.UserName ?? "—",
                 date = obstacle.ObstacleSubmittedDate.ToString("yyyy-MM-dd"),
                 status = obstacle.ObstacleStatus,
                 description = obstacle.ObstacleDescription,
                 obstacleJSON = obstacle.ObstacleJSON,
-                sharedWith = sharedWith
+                sharedWith = sharedWith,
+                reportReason = report.ReportReason
             });
         }
     }
