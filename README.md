@@ -107,17 +107,11 @@ username:password
 Tools -> NuGet Package Manager -> Package Manager Console
 
 
-4. Type all commands in order.
+4. Type the following commands
 
+Add-Migration NewMigration
 
-Apply-Migrations InitialCreate -Context ApplicationDbContext
-
-Apply-Migrations InitialCreate -Context AuthenticationDbContext
-
-Update-Database -Context ApplicationDbContext
-
-Update-Database -Context AuthenticationDbContext
-
+Update-Database
 
 ## System architecture
 
