@@ -1,6 +1,5 @@
 # Kartverket Project
 
-## Description
 Seamlessly register and view obstacles on the map even offline.
 
 ## Offline map
@@ -14,7 +13,6 @@ Unzip the folder and place the norway.mbtiles file in KartverketProject/Kartverk
 
 ## Seeded data
 
-### Format
 username:password
 
 1. johnd:admin (NLA, admin)
@@ -25,7 +23,7 @@ username:password
 
 4. janiced:admin (Luftsforsvaret, reviewer)
 
-### Getting started
+## Getting started
 
 
 1. Open cmd, and clone the project
@@ -155,9 +153,7 @@ Based on the C4 model: https://c4model.com/diagrams/system-context
 
 Based on the C4 model: https://c4model.com/diagrams/container
 
-## Unit testing
-
-### Scenarios
+## Unit test
 
 Check if model state is valid
 https://github.com/letsgorm/KartverketProject/blob/9073420b0a123a217a8d737adba32ce542875756/KartverketTest/Test1.cs#L17-L34
