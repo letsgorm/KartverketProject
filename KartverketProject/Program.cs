@@ -25,13 +25,13 @@ namespace KartverketProject
                     new MySqlServerVersion(new Version(11, 8, 3))
             ));
 
-            
+
             // Core Identity
             builder.Services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
 
-             })
+            })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
@@ -74,7 +74,7 @@ namespace KartverketProject
 
             if (!app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Home/Error"); // stack trace fix
                 app.UseHsts();
             }
 

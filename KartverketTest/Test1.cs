@@ -1,102 +1,123 @@
-﻿//using KartverketProject.Controllers;
-//using KartverketProject.Models;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.EntityFrameworkCore;
-//using Xunit;
-//using Assert = Xunit.Assert;
+﻿using KartverketProject.Controllers;
+using KartverketProject.Dtos;
+using KartverketProject.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using System.Security.Claims;
+using Xunit;
+using Assert = Xunit.Assert;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
-//public class ControllerTest
-//{
-//    // Test if the ModelState is valid when accessing the DataForm view
-//    [Fact]
-//    public void ModelStateValidation()
-//    {
-//        // Arrange
-//        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-//            .UseInMemoryDatabase("TestDb")
-//            .Options;
+public class ControllerTest
+{
+    [Fact]
+    public void ModelStateValidation()
+    {
+        // Arrange
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase("TestDb_ModelState")
+            .Options;
 
-//        var context = new ApplicationDbContext(options);
-//        var service = new ObstacleService(context);
-//        var controller = new ObstacleController(service);
-//        var obstacleData = new Obstacle();
+        var context = new ApplicationDbContext(options);
+        var service = new ObstacleService(context);
+        var controller = new ObstacleController(service);
 
-//        // Act
-//        var result = controller.DataForm() as ViewResult;
+        // Act
+        var result = controller.DataForm() as ViewResult;
 
-//        // Assert
-//        Assert.NotNull(result);
-//        Assert.True(controller.ModelState.IsValid);
-//    }
+        // Assert
+        Assert.NotNull(result);
+        Assert.True(controller.ModelState.IsValid);
+    }
 
-//    // Test if the DataForm saves the obstacle data to the database
-//    [Fact]
-//    public async Task DataFormSaveToDatabase()
-//    {
-//        // Arrange
-//        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-//            .UseInMemoryDatabase("TestDb_Save")
-//            .Options;
+    [Fact]
+    public async Task DataFormSaveToDatabase()
+    {
+        // Arrange
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase("TestDb_Save")
+            .Options;
 
-//        var context = new ApplicationDbContext(options);
-//        var service = new ObstacleService(context);
-//        var controller = new ObstacleController(service);
-//        var date = new DateTime(2025, 10, 15, 14, 30, 0);
+        var context = new ApplicationDbContext(options);
+        var service = new ObstacleService(context);
+        var controller = new ObstacleController(service);
 
-//        var obstacleData = new Obstacle
-//        {
-//            ObstacleId = 0,
-//            ObstacleName = "john",
-//            ObstacleHeight = 5.5,
-//            ObstacleDescription = "test",
-//            ObstacleSubmittedDate = date,
-//            ObstacleJSON = "1"
-//        };
+        // Mock a logged-in user
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, "test-user-id")
+        }, "mock"));
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = user }
+        };
 
-//        // Act
-//        var obstacle = await controller.DataForm(obstacleData);
+        var obstacleData = new Obstacle
+        {
+            ObstacleName = "john",
+            ObstacleHeight = 5.5,
+            ObstacleDescription = "test",
+            ObstacleSubmittedDate = new DateTime(2025, 10, 15, 14, 30, 0),
+            ObstacleJSON = "1"
+        };
 
-//        // Assert
-//        var savedObstacle = context.Obstacles.FirstOrDefault(o => o.ObstacleName == "john");
-//        Assert.NotNull(obstacle);
-//        Assert.NotNull(savedObstacle);
-//        Assert.Equal("john", savedObstacle.ObstacleName);
-//    }
+        // Act
+        var result = await controller.DataForm(obstacleData);
 
-//    // Test if the username and password authenticates in the database
-//    [Fact]
-//    public async Task UserSaveToDatabase()
-//    {
-//        // Arrange
-//        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-//            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-//            .Options;
+        // Assert
+        var savedObstacle = await context.Obstacle.FirstOrDefaultAsync(o => o.ObstacleName == "john");
+        Assert.NotNull(result);
+        Assert.NotNull(savedObstacle);
+        Assert.Equal("john", savedObstacle.ObstacleName);
+    }
 
-//        var context = new ApplicationDbContext(options);
+    [Fact]
+    public async Task UserLoginTest_WithMoq()
+    {
+        // Arrange
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase("TestDb_User")
+            .Options;
+        var context = new ApplicationDbContext(options);
 
-//        context.Users.Add(new User { 
-//            Username = "alpha", 
-//            Password = "alpha123", 
-//            Email = "alpha@gorm.no"
-//        });
-//        await context.SaveChangesAsync();
+        var userStore = new Mock<IUserStore<User>>();
+        var mockUserManager = new Mock<UserManager<User>>(userStore.Object, null, null, null, null, null, null, null, null);
+        var mockSignInManager = new Mock<SignInManager<User>>(
+            mockUserManager.Object,
+            new Mock<Microsoft.AspNetCore.Http.IHttpContextAccessor>().Object,
+            new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+            null, null, null, null
+        );
 
-//        var service = new UserService(context);
+        var testUser = new User
+        {
+            Id = "1",
+            UserName = "alpha",
+            Email = "alpha@example.com"
+        };
 
-//        var controller = new AuthenticationController(service);
+        mockUserManager.Setup(x => x.FindByNameAsync("alpha")).ReturnsAsync(testUser);
+        mockSignInManager.Setup(x => x.PasswordSignInAsync("alpha", "alpha123", false, true))
+            .ReturnsAsync(SignInResult.Success);
 
-//        var existingUser = new User
-//        {
-//            Username = "alpha",
-//            Password = "alpha123",
-//            Email = "alpha@gorm.no"
-//        };
+        var authService = new UserService(mockUserManager.Object, mockSignInManager.Object, context);
+        var controller = new AccountController(mockUserManager.Object, mockSignInManager.Object, context, null);
 
-//        // Act
-//        var login = await controller.Login(existingUser);
+        var loginModel = new LoginRequest
+        {
+            UserName = "alpha",
+            Password = "alpha123"
+        };
 
-//        // Assert
-//        var okResult = Assert.IsType<OkObjectResult>(login);
-//        Assert.Equal("Login successful.", okResult.Value);
-//    }
-//}
+        // Act
+        var result = await controller.Login(loginModel);
+
+        // Assert
+        var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("DataForm", redirectResult.ActionName);
+        Assert.Equal("Obstacle", redirectResult.ControllerName);
+    }
+}

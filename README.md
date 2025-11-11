@@ -11,6 +11,18 @@ http://github.com/letsgorm/KartverketProject/releases/latest/download/norway.zip
 
 Unzip the folder and place the norway.mbtiles file in KartverketProject/KartverketProject/wwwroot/
 
+
+### Seeded data
+
+## Format
+username:password
+
+johnd:admin (NLA, admin)
+janed:admin (NLA, reviewer)
+bobs:admin (NLA, user)
+janiced:admin (Luftsforsvaret, reviewer)
+
+
 ### Getting started
 
 
@@ -60,6 +72,19 @@ Unzip the folder and place the norway.mbtiles file in KartverketProject/Kartverk
 
 ![dockercompose](images/observedockercompose10.png)
 
+
+### Password does not work
+
+1. Open cmd, list with «docker volume ls» and then do «docker volume rm {VOLUMENAME HERE}». If it says volume is in use, go to docker desktop and delete the container.
+
+![dockercompose](images/volume6.png)
+
+
+![dockercompose](images/deletecompose7.png)
+
+2. Run the project as docker-compose to set up the volume again.
+
+
 ## Resetting migrations
 
 
@@ -91,17 +116,6 @@ Update-Database -Context ApplicationDbContext
 
 Update-Database -Context AuthenticationDbContext
 
-
-### Password does not work
-
-1. Open cmd, list with «docker volume ls» and then do «docker volume rm {VOLUMENAME HERE}». If it says volume is in use, go to docker desktop and delete the container.
-
-![dockercompose](images/volume6.png)
-
-
-![dockercompose](images/deletecompose7.png)
-
-2. Run the project as docker-compose to set up the volume again.
 
 ## System architecture
 
@@ -149,19 +163,82 @@ Based on the C4 model: https://c4model.com/diagrams/container
 
 ### Scenarios
 
-https://github.com/letsgorm/KartverketProject/blob/61e0adda155e96a1ce9f4199811deffa7794ecdf/KartverketTest/Test1.cs#L12-L28
-
-https://github.com/letsgorm/KartverketProject/blob/61e0adda155e96a1ce9f4199811deffa7794ecdf/KartverketTest/Test1.cs#L33-L52
-
-https://github.com/letsgorm/KartverketProject/blob/61e0adda155e96a1ce9f4199811deffa7794ecdf/KartverketTest/Test1.cs#L65-L90
+UPDATING
 
 ### Results
  
 ![dockercompose](images/unittesting13.png)
 
+### Security
+
+## ZAP
+
+ZAP only revealed Content Security Policy issues as high risk.
+The use of Tailwind CDN, HTTP and unset Content-Type is a security risk.
+Due to the reason that this is a local project, during production; we would actually store local Tailwind.
+In addition, HTTP would be moved to HTTPS so Tileserver-GL could render the map safely;
+Right now unsafe eval in CSP allows for XSS be injected, but most forms are secure due to parsing + serialization
+
+[View ZAP report](security/zapscan.html)
+
+## Stack trace
+
+Stack trace can reveal errors which can be used for error-based SQL or XSS.
+By using an exception handler, it redirects the user to an error page rather than showing the stack trace.
+
+![dockercompose](images/stacktrace16.png)
+
+## Brute force
+
+In insecure web pages, attackers can find out the username due to
+
+1. The username showing "Username/email already taken" which can allow attackers to find out the login detail.
+2. The password showing "Incorrect password" which can allow the attacker to find the correct password.
+
+In this website, we are only showing "Invalid login attempt" and restricting attempted logins to 5 only;
+which then locks the account for 15 minutes until the attacker can log in again.
+
+![dockercompose](images/locked22.png)
+
+This renders brute force essentially useless.
+
+## XSS
+
+XSS can inject JavaScript on other users pages.
+Say the attacker uses {}; alert(0); // in BurpSuite.
+Then encodes the payload in URL encoding for further requests;
+
+![dockercompose](images/xss17.png)
+
+They can then show the alert on the page.
+
+![dockercompose](images/alert18.png)
+
+With parsing and serialization, the attacker can no longer do XSS.
+
+![dockercompose](images/register19.png)
+
+## IDOR
+
+Authenticated users can see their own reports.
+But insecure direct object reference can change the ID in the header to get another users id.
+
+code here 204-207
+
+We changed the code in order to prevent users from getting others reports.
+In addition, reviewers are also restricted if they do not fulfill these criteria:
+
+1. Own the report
+2. The report is not shared with them
+3. They are not part of the same department
+
+![dockercompose](images/idor21.png)
+
+This way, we stop users from editing and deleting reports that belongs to other users.
+
 ## Credits
 
-A special thank you to DAkintola94 for assisting us and allowing us to reuse his code.
+A special thank you to DAkintola94 for assisting us and allowing us to reuse his code for Core Identity.
 
 You can find his project here:
 
