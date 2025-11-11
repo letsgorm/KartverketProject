@@ -273,6 +273,13 @@ namespace KartverketProject.Controllers
             return View(obstacles);
         }
 
+        //Access Denied page
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         // GET: /Account/UpdateStatus/newStatus=Approved
         [Authorize(Roles = "AuthenticatedHigh")]
         [HttpGet]
@@ -431,6 +438,9 @@ namespace KartverketProject.Controllers
                 obstacleJSON = obstacle.ObstacleJSON,
                 sharedWith = sharedWith
             });
+
+       
+
         }
     }
 }

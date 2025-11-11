@@ -25,10 +25,22 @@ namespace KartverketProject
                     new MySqlServerVersion(new Version(11, 8, 3))
             ));
 
+            
             // Core Identity
-            builder.Services.AddIdentity<User, IdentityRole>()
+            builder.Services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+
+             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";          // hvis ikke logget inn
+                options.AccessDeniedPath = "/Account/AccessDenied"; // hvis logget inn men mangler rolle
+                options.LogoutPath = "/Account/Logout";
+            });
 
             // Configure Identity options
             builder.Services.Configure<IdentityOptions>(options =>
