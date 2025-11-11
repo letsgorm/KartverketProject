@@ -17,11 +17,13 @@ Unzip the folder and place the norway.mbtiles file in KartverketProject/Kartverk
 ## Format
 username:password
 
-johnd:admin (NLA, admin)
-janed:admin (NLA, reviewer)
-bobs:admin (NLA, user)
-janiced:admin (Luftsforsvaret, reviewer)
+1. johnd:admin (NLA, admin)
+  
+2. janed:admin (NLA, reviewer)
+   
+3. bobs:admin (NLA, user)
 
+4. janiced:admin (Luftsforsvaret, reviewer)
 
 ### Getting started
 
