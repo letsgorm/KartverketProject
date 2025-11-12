@@ -1,40 +1,46 @@
 var map = L.map('map').fitWorld();
 
-// offline kart
+// hent offline kart fra lokal tileserver-gl
 L.tileLayer('http://localhost:8080/styles/basic-preview/512/{z}/{x}/{y}.png', {
     maxZoom: 18,
     attribution: 'OpenStreetMap'
 }).addTo(map);
 
-// finn posisjon
-map.locate({ setView: true, maxZoom: 18, timeout: 10000 }); // timeout for sikkerhet
+// finn brukers sted
+map.locate({ setView: true, maxZoom: 18 });
 
-// poisjson aktivert
-map.on('locationfound', function (e) {
+function onLocationFound(e) {
     var radius = e.accuracy;
 
     L.marker(e.latlng).addTo(map)
-        .bindPopup("Du er her").openPopup();
+        .bindPopup("You are here").openPopup();
 
     L.circle(e.latlng, radius).addTo(map);
-});
+}
 
-// globale variabler for tegning
+map.on('locationfound', onLocationFound);
+map.on('locationerror', function (e) { alert(e.message); });
+
+// globale variabler
 var points = [];
 var group = L.layerGroup().addTo(map);
 var poly = null;
 
-// kegg til punkt ved klikk hvis draw-mode er aktivert
-map.on('click', function (e) {
-    addPoint(e.latlng);
-});
-
 function addPoint(latlng) {
-    points.push(latlng);      // legg til i polyline
-    updatePolyline();         // oppdater linje
-    addMarker(latlng);        // legg til markor med click-handler
-    updateGeoJSON();          // oppdater geojson
-    checkLength();            // auto-clear hvis for mange punkter
+    // legg til lat og lng for polyline
+    points.push(latlng);
+
+    // oppdater polyline
+    updatePolyline();
+
+    // legg til marker med click-event
+    addMarker(latlng);
+
+    // oppdater geojson
+    updateGeoJSON();
+
+    // sjekk at lengden er over 50
+    checkLength();
 }
 
 function updatePolyline() {
@@ -48,17 +54,19 @@ function updatePolyline() {
 
 function addMarker(latlng) {
     const marker = L.marker(latlng);
-    // klikk på markør sletter alle punkter og polyline
+
+    // when marker is clicked, remove marker + polyline
     marker.on('click', function () {
         group.clearLayers();
         points = [];
         poly = null;
     });
+
     group.addLayer(marker);
 }
 
 function updateGeoJSON() {
-    var layers = group.toGeoJSON(); // lagre/oppdater geojson om nødvendig
+    layers = group.toGeoJSON();
 }
 
 function checkLength() {
@@ -68,3 +76,8 @@ function checkLength() {
         poly = null;
     }
 }
+
+// legg til punkt hvis draw mode er aktivert
+map.on('click', function (e) {
+    addPoint(e.latlng);
+});
