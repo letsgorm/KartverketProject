@@ -11,7 +11,7 @@
         : new List<ReasonRequest>();
 }
 
-@if (unseenReasons.Any())
+@if (unseenReasons != null && unseenReasons.Any())
 {
     <div id="reportReasonAlerts" class="fixed top-40 right-4 space-y-2 z-50">
         @foreach (var reason in unseenReasons)

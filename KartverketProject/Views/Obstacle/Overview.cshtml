@@ -38,9 +38,9 @@
         </dl>
 
         <div class="pt-2">
-            <a asp-controller="Home" asp-action="Index"
+            <a asp-controller="Account" asp-action="Reports"
                class="inline-flex items-center rounded-lg px-4 py-2 ring-1 ring-gray-300 hover:bg-gray-50">
-                Back to Home
+                See all reports
             </a>
         </div>
     </div>
@@ -51,6 +51,10 @@
     string geoJsonForJs = "{}";
     try
     {
+        if(Model.ObstacleJSON == null)
+        {
+            return;
+        }
         var geoDataObj = JsonSerializer.Deserialize<object>(Model.ObstacleJSON);
         geoJsonForJs = JsonSerializer.Serialize(geoDataObj);
     }

@@ -47,6 +47,10 @@ namespace KartverketProject.Controllers
         public async Task<ActionResult<Obstacle>> AddObstacle(Obstacle newObstacle)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return NotFound();
+            }
             var obstacle = await _service.AddObstacleAsync(newObstacle, userId);
             return CreatedAtAction(nameof(GetObstacleById), new { id = obstacle.ObstacleId }, obstacle);
         }

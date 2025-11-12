@@ -168,13 +168,45 @@ https://github.com/letsgorm/KartverketProject/blob/9073420b0a123a217a8d737adba32
  
 ![UNI](images/unittesting13.png)
 
-## Security
+## System testing
+
+### Range
+
+During system testing, editing the report height with a large value caused this issue:
+
+"Value was either too large or too small for an Int32."
+
+![ONL](images/range26.png)
+
+The range was correctly set from [Range(0, 200)] to [Range(0.0, 200.0)]
+
+### Empty form
+
+User submits empty data in the form.
+
+![EMP](images/empty24.png)
+
+Draft can now be edited with the empty data.
+
+![FIL](images/filled25.png)
+
+### Offline map
+
+Map is rendered online (no throttling) with green HTTP status (200)
+
+![ONL](images/online22.png)
+
+Map is rendered offline with no HTTP status.
+
+![OFL](images/offline23.png)
+
+## Security testing
 
 ### ZAP
 
 ZAP only revealed Content Security Policy issues as high risk.
 The use of Tailwind CDN, HTTP and unset Content-Type is a security risk.
-Due to the reason that this is a local project, during production; we would actually store local Tailwind.
+Due to the reason that this is a local project, during production; the data would be stored locally instead.
 In addition, HTTP would be moved to HTTPS so Tileserver-GL could render the map safely;
 Right now unsafe eval in CSP allows for XSS be injected, but most forms are secure due to parsing + serialization
 
@@ -189,6 +221,7 @@ Stack trace can reveal errors which can be used for error-based SQL or XSS.
 ![STACK](images/stacktrace16.png)
 
 By using an exception handler, it redirects the user to an error page rather than showing the stack trace.
+During development, developers need the stack trace to locate issues.
 
 ### Brute force
 
@@ -197,7 +230,7 @@ In insecure web pages, attackers can find out the username due to
 1. The username showing "Username/email already taken" which can allow attackers to find out the login detail.
 2. The password showing "Incorrect password" which can allow the attacker to find the correct password.
 
-In this website, we are only showing "Invalid login attempt" and restricting attempted logins to 5 only;
+This results in a "Invalid login attempt" that allows only 5 attempts;
 which then locks the account for 15 minutes until the attacker can log in again.
 
 ![BRUTE](images/brute20.png)
@@ -223,20 +256,26 @@ With parsing and serialization, the attacker can no longer do XSS.
 ### IDOR
 
 Authenticated users can see their own reports.
-But insecure direct object reference can change the ID in the header to get another users id.
+But users could potentially change the ID in the header to alter other users reports.
+The code below stops a user from retrieving a report that is not theirs from the ID.
 
 https://github.com/letsgorm/KartverketProject/blob/9073420b0a123a217a8d737adba32ce542875756/KartverketProject/Controllers/AccountController.cs#L500-L528
 
-We changed the code in order to prevent users from getting others reports.
-In addition, reviewers are also restricted if they do not fulfill these criteria:
+In addition, reviewers can only accept/reject the report if they fulfill the criterias:
 
 1. Own the report
 2. The report is not shared with them
 3. They are not part of the same department
 
+If a report is shared with them, they cannot share it further.
+
 ![IDOR](images/idor21.png)
 
-This way, we stop users from editing and deleting reports that belongs to other users.
+This way, roles are managed according to their privileges along with data sharing restrictions.
+
+## Usability testing
+
+In progress.
 
 ## Credits
 

@@ -1,4 +1,6 @@
-﻿@model IEnumerable<KartverketProject.Models.Obstacle>
+﻿@using System.Text.Json
+@model IEnumerable<KartverketProject.Models.Obstacle>
+
 @{
     ViewData["Title"] = "All Obstacles";
     var selectedStatus = ViewData["SelectedStatus"] as string ?? "All";
@@ -54,7 +56,7 @@
                     var report = obstacle.ReportEntries.FirstOrDefault();
                     var department = report?.User?.Department ?? "—";
                     var username = report?.User?.UserName ?? "—";
-                    var sharedWith = report?.SharedWith.Select(s => s.SharedWithUser.Email).ToList() ?? new List<string>();
+                    var sharedWith = report?.SharedWith.Select(s => s.SharedWithUser?.Email).ToList() ?? new List<string?>();
 
                     <tr class="border-b hover:bg-gray-50 transition">
                         <td class="px-4 py-3">@obstacle.ObstacleName</td>

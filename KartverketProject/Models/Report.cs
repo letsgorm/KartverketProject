@@ -17,10 +17,10 @@ namespace KartverketProject.Models
 
 
         [JsonIgnore]
-        public User User { get; set; } 
+        public User? User { get; set; } 
 
         [JsonIgnore]
-        public Obstacle Obstacle { get; set; }
+        public Obstacle? Obstacle { get; set; }
 
         public ICollection<ReportShare> SharedWith { get; set; } = new List<ReportShare>();
     }

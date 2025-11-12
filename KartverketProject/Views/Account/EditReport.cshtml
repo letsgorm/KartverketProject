@@ -8,7 +8,7 @@
 
 <h2 class="text-2xl font-semibold mb-4">Edit Obstacle Report</h2>
 
-<form asp-action="EditReport" method="post">
+<form asp-action="EditReport" asp-route-id="@Model.ReportEntries.FirstOrDefault()?.ReportId" method="post">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="ObstacleId" />
     <input type="hidden" asp-for="ObstacleJSON" id="ObstacleJSON" />
