@@ -46,7 +46,11 @@ namespace KartverketProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterRequest model)
         {
-            var user = new User { UserName = model.UserName, Email = model.Email, LockoutEnabled = true };
+            var user = new User { 
+                UserName = model.UserName, 
+                Email = model.Email, 
+                Department = model.Department, // default NLA
+                LockoutEnabled = true };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
