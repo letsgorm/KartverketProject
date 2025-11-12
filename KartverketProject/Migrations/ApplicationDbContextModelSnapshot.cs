@@ -182,16 +182,16 @@ namespace KartverketProject.Migrations
                             Id = "33333333-3333-3333-3333-333333333333",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "58242bbf-33c2-4866-8615-9a68c9cb82ca",
+                            ConcurrencyStamp = "e5e07206-72bf-4568-a39a-897e58d7ac86",
                             Department = "NLA",
                             Email = "admin@nla.no",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@NLA.NO",
                             NormalizedUserName = "JOHND",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC085K4mHiggk4FxMu+1/vNDmV9UxaDZHC8jPS5SJXFLpt6nqP3MAtGVbuOMds6n6w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDpDJKhmvgtYpwFQbhJD4K+Jit/1bH1wqP2W4DCvrRI8ffU/XcAO+DGYUo+5uXRGRg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0d108309-e2dc-4bf2-b6b3-f17c588d8b15",
+                            SecurityStamp = "50d5c722-e497-423a-8c43-0aa85a4be41a",
                             TwoFactorEnabled = false,
                             UserName = "johnd"
                         },
@@ -200,16 +200,16 @@ namespace KartverketProject.Migrations
                             Id = "44444444-4444-4444-4444-444444444444",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "d57d1b89-34b5-48da-a649-68100f959a1c",
+                            ConcurrencyStamp = "27e03749-dff2-47a1-ad4b-1b6ef05810c5",
                             Department = "NLA",
                             Email = "reviewer@nla.no",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "REVIEWER@NLA.NO",
                             NormalizedUserName = "JANED",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIqG8jAKbqtqth4oJLsntpu4jcqvtq97zRei5e4e9TnOOwbebsKrTs+9rJP7Ire29A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEC/84zP5N102WFh0Ar0KGqvYLp+SaJqMFG/OEFgh+xv3ojg/GexJEdCg+25UDUUZ4g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "493a2cb2-ed9e-41a9-baa8-a01d214a9d98",
+                            SecurityStamp = "518451ca-f75d-47fe-92a8-acc38073a128",
                             TwoFactorEnabled = false,
                             UserName = "janed"
                         },
@@ -218,16 +218,16 @@ namespace KartverketProject.Migrations
                             Id = "66666666-6666-6666-6666-666666666666",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "79e5b6db-d1ec-4d82-b50f-a6fdb38eccf7",
+                            ConcurrencyStamp = "ca9789fb-d082-4ac4-bf82-1eaa694a435e",
                             Department = "NLA",
                             Email = "user@nla.no",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "USER@NLA.NO",
                             NormalizedUserName = "BOBS",
-                            PasswordHash = "AQAAAAIAAYagAAAAECLF9o/1WcidBe6PJNts62sKs2GN9Ak1XmOcR7/eoUNjS82Zk0s345T6sXbybYTIZA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJCP5HAUg46jnqzdEtcJgih+9QuJhaZegptZFWDdOIQ6JLYmHOv/fv/EvRXe/09Lxw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "564a9c81-8dab-4a2d-b500-413949449299",
+                            SecurityStamp = "74ebdf66-d6cf-4195-ba1d-a56cfd390d3d",
                             TwoFactorEnabled = false,
                             UserName = "bobs"
                         },
@@ -236,16 +236,16 @@ namespace KartverketProject.Migrations
                             Id = "77777777-7777-7777-7777-777777777777",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "bc70051f-0eaa-4bee-97af-525676c2626d",
+                            ConcurrencyStamp = "5279765a-bd2e-4bf0-889b-7bc0f07cbeec",
                             Department = "Luftsforsvaret",
                             Email = "reviewer@luftsforsvaret.no",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "REVIEWER@LUFTSFORSVARET.NO",
                             NormalizedUserName = "JANICED",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHUCFIEfjgTmiEXLxEvRcYogJbcFg+Z3zK66t1lWWc6t2ZZqHFklm6peFzInyqo4mg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGu9nMdlVc8R74+lu3tH+1gnqBcqJXP6S5hTJ31CnP2df7SpENpJZVVefZOO1lJq0A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "aa0cddfd-ad6e-4292-9eea-5d36d9f98098",
+                            SecurityStamp = "1c85716f-6f01-42a8-8d91-acbfd1d9f1cf",
                             TwoFactorEnabled = false,
                             UserName = "janiced"
                         });
@@ -440,7 +440,6 @@ namespace KartverketProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SharedWithUserId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("ReportShareId");
@@ -532,8 +531,7 @@ namespace KartverketProject.Migrations
                     b.HasOne("KartverketProject.Models.User", "SharedWithUser")
                         .WithMany()
                         .HasForeignKey("SharedWithUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Report");
 

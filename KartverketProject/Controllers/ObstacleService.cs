@@ -1,5 +1,7 @@
 ﻿using KartverketProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 // This is the CRUD service for Obstacle.

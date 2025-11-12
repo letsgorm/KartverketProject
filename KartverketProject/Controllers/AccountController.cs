@@ -99,10 +99,15 @@ namespace KartverketProject.Controllers
                 isPersistent: false,
                 lockoutOnFailure: true);
 
+            var currentUser = await _userManager.FindByNameAsync(model.UserName);
+
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+
             if (result.Succeeded)
             {
-                var currentUser = await _userManager.FindByNameAsync(model.UserName);
-
                 // Fetch unseen report reasons
                 var unseenReports = await _context.Report
                     .Where(r => r.UserId == currentUser.Id
@@ -185,10 +190,15 @@ namespace KartverketProject.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             var reports = await _context.Report
                 .Include(r => r.Obstacle)
                 .Include(r => r.User)
-                .Where(r => r.UserId == user.Id)
+                .Where(r => r.UserId == user.Id) // sjekk at rapport id stemmer med bruker id
                 .ToListAsync();
 
             return View(reports);
@@ -215,7 +225,7 @@ namespace KartverketProject.Controllers
                 return Forbid();
             }
 
-            return View("~/Views/Account/EditReport.cshtml", report.Obstacle);
+            return View(report.Obstacle);
         }
 
         // POST: /Account/EditReport/{id}
@@ -225,7 +235,9 @@ namespace KartverketProject.Controllers
         public async Task<IActionResult> EditReport(int id, Obstacle obstacle)
         {
             if (!ModelState.IsValid)
-                return View("~/Views/Account/EditReport.cshtml", obstacle);
+            {
+                return View(obstacle);
+            }
 
             var currentUser = await _userManager.GetUserAsync(User);
 
@@ -245,7 +257,7 @@ namespace KartverketProject.Controllers
                 return Forbid();
             }
 
-            var existing = await _context.Obstacle.FindAsync(obstacle.ObstacleId);
+            var existing = await _service.GetObstacleByIdAsync(obstacle.ObstacleId);
 
             // sjekk om hindre eksisterer
             if (existing == null)
@@ -253,17 +265,16 @@ namespace KartverketProject.Controllers
                 return NotFound();
             }
 
-            // oppdater hindre
             existing.ObstacleName = obstacle.ObstacleName;
             existing.ObstacleHeight = obstacle.ObstacleHeight;
             existing.ObstacleDescription = obstacle.ObstacleDescription;
             existing.ObstacleJSON = obstacle.ObstacleJSON;
             existing.ObstacleSubmittedDate = DateTime.UtcNow;
 
-            _context.Update(existing);
-            await _context.SaveChangesAsync();
+             _context.Update(existing);
+             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Reports");
+             return RedirectToAction("Reports");
         }
 
         // GET: /Account/DeleteReport/{id}
@@ -338,7 +349,7 @@ namespace KartverketProject.Controllers
 
             obstacles = obstacles
                 .Where(o => o.ReportEntries.Any(r =>
-                        r.User.Department == userDepartment || // tilhorer org eller delt med
+                        r.User?.Department == userDepartment || // tilhorer org eller delt med
                         r.SharedWith.Any(rs => rs.SharedWithUserId == userId)
                 ))
                 .ToList(); // allerede i memory
@@ -348,10 +359,10 @@ namespace KartverketProject.Controllers
             {
                 "name_asc" => obstacles.OrderBy(o => o.ObstacleName).ToList(),
                 "name_desc" => obstacles.OrderByDescending(o => o.ObstacleName).ToList(),
-                "department_asc" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User.Department).ToList(),
-                "department_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User.Department).ToList(),
-                "username_asc" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User.UserName).ToList(),
-                "username_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User.UserName).ToList(),
+                "department_asc" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User?.Department).ToList(),
+                "department_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User?.Department).ToList(),
+                "username_asc" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User?.UserName).ToList(),
+                "username_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User?.UserName).ToList(),
                 "date_asc" => obstacles.OrderBy(o => o.ObstacleSubmittedDate).ToList(),
                 "date_desc" => obstacles.OrderByDescending(o => o.ObstacleSubmittedDate).ToList(),
                 "status_asc" => obstacles.OrderBy(o => o.ObstacleStatus).ToList(),
@@ -402,7 +413,7 @@ namespace KartverketProject.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             var isOwner = report.UserId == currentUserId;
             var isShared = report.SharedWith.Any(rs => rs.SharedWithUserId == currentUserId);
-            var isSameDepartment = report.User.Department == currentUser?.Department;
+            var isSameDepartment = report.User?.Department == currentUser?.Department;
 
             // Vis 403
             if (!isOwner && !isShared && !isSameDepartment)
@@ -430,7 +441,7 @@ namespace KartverketProject.Controllers
             // Hent ut rapport
             var report = await _context.Report
                 .Include(r => r.Obstacle)
-                .FirstOrDefaultAsync(r => r.Obstacle.ObstacleId == obstacleId);
+                .FirstOrDefaultAsync(r => r.Obstacle != null && r.Obstacle.ObstacleId == obstacleId);
 
             if (report == null)
                 return NotFound();
@@ -473,7 +484,7 @@ namespace KartverketProject.Controllers
             // Kun eier eller org kan dele
             var currentUser = await _userManager.GetUserAsync(User);
             var isOwner = report.UserId == currentUserId;
-            var isSameDepartment = report.User.Department == currentUser?.Department;
+            var isSameDepartment = report.User?.Department == currentUser?.Department;
 
             // Vis 403
             if (!isOwner && !isSameDepartment) 
@@ -517,7 +528,7 @@ namespace KartverketProject.Controllers
             // Kun eier eller org kan dele
             var currentUser = await _userManager.GetUserAsync(User);
             var isOwner = report.UserId == currentUserId;
-            var isSameDepartment = report.User.Department == currentUser?.Department;
+            var isSameDepartment = report.User?.Department == currentUser?.Department;
 
             // Vis 403
             if (!isOwner && !isSameDepartment) 
@@ -556,7 +567,7 @@ namespace KartverketProject.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             var isOwner = report.UserId == currentUserId;
             var isShared = report.SharedWith.Any(rs => rs.SharedWithUserId == currentUserId);
-            var isSameDepartment = report.User.Department == currentUser?.Department;
+            var isSameDepartment = report.User?.Department == currentUser?.Department;
 
             // Vis 403
             if (!isOwner && !isShared && !isSameDepartment) 
@@ -564,7 +575,7 @@ namespace KartverketProject.Controllers
 
             var sharedWith = report.SharedWith
                 .Where(s => s.SharedWithUser != null)
-                .Select(s => s.SharedWithUser.UserName)
+                .Select(s => s.SharedWithUser?.UserName)
                 .ToList();
 
             return Json(new

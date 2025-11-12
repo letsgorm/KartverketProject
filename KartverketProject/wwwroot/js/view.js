@@ -33,6 +33,7 @@ async function openViewPanel(obstacleId) {
         attribution: 'OpenStreetMap'
     }).addTo(obstacleMap);
 
+    // stringify layers
     if (data.obstacleJSON) {
         try {
             const jsonData = JSON.parse(data.obstacleJSON);
