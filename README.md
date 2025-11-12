@@ -253,25 +253,35 @@ With parsing and serialization, the attacker can no longer do XSS.
 
 ![REG](images/register19.png)
 
-### IDOR
+### Broken Access Control
+
+Reviewers are restricted based on these criterias:
+
+1. If they own the report
+2. Whether the report is shared with them
+3. If they belong to the same department
+
+https://github.com/letsgorm/KartverketProject/blob/9073420b0a123a217a8d737adba32ce542875756/KartverketProject/Controllers/AccountController.cs#L398-L401
+
+If a report is shared with them, they cannot share it further.
+
+https://github.com/letsgorm/KartverketProject/blob/9073420b0a123a217a8d737adba32ce542875756/KartverketProject/Controllers/AccountController.cs#L470-L472
+
+This way, roles are managed according to their privileges along with data sharing restrictions.
+
+#### IDOR
 
 Authenticated users can see their own reports.
 But users could potentially change the ID in the header to alter other users reports.
 The code below stops a user from retrieving a report that is not theirs from the ID.
 
-https://github.com/letsgorm/KartverketProject/blob/9073420b0a123a217a8d737adba32ce542875756/KartverketProject/Controllers/AccountController.cs#L500-L528
+https://github.com/letsgorm/KartverketProject/blob/9073420b0a123a217a8d737adba32ce542875756/KartverketProject/Controllers/AccountController.cs#L184-L188
 
-In addition, reviewers can only accept/reject the report if they fulfill the criterias:
-
-1. Own the report
-2. The report is not shared with them
-3. They are not part of the same department
-
-If a report is shared with them, they cannot share it further.
+They get redirected to "Access Denied"
 
 ![IDOR](images/idor21.png)
 
-This way, roles are managed according to their privileges along with data sharing restrictions.
+This way, users cannot change the URL in order to alter reports.
 
 ## Usability testing
 
