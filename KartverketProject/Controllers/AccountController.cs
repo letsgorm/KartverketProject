@@ -444,7 +444,7 @@ namespace KartverketProject.Controllers
                 // Vis kun admin eller reviewer, ikke brukere
                 if (roles.Contains("reviewer") || roles.Contains("admin")) 
                 {
-                    reviewers.Add(new { user.Id, user.UserName });
+                    reviewers.Add(new { id = user.Id, username = user.UserName });
                 }
             }
 
