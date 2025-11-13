@@ -5,58 +5,61 @@
     ViewData["Title"] = "Overview";
 }
 
-<div id="map-overview" class="mt-6 rounded-lg border border-gray-300" style="height:400px;"></div>
+<!-- Flex wrapper to put map beside the details panel -->
+<div class="flex flex-col lg:flex-row gap-6">
 
-<section class="mx-auto max-w-2xl">
-    <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6 space-y-4">
-        <header>
-            <h1 class="text-2xl font-semibold">Overview</h1>
-            <p class="text-gray-600 mt-1">Thank you for registering an obstacle:</p>
-        </header>
-
-        <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-600">Obstacle JSON</dt>
-                <dd class="mt-1 text-base text-gray-900 break-words">@Model.ObstacleJSON</dd>
-            </div>
-            <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-600">Obstacle Name</dt>
-                <dd class="mt-1 text-base text-gray-900 break-words">@Model.ObstacleName</dd>
-            </div>
-            <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-600">Height (m)</dt>
-                <dd class="mt-1 text-base text-gray-900">@Model.ObstacleHeight</dd>
-            </div>
-            <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-600">Description</dt>
-                <dd class="mt-1 text-base text-gray-900 break-words sm:col-span-3">@Model.ObstacleDescription</dd>
-            </div>
-            <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-600">Created date</dt>
-                <dd class="mt-1 text-base text-gray-900 break-words sm:col-span-3">@Model.ObstacleSubmittedDate</dd>
-            </div>
-        </dl>
-
-        <div class="pt-2">
-            <a asp-controller="Account" asp-action="Reports"
-               class="inline-flex items-center rounded-lg px-4 py-2 ring-1 ring-gray-300 hover:bg-gray-50">
-                See all reports
-            </a>
-        </div>
+    <!-- Map -->
+    <div id="map-wrapper-overview" class="relative flex-1 rounded-lg border border-gray-300">
+        <div id="map-overview" class="w-full h-96 lg:h-[95vh] rounded-lg"></div>
     </div>
-</section>
+
+    <!-- Details / “form” panel -->
+    <section class="mx-auto max-w-2xl lg:w-1/2">
+        <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6 space-y-4">
+            <header>
+                <h1 class="text-2xl font-semibold">Overview</h1>
+                <p class="text-gray-600 mt-1">Thank you for registering an obstacle:</p>
+            </header>
+
+            <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-gray-600">Obstacle Name</dt>
+                    <dd class="mt-1 text-base text-gray-900 break-words">@Model.ObstacleName</dd>
+                </div>
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-gray-600">Height (m)</dt>
+                    <dd class="mt-1 text-base text-gray-900">@Model.ObstacleHeight</dd>
+                </div>
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-gray-600">Description</dt>
+                    <dd class="mt-1 text-base text-gray-900 break-words sm:col-span-3">@Model.ObstacleDescription</dd>
+                </div>
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-gray-600">Created date</dt>
+                    <dd class="mt-1 text-base text-gray-900 break-words sm:col-span-3">@Model.ObstacleSubmittedDate</dd>
+                </div>
+            </dl>
+
+            <div class="pt-2">
+                <a asp-controller="Account" asp-action="Reports"
+                   class="inline-flex items-center rounded-lg px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 ring-1 ring-gray-300">
+                    See my reports
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
 
 @{
     // default
     string geoJsonForJs = "{}";
     try
     {
-        if(Model.ObstacleJSON == null)
+        if (Model.ObstacleJSON != null)
         {
-            return;
+            var geoDataObj = JsonSerializer.Deserialize<object>(Model.ObstacleJSON);
+            geoJsonForJs = JsonSerializer.Serialize(geoDataObj);
         }
-        var geoDataObj = JsonSerializer.Deserialize<object>(Model.ObstacleJSON);
-        geoJsonForJs = JsonSerializer.Serialize(geoDataObj);
     }
     catch
     {
