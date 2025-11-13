@@ -6,11 +6,14 @@
     ViewData["Title"] = "Register Obstacle";
 
     var unseenJson = TempData["UnseenReportReasons"] as string;
+
+    // hvis ikke null, deserialiser begrunnelse
     var unseenReasons = !string.IsNullOrEmpty(unseenJson)
-        ? System.Text.Json.JsonSerializer.Deserialize<List<ReasonRequest>>(unseenJson)
+        ? System.Text.Json.JsonSerializer.Deserialize<List<ReasonRequest>>(unseenJson) 
         : new List<ReasonRequest>();
 }
 
+<!-- hvis usett begrunnelser, vis alle -->
 @if (unseenReasons != null && unseenReasons.Any())
 {
     <div id="reportReasonAlerts" class="fixed top-40 right-4 space-y-2 z-50">
@@ -36,17 +39,14 @@
 <link rel="stylesheet" href="~/css/map.css" />
 <link rel="stylesheet" href="~/css/dark.css" />
 
-<!-- Mobil support-->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-<!-- Flex wrapper to put form beside map -->
+<!-- flex -->
 <div class="flex flex-col lg:flex-row gap-6">
-    <!-- Map -->
+    <!-- kart -->
     <div id="map-wrapper" class="flex-1">
         <div id="map" data-draw="true"></div>
     </div>
 
-    <!-- Form -->
+    <!-- form -->
     <section class="mx-auto max-w-2xl lg:w-1/2">
         <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6">
             <header class="mb-6">
@@ -59,8 +59,8 @@
 
                 <div class="grid gap-5 sm:grid-cols-2">
 
+                    <!-- ObstacleJSON og ObstacleSubmittedDate -->
                     <input type="hidden" asp-for="ObstacleJSON" id="ObstacleJSON" />
-
                     <input type="hidden" asp-for="ObstacleSubmittedDate" id="ObstacleSubmittedDate" />
 
                     <!-- ObstacleName -->
@@ -72,7 +72,7 @@
                         <span asp-validation-for="ObstacleName" class="text-sm text-red-600"></span>
                     </div>
 
-                    <!-- Height -->
+                    <!-- ObstacleHeight -->
                     <div>
                         <label asp-for="ObstacleHeight" class="block text-sm font-medium text-gray-800 mb-1">
                             Obstacle Height (meters)
@@ -83,7 +83,7 @@
                         <span asp-validation-for="ObstacleHeight" class="text-sm text-red-600"></span>
                     </div>
 
-                    <!-- Description -->
+                    <!-- ObstacleDescription -->
                     <div class="sm:col-span-2">
                         <label asp-for="ObstacleDescription" class="block text-sm font-medium text-gray-800 mb-1">
                             Obstacle Description
@@ -95,6 +95,7 @@
                     </div>
                 </div>
 
+                <!-- send inn form -->
                 <div class="pt-2">
                     <button type="submit"
                             class="inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
@@ -106,8 +107,8 @@
     </section>
 </div>
 
+<!-- toggle dark mode -->
 <div class="pt-4 flex items-center justify-end">
-    <!-- Dark mode toggle untouched -->
     <button type="button" id="darkModeToggle"
             class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
         Toggle Dark Mode
@@ -118,6 +119,7 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/form.js"></script>
     <script src="~/js/alert.js"></script>
+    <script src="~/js/map.js"></script>
     <script>
         const toggleButton = document.getElementById('darkModeToggle');
 

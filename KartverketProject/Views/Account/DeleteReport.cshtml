@@ -5,8 +5,9 @@
 
 <h2 class="text-xl font-semibold mb-4">Delete Report</h2>
 
-<p>Are you sure you want to delete this report for obstacle: <strong>@Model.Obstacle?.ObstacleName</strong>?</p>
+<p>Are you sure you want to delete this report for obstacle: <strong> @Model.Obstacle?.ObstacleName</strong>?</p>
 
+<!-- slett rapport -->
 <form asp-action="DeleteReportConfirmed" method="post">
     @Html.AntiForgeryToken()
     <input type="hidden" name="reportId" value="@Model.ReportId" />

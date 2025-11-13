@@ -10,7 +10,7 @@
 <form asp-action="Register" method="post" class="space-y-6">
     @Html.AntiForgeryToken()
 
-    <!-- Username -->
+    <!-- brukernavn -->
     <div class="sm:col-span-2">
         <label asp-for="UserName" class="block text-sm font-medium text-gray-800 mb-1">Username</label>
         <input asp-for="UserName"
@@ -18,7 +18,7 @@
         <span asp-validation-for="UserName" class="text-sm text-red-600"></span>
     </div>
 
-    <!-- Email -->
+    <!-- epost -->
     <div class="sm:col-span-2">
         <label asp-for="Email" class="block text-sm font-medium text-gray-800 mb-1">Email</label>
         <input asp-for="Email"
@@ -26,7 +26,7 @@
         <span asp-validation-for="Email" class="text-sm text-red-600"></span>
     </div>
 
-    <!-- Password -->
+    <!-- passord -->
     <div class="sm:col-span-2">
         <label asp-for="Password" class="block text-sm font-medium text-gray-800 mb-1">Password</label>
         <input asp-for="Password"
@@ -34,10 +34,10 @@
         <span asp-validation-for="Password" class="text-sm text-red-600"></span>
     </div>
 
-    <!-- Validation summary -->
+    <!-- validering -->
     <div asp-validation-summary="ModelOnly" class="text-sm text-red-600"></div>
 
-    <!-- Register button -->
+    <!-- registrer -->
     <div class="pt-4">
         <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded w-full sm:w-auto">
             Register
@@ -45,7 +45,7 @@
     </div>
 </form>
 
-<!-- Login link -->
+<!-- login -->
 <p class="text-sm text-gray-600 text-center mt-6">
     Already have an account?
     <a href="/Account/Login" class="text-blue-600 hover:underline">Login here</a>

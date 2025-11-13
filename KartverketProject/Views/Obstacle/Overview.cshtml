@@ -5,15 +5,15 @@
     ViewData["Title"] = "Overview";
 }
 
-<!-- Flex wrapper to put map beside the details panel -->
+<!-- sett kart ved siden av form -->
 <div class="flex flex-col lg:flex-row gap-6">
 
-    <!-- Map -->
+    <!-- kart -->
     <div id="map-wrapper-overview" class="relative flex-1 rounded-lg border border-gray-300">
         <div id="map-overview" class="w-full h-96 lg:h-[95vh] rounded-lg"></div>
     </div>
 
-    <!-- Details / “form” panel -->
+    <!-- detaljer -->
     <section class="mx-auto max-w-2xl lg:w-1/2">
         <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6 space-y-4">
             <header>
@@ -40,6 +40,7 @@
                 </div>
             </dl>
 
+            <!-- vis mine rapporter -->
             <div class="pt-2">
                 <a asp-controller="Account" asp-action="Reports"
                    class="inline-flex items-center rounded-lg px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 ring-1 ring-gray-300">
@@ -69,19 +70,18 @@
 
 @section Scripts {
     <script>
-        // Initialize map
+        // lag kart
         var map = L.map('map-overview').setView([0, 0], 2);
 
-        // Tile layer
         L.tileLayer('http://localhost:8080/styles/basic-preview/512/{z}/{x}/{y}.png', {
             maxZoom: 18,
             attribution: 'OpenStreetMap'
         }).addTo(map);
 
-        // Inject safe GeoJSON
+        // parse trygg json
         var geoData = JSON.parse('@Html.Raw(geoJsonForJs)');
 
-        // Add to map if valid
+        // legg til kart
         if (geoData && geoData.features && geoData.features.length > 0) {
             var layer = L.geoJSON(geoData).addTo(map);
             map.fitBounds(layer.getBounds(), { padding: [20, 20] });

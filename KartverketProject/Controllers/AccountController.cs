@@ -42,13 +42,16 @@ namespace KartverketProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterRequest model)
         {
+            // lag ny bruker
             var user = new User { 
                 UserName = model.UserName, 
                 Email = model.Email, 
                 Department = model.Department, // default NLA
                 LockoutEnabled = true };
+            // skap ny bruker og passord
             var result = await _userManager.CreateAsync(user, model.Password);
 
+            // hvis OK, legg bruker til user og logg inn
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, "user");
@@ -56,18 +59,18 @@ namespace KartverketProject.Controllers
                 return RedirectToAction("DataForm", "Obstacle");
             }
 
-            // Check if duplicate user/email
+            // sjekk hvis resultat har error som duplikat navn eller epost
             if (result.Errors.Any(e => e.Code.Contains("DuplicateUserName") || e.Code.Contains("DuplicateEmail")))
             {
                 ModelState.AddModelError(string.Empty, "User already taken");
             }
-            // Otherwise, password failed
+            // ellers minimum passordkrav
             else
             {
                 ModelState.AddModelError(string.Empty,
                     "Password must have at least 6 characters, including an uppercase letter, a lowercase letter, a number, and a symbol.");
             }
-
+            // send til view med DTO model.
             return View(model);
         }
 
@@ -83,59 +86,67 @@ namespace KartverketProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequest model)
         {
+            // hvis validering feiler
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Please fill out all forms");
                 return View(model);
             }
-
+            
+            // logg inn med brute force beskyttelse
             var result = await _signInManager.PasswordSignInAsync(
                 model.UserName,
                 model.Password,
                 isPersistent: false,
                 lockoutOnFailure: true);
 
+            // finn brukerens navn
             var currentUser = await _userManager.FindByNameAsync(model.UserName);
 
+            // hvis bruker ikke eksisterer
             if (currentUser == null)
             {
                 return NotFound();
             }
 
+            // hvis bruker eksisterer
             if (result.Succeeded)
             {
-                // Fetch unseen report reasons
+                // hent opp rapporter som ikke er sitt eller som er tomme i begrunnelse
                 var unseenReports = await _context.Report
                     .Where(r => r.UserId == currentUser.Id
                                 && !r.ReportReasonSeen
                                 && !string.IsNullOrEmpty(r.ReportReason))
                     .ToListAsync();
 
+                // hvis de har blitt sitt
                 if (unseenReports.Any())
                 {
-                    // Send to TempData for first page load
+                    // send til tempdata for forste load
                     TempData["UnseenReportReasons"] = JsonSerializer.Serialize(
                         unseenReports.Select(r => new { r.ReportId, r.ReportReason })
                     );
 
-                    // Mark as seen in DB immediately so it doesn't show again
+                    // marker som sitt sann at bruker ikke ser den igjen
                     foreach (var report in unseenReports)
                     {
                         report.ReportReasonSeen = true;
                     }
+                    // eksisterende rapporter blir oppdatert og lagret
                     _context.UpdateRange(unseenReports);
                     await _context.SaveChangesAsync();
                 }
-
                 return RedirectToAction("DataForm", "Obstacle");
             }
 
+            // hvis feil passord 5 ganger
             if (result.IsLockedOut)
             {
                 ModelState.AddModelError("", "Account locked due to too many failed attempts. Try again later.");
                 return View(model);
             }
 
+            // hvis login feiler
             ModelState.AddModelError("", "Invalid login attempt");
             return View(model);
         }
@@ -146,13 +157,18 @@ namespace KartverketProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkReportReasonSeen([FromBody] int reportId)
         {
+            // finn rapport id
             var report = await _context.Report.FindAsync(reportId);
             if (report == null) return NotFound();
 
+            // hent bruker id og sjekk om den er lik rapportid
             var currentUserId = _userManager.GetUserId(User);
             if (report.UserId != currentUserId) return Forbid();
 
+            // rapport har blitt sitt
             report.ReportReasonSeen = true;
+
+            // oppdater rapport og lagre
             _context.Update(report);
             await _context.SaveChangesAsync();
 
@@ -187,10 +203,9 @@ namespace KartverketProject.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
-            {
                 return NotFound();
-            }
 
+            // hent opp rapporter med hindre og bruker der brukerid er lik brukerid
             var reports = await _context.Report
                 .Include(r => r.Obstacle)
                 .Include(r => r.User)
@@ -206,20 +221,18 @@ namespace KartverketProject.Controllers
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
+            // hent opp rapporter og hindre
             var report = await _context.Report
                 .Include(r => r.User)
                 .Include(r => r.Obstacle)
                 .FirstOrDefaultAsync(r => r.ReportId == id);
 
             if (report == null)
-            {
                 return NotFound();
-            }
 
+            // hvis rapport ikke stemmer med brukerid
             if (report.UserId != currentUser?.Id)
-            {
                 return Forbid();
-            }
 
             return View(report.Obstacle);
         }
@@ -230,29 +243,25 @@ namespace KartverketProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditReport(int id, Obstacle obstacle)
         {
+            // hvis validering feiler
             if (!ModelState.IsValid)
-            {
                 return View(obstacle);
-            }
 
             var currentUser = await _userManager.GetUserAsync(User);
 
-            // sjekk om rapport eksisterer
+            // hent opp rapport
             var report = await _context.Report
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(r => r.ReportId == id);
 
             if (report == null)
-            {
                 return NotFound();
-            }
 
             // sjekk om bruker eier rapport
             if (report.UserId != currentUser?.Id)
-            {
                 return Forbid();
-            }
 
+            // hent opp nested hindre
             var existing = await _context.Obstacle
                 .Include(o => o.ReportEntries)
                     .ThenInclude(r => r.User)
@@ -260,16 +269,16 @@ namespace KartverketProject.Controllers
 
             // sjekk om hindre eksisterer
             if (existing == null)
-            {
                 return NotFound();
-            }
 
+            // sett gammel data til ny
             existing.ObstacleName = obstacle.ObstacleName;
             existing.ObstacleHeight = obstacle.ObstacleHeight;
             existing.ObstacleDescription = obstacle.ObstacleDescription;
             existing.ObstacleJSON = obstacle.ObstacleJSON;
             existing.ObstacleSubmittedDate = DateTime.UtcNow;
 
+            // lagre oppdatert hindre
              _context.Update(existing);
              await _context.SaveChangesAsync();
 
@@ -282,21 +291,19 @@ namespace KartverketProject.Controllers
         public async Task<IActionResult> DeleteReport(int id)
         {
             var currentUser = await _userManager.GetUserAsync(User);
+
+            // hent opp rapport
             var report = await _context.Report
                 .Include(r => r.User)
                 .Include(r => r.Obstacle)
                 .FirstOrDefaultAsync(r => r.ReportId == id);
 
             if (report == null)
-            {
                 return NotFound();
-            }
 
             // sjekk om bruker eier rapport
             if (report.UserId != currentUser?.Id)
-            {
                 return Forbid();
-            }
 
             return View(report);
         }
@@ -309,6 +316,7 @@ namespace KartverketProject.Controllers
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
+            // hent opp bruker sin rapport
             var report = await _context.Report
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(r => r.ReportId == reportId);
@@ -316,10 +324,9 @@ namespace KartverketProject.Controllers
             if (report == null) 
                 return NotFound();
 
+            // sjekk om bruker eier rapport
             if (report.UserId != currentUser?.Id)
-            {
                 return Forbid();
-            }
 
             _context.Report.Remove(report);
             await _context.SaveChangesAsync();
@@ -338,17 +345,19 @@ namespace KartverketProject.Controllers
             var userDepartment = currentUser?.Department;
             var userId = currentUser?.Id;
 
+            // hent opp hindre med bruker, og den de har delt med
             var obstacles = await _context.Obstacle
                 .Include(o => o.ReportEntries)
                     .ThenInclude(r => r.User) // nesting med thenInclude
                 .Include(o => o.ReportEntries)
                     .ThenInclude(r => r.SharedWith)
                         .ThenInclude(rs => rs.SharedWithUser)
-                .ToListAsync();
+                .ToListAsync(); // lag til liste
 
+            // sjekk hindre som bruker er med eller delt med
             obstacles = obstacles
                 .Where(o => o.ReportEntries.Any(r =>
-                        r.User?.Department == userDepartment || // tilhorer org eller delt med
+                        r.User?.Department == userDepartment ||
                         r.SharedWith.Any(rs => rs.SharedWithUserId == userId)
                 ))
                 .ToList(); // allerede i memory
@@ -399,6 +408,7 @@ namespace KartverketProject.Controllers
         {
             var currentUserId = _userManager.GetUserId(User);
 
+            // hent opp bruker sin rapport som er delt med
             var report = await _context.Report
                 .Include(r => r.User)
                 .Include(r => r.SharedWith)
@@ -408,13 +418,13 @@ namespace KartverketProject.Controllers
             if (report == null)
                 return NotFound();
 
-            // Eier av rapport, delt med eller same org kan kun oppdatere status
+            // eier av rapport, delt med eller same org kan kun oppdatere status
             var currentUser = await _userManager.GetUserAsync(User);
             var isOwner = report.UserId == currentUserId;
             var isShared = report.SharedWith.Any(rs => rs.SharedWithUserId == currentUserId);
             var isSameDepartment = report.User?.Department == currentUser?.Department;
 
-            // Vis 403
+            // vis 403
             if (!isOwner && !isShared && !isSameDepartment)
                 return Forbid();
 
@@ -442,7 +452,7 @@ namespace KartverketProject.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             var currentDepartment = currentUser?.Department;
 
-            // Hent ut rapport
+            // hent ut rapport
             var report = await _context.Report
                 .Include(r => r.Obstacle)
                 .FirstOrDefaultAsync(r => r.Obstacle != null && r.Obstacle.ObstacleId == obstacleId);
@@ -450,7 +460,7 @@ namespace KartverketProject.Controllers
             if (report == null)
                 return NotFound();
 
-            // Hent alle som IKKE er i org
+            // hent alle som IKKE er i org
             var otherUsers = await _context.Users
                 .Where(u => u.Department != currentDepartment)
                 .ToListAsync();
@@ -460,7 +470,7 @@ namespace KartverketProject.Controllers
             foreach (var user in otherUsers)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                // Vis kun admin eller reviewer, ikke brukere
+                // vis kun admin eller reviewer, ikke brukere
                 if (roles.Contains("reviewer") || roles.Contains("admin")) 
                 {
                     reviewers.Add(new { id = user.Id, username = user.UserName });
@@ -470,8 +480,6 @@ namespace KartverketProject.Controllers
             return Json(reviewers);
         }
 
-
-
         // POST: /Account/ShareReport
         [Authorize(Policy = "AuthenticatedHigh")]
         [HttpPost]
@@ -480,26 +488,32 @@ namespace KartverketProject.Controllers
         {
             var currentUserId = _userManager.GetUserId(User);
 
+            // hent opp bruker og rapport
             var report = await _context.Report
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(r => r.ReportId == reportId);
-            if (report == null) return NotFound();
+
+            if (report == null) 
+                return NotFound();
 
             // Kun eier eller org kan dele
             var currentUser = await _userManager.GetUserAsync(User);
             var isOwner = report.UserId == currentUserId;
             var isSameDepartment = report.User?.Department == currentUser?.Department;
 
-            // Vis 403
+            // vis 403
             if (!isOwner && !isSameDepartment) 
                 return Forbid();
 
+            // hent opp alle valgte brukere fra <select> i overviewall
             foreach (var userId in selectedUserIds)
             {
                 var exists = await _context.ReportShare
                     .AnyAsync(rs => rs.ReportId == reportId && rs.SharedWithUserId == userId);
+                // sjekk om rapport og delt med eksisterer
                 if (!exists)
                 {
+                    // del rapporten
                     _context.ReportShare.Add(new ReportShare
                     {
                         ReportId = reportId,
@@ -508,6 +522,7 @@ namespace KartverketProject.Controllers
                 }
             }
 
+            // lagre endringer
             await _context.SaveChangesAsync();
             return RedirectToAction("OverviewAll");
         }
@@ -520,7 +535,7 @@ namespace KartverketProject.Controllers
         {
             var currentUserId = _userManager.GetUserId(User);
 
-            // Hent ut rapport
+            // hent opp rapport
             var report = await _context.Report
                 .Include(r => r.User)
                 .Include(r => r.SharedWith)
@@ -529,20 +544,19 @@ namespace KartverketProject.Controllers
             if (report == null)
                 return NotFound();
 
-            // Kun eier eller org kan dele
+            // kun eier eller og kan dele
             var currentUser = await _userManager.GetUserAsync(User);
             var isOwner = report.UserId == currentUserId;
             var isSameDepartment = report.User?.Department == currentUser?.Department;
 
-            // Vis 403
+            // vis 403
             if (!isOwner && !isSameDepartment) 
                 return Forbid();
 
-            // Remove all shares
+            // fjern alle delt med
             _context.ReportShare.RemoveRange(report.SharedWith);
             await _context.SaveChangesAsync();
 
-            // Redirect back to OverviewAll
             return RedirectToAction("OverviewAll");
         }
 
@@ -553,6 +567,7 @@ namespace KartverketProject.Controllers
         {
             var currentUserId = _userManager.GetUserId(User);
 
+            // hent opp nested hindre og de som er delt med
             var obstacle = await _context.Obstacle
                 .Include(o => o.ReportEntries)
                     .ThenInclude(r => r.User)
@@ -567,21 +582,23 @@ namespace KartverketProject.Controllers
 
             if (report == null) return NotFound();
 
-            // Kun bruker, delt med eller org kan hente detaljer
+            // kun bruker, delt med eller org kan hente detaljer
             var currentUser = await _userManager.GetUserAsync(User);
             var isOwner = report.UserId == currentUserId;
             var isShared = report.SharedWith.Any(rs => rs.SharedWithUserId == currentUserId);
             var isSameDepartment = report.User?.Department == currentUser?.Department;
 
-            // Vis 403
+            // vis 403
             if (!isOwner && !isShared && !isSameDepartment) 
                 return Forbid();
 
+            // lag en liste av de som er delt med
             var sharedWith = report.SharedWith
                 .Where(s => s.SharedWithUser != null)
                 .Select(s => s.SharedWithUser?.UserName)
                 .ToList();
 
+            // returner i json all data
             return Json(new
             {
                 obstacleName = obstacle.ObstacleName,

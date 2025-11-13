@@ -2,9 +2,11 @@
     ViewData["Title"] = "Access Denied";
 }
 
+<!-- stakker Child vertikalt men sentrerer i midten -->
 <section class="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-900">
     <div class="bg-white shadow-lg rounded-2xl p-10 max-w-lg text-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-6 h-20 w-20 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <!-- tegn triangel og sa alert med svg -->
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M10.29 3.86L1.82 18a1 1 0 00.86 1.5h18.64a1 1 0 00.86-1.5L13.71 3.86a1 1 0 00-1.72 0zM12 9v4m0 4h.01" />
         </svg>
@@ -23,13 +25,13 @@
                 <span class="font-semibold">@User.Identity.Name</span>
             </p>
 
-            <a href="/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full transition-all">
-                Return to Home Page
+            <a asp-controller="Home" asp-action="Index" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full transition-all">
+                Return to home page
             </a>
         }
         else
         {
-            <a href="/Account/Login" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full transition-all">
+            <a asp-controller="Account" asp-action="Login" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full transition-all">
                 Log In
             </a>
         }

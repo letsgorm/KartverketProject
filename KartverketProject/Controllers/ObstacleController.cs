@@ -11,10 +11,11 @@ namespace KartverketProject.Controllers
     [Authorize(Policy = "AuthenticatedAll")] // Kun for bruker, reviewer, admin
     public class ObstacleController : Controller
     {
+        // registrer db kontekst
         private readonly ApplicationDbContext _context;
+        // registrer usermanager
         private readonly UserManager<User> _userManager;
 
-        // registrer db kontekst
         public ObstacleController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
