@@ -1,21 +1,25 @@
 using KartverketProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-// Site logic for submission
+// Site logic for obstacle
 
 namespace KartverketProject.Controllers
 {
     [Authorize(Policy = "AuthenticatedAll")] // Kun for bruker, reviewer, admin
     public class ObstacleController : Controller
     {
-        // registrer service som gir loos kobling
-        private readonly ObstacleService _service;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public ObstacleController(ObstacleService service)
+        // registrer db kontekst
+        public ObstacleController(ApplicationDbContext context, UserManager<User> userManager)
         {
-            _service = service;
+            _context = context;
+            _userManager = userManager;
         }
 
         // GET: /Obstacle/DataForm
@@ -30,10 +34,29 @@ namespace KartverketProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DataForm(Obstacle obstacledata)
         {
+            // hvis validering feiler
             if (!ModelState.IsValid) return View(obstacledata);
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var saved = await _service.AddObstacleAsync(obstacledata, userId);
-            return RedirectToAction("Overview", new { id = saved.ObstacleId });
+
+            // hent brukerens id
+            var userId = _userManager.GetUserId(User);
+
+            // legg til og lagre data
+             _context.Obstacle.Add(obstacledata);
+            await _context.SaveChangesAsync();
+
+            // lag ny rapport med id
+            var report = new Report
+            {
+                ObstacleId = obstacledata.ObstacleId,
+                UserId = userId
+            };
+
+            // legg til rapport og lagre
+            _context.Report.Add(report);
+            await _context.SaveChangesAsync();
+
+            // send til overview
+            return RedirectToAction("Overview", new { id = obstacledata.ObstacleId });
         }
 
 
@@ -42,9 +65,27 @@ namespace KartverketProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Overview(int id)
         {
-            var obstacle = await _service.GetObstacleByIdAsync(id);
-            if (obstacle == null) return NotFound();
+            // hent brukerens id
+            var currentUserId = _userManager.GetUserId(User);
 
+            // hent ut rapporter og id, der hindre id er lik id i {id}
+            var obstacle =  await _context.Obstacle
+                .Include(o => o.ReportEntries)
+                    .ThenInclude(r => r.User)
+                .FirstOrDefaultAsync(o => o.ObstacleId == id);
+
+            // hvis ikke funnet
+            if (obstacle == null) 
+                return NotFound();
+
+            // finn i nest der bruker id er lik id
+            var userHasReport = obstacle.ReportEntries.Any(r => r.UserId == currentUserId);
+
+            // hvis bruker ikke har rapport
+            if (!userHasReport) 
+                return Forbid();
+
+            // returner hindre
             return View(obstacle);
         }
     }

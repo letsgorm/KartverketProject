@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 // Site logic for login and register
 
@@ -13,23 +12,20 @@ namespace KartverketProject.Controllers
 {
     public class AccountController : Controller
     {
-        // registrert identity
+        // registrer identity
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        // registrer obstacle og user context
+        // registrer db kontekst
         private readonly ApplicationDbContext _context;
-        private readonly ObstacleService _service;
 
         public AccountController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            ApplicationDbContext context,
-            ObstacleService service)
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
-            _service = service;
         }
 
         // ULOGGET
@@ -257,7 +253,10 @@ namespace KartverketProject.Controllers
                 return Forbid();
             }
 
-            var existing = await _service.GetObstacleByIdAsync(obstacle.ObstacleId);
+            var existing = await _context.Obstacle
+                .Include(o => o.ReportEntries)
+                    .ThenInclude(r => r.User)
+                .FirstOrDefaultAsync(o => o.ObstacleId == id);
 
             // sjekk om hindre eksisterer
             if (existing == null)
@@ -419,10 +418,15 @@ namespace KartverketProject.Controllers
             if (!isOwner && !isShared && !isSameDepartment)
                 return Forbid();
 
-            // Save the status and reason
-            await _service.UpdateObstacleStatusAsync(report.ObstacleId, newStatus);
+            // lagre status
+            var obstacle = await _context.Obstacle.FindAsync(reportId);
+            if (obstacle != null)
+            {
+                obstacle.ObstacleStatus = newStatus;
+                await _context.SaveChangesAsync();
+            }
 
-            // Save the reason to the report
+            // lagre grunn til rapport
             report.ReportReason = reportReason;
             _context.Update(report);
             await _context.SaveChangesAsync();
