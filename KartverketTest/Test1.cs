@@ -11,10 +11,10 @@ using Xunit;
 using Assert = Xunit.Assert;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
-public class ControllerTest
+public class ControllerTests
 {
     [Fact]
-    public void ModelStateValidation()
+    public void ObstacleController_GetDataForm_ReturnsView()
     {
         // Arrange
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -22,8 +22,9 @@ public class ControllerTest
             .Options;
 
         var context = new ApplicationDbContext(options);
-        var service = new ObstacleService(context);
-        var controller = new ObstacleController(service);
+        var store = new Mock<IUserStore<User>>();
+        var mockUserManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+        var controller = new ObstacleController(context, mockUserManager.Object);
 
         // Act
         var result = controller.DataForm() as ViewResult;
@@ -34,7 +35,7 @@ public class ControllerTest
     }
 
     [Fact]
-    public async Task DataFormSaveToDatabase()
+    public async Task ObstacleController_PostDataForm_SavesObstacle()
     {
         // Arrange
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -42,17 +43,20 @@ public class ControllerTest
             .Options;
 
         var context = new ApplicationDbContext(options);
-        var service = new ObstacleService(context);
-        var controller = new ObstacleController(service);
+        var store = new Mock<IUserStore<User>>();
+        var mockUserManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+        mockUserManager.Setup(u => u.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("test-user-id");
 
-        // Mock a logged-in user
-        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-        {
-            new Claim(ClaimTypes.NameIdentifier, "test-user-id")
-        }, "mock"));
+        var controller = new ObstacleController(context, mockUserManager.Object);
         controller.ControllerContext = new ControllerContext
         {
-            HttpContext = new DefaultHttpContext { User = user }
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, "test-user-id")
+                }, "mock"))
+            }
         };
 
         var obstacleData = new Obstacle
@@ -75,7 +79,7 @@ public class ControllerTest
     }
 
     [Fact]
-    public async Task UserLoginTest_WithMoq()
+    public async Task AccountController_Login_SuccessfulRedirect()
     {
         // Arrange
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -87,24 +91,17 @@ public class ControllerTest
         var mockUserManager = new Mock<UserManager<User>>(userStore.Object, null, null, null, null, null, null, null, null);
         var mockSignInManager = new Mock<SignInManager<User>>(
             mockUserManager.Object,
-            new Mock<Microsoft.AspNetCore.Http.IHttpContextAccessor>().Object,
+            new Mock<IHttpContextAccessor>().Object,
             new Mock<IUserClaimsPrincipalFactory<User>>().Object,
             null, null, null, null
         );
 
-        var testUser = new User
-        {
-            Id = "1",
-            UserName = "alpha",
-            Email = "alpha@example.com"
-        };
-
+        var testUser = new User { Id = "1", UserName = "alpha", Email = "alpha@example.com" };
         mockUserManager.Setup(x => x.FindByNameAsync("alpha")).ReturnsAsync(testUser);
         mockSignInManager.Setup(x => x.PasswordSignInAsync("alpha", "alpha123", false, true))
             .ReturnsAsync(SignInResult.Success);
 
-        var authService = new UserService(mockUserManager.Object, mockSignInManager.Object, context);
-        var controller = new AccountController(mockUserManager.Object, mockSignInManager.Object, context, null);
+        var controller = new AccountController(mockUserManager.Object, mockSignInManager.Object, context);
 
         var loginModel = new LoginRequest
         {
@@ -114,6 +111,50 @@ public class ControllerTest
 
         // Act
         var result = await controller.Login(loginModel);
+
+        // Assert
+        var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("DataForm", redirectResult.ActionName);
+        Assert.Equal("Obstacle", redirectResult.ControllerName);
+    }
+
+    [Fact]
+    public async Task AccountController_Register_SuccessfulRedirect()
+    {
+        // Arrange
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase("TestDb_Register")
+            .Options;
+        var context = new ApplicationDbContext(options);
+
+        var userStore = new Mock<IUserStore<User>>();
+        var mockUserManager = new Mock<UserManager<User>>(userStore.Object, null, null, null, null, null, null, null, null);
+        var mockSignInManager = new Mock<SignInManager<User>>(
+            mockUserManager.Object,
+            new Mock<IHttpContextAccessor>().Object,
+            new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+            null, null, null, null
+        );
+
+        mockUserManager.Setup(u => u.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
+            .ReturnsAsync(IdentityResult.Success);
+        mockUserManager.Setup(u => u.AddToRoleAsync(It.IsAny<User>(), "user"))
+            .ReturnsAsync(IdentityResult.Success);
+        mockSignInManager.Setup(s => s.SignInAsync(It.IsAny<User>(), false, null))
+            .Returns(Task.CompletedTask);
+
+        var controller = new AccountController(mockUserManager.Object, mockSignInManager.Object, context);
+
+        var registerModel = new RegisterRequest
+        {
+            UserName = "beta",
+            Email = "beta@example.com",
+            Password = "Pass123!",
+            Department = "NLA"
+        };
+
+        // Act
+        var result = await controller.Register(registerModel);
 
         // Assert
         var redirectResult = Assert.IsType<RedirectToActionResult>(result);
