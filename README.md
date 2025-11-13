@@ -285,7 +285,20 @@ This way, users cannot change the URL in order to alter reports.
 
 ## Usability testing
 
-In progress.
+The usability of the app was tested with a close family member.
+
+https://youtu.be/Tqa0U8SsCfY
+
+The video above shows that the user struggles to know how to:
+
+1. Interact with the map.
+2. Draw a marker.
+3. See the form.
+
+![IDOR](images/draw27.png)
+
+The form was placed to the right, as well as on the overview page.
+In addition, draw mode was added in order to enable or disable drawing.
 
 ## Credits
 
