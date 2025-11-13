@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
 using KartverketProject.Models;
-using KartverketProject.Controllers;
 
 namespace KartverketProject
 {
@@ -56,9 +54,6 @@ namespace KartverketProject
 
             // MVC & other services
             builder.Services.AddControllersWithViews();
-            builder.Services.AddScoped<ObstacleService>();
-            builder.Services.AddScoped<UserService>();
-            builder.Services.AddOpenApi();
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("AuthenticatedAll", policy =>
@@ -70,7 +65,6 @@ namespace KartverketProject
             var app = builder.Build();
 
             app.MapOpenApi();
-            app.MapScalarApiReference();
 
             if (!app.Environment.IsDevelopment())
             {
