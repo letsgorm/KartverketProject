@@ -1,7 +1,4 @@
 ﻿using KartverketProject.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 // This is the CRUD service for Obstacle.
@@ -10,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KartverketProject.Controllers
 {
-    [Authorize(Policy ="AuthenticationHigh")] // kun admin og reviewer
     public class ObstacleService
     {
         private readonly ApplicationDbContext _context;

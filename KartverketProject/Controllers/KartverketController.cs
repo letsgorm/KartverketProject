@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace KartverketProject.Controllers
 {
-    [Authorize(Policy = "AuthenticatedHigh")] // Kun for admin, reviwer
+    [Authorize(Roles = "admin")] // Kun for admin
     [Route("api/[controller]")]
     [ApiController]
     public class KartverketController : ControllerBase
