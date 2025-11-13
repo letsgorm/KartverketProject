@@ -8,6 +8,7 @@
 }
 else
 {
+    <!-- rapporter -->
     <table class="table-auto w-full border-collapse border border-gray-300">
         <thead class="bg-gray-100">
             <tr>
@@ -23,7 +24,7 @@ else
                 <tr class="border-b hover:bg-gray-50 transition">
                     <td class="border border-gray-300 px-4 py-2">@report.Obstacle?.ObstacleName</td>
 
-                    <!-- Status with colored pill badges -->
+                    <!-- status -->
                     <td class="border border-gray-300 px-4 py-2 font-medium">
                         @if (report.Obstacle?.ObstacleStatus == "Approved")
                         {
@@ -46,6 +47,7 @@ else
                     </td>
 
                     <td class="border border-gray-300 px-4 py-2">
+                        <!-- hvis ny rapport -->
                         @if (!string.IsNullOrEmpty(report.ReportReason))
                         {
                             <span class="text-gray-600">@report.ReportReason</span>
@@ -55,6 +57,7 @@ else
                             <span class="text-gray-500">—</span>
                         }
                     </td>
+                    <!-- endre rapport -->
                     <td class="border border-gray-300 px-4 py-2">
                         <a asp-controller="Account"
                            asp-action="EditReport"

@@ -1,6 +1,7 @@
 ﻿@using System.Text.Json
 @model IEnumerable<KartverketProject.Models.Obstacle>
 
+<!-- henter status og sortering  -->
 @{
     ViewData["Title"] = "All Obstacles";
     var selectedStatus = ViewData["SelectedStatus"] as string ?? "All";
@@ -12,7 +13,7 @@
         <h1 class="text-3xl font-semibold text-gray-800">All Obstacles</h1>
     </header>
 
-    <!-- Status filter -->
+    <!-- status filter -->
     <div class="mb-4 flex items-center space-x-3">
         <label for="statusFilter" class="text-gray-700 font-medium">Filter by status:</label>
         <form asp-controller="Account" asp-action="OverviewAll" method="get" class="inline">
@@ -27,9 +28,10 @@
         </form>
     </div>
 
-    <!-- Obstacles table -->
+    <!-- sortering -->
     <div class="overflow-x-auto rounded-lg shadow ring-1 ring-gray-200">
         <table class="min-w-full border-collapse bg-white">
+            <!-- tag hjelpere -->
             <thead class="bg-gray-100 border-b">
                 <tr class="text-left text-gray-700 font-medium">
                     <th class="px-4 py-3">
@@ -51,12 +53,12 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- hent opp hindre -->
                 @foreach (var obstacle in Model)
                 {
                     var report = obstacle.ReportEntries.FirstOrDefault();
                     var department = report?.User?.Department ?? "—";
                     var username = report?.User?.UserName ?? "—";
-                    var sharedWith = report?.SharedWith.Select(s => s.SharedWithUser?.Email).ToList() ?? new List<string?>();
 
                     <tr class="border-b hover:bg-gray-50 transition">
                         <td class="px-4 py-3">@obstacle.ObstacleName</td>
@@ -64,6 +66,7 @@
                         <td class="px-4 py-3">@username</td>
                         <td class="px-4 py-3">@obstacle.ObstacleSubmittedDate.ToString("yyyy-MM-dd")</td>
                         <td class="px-4 py-3">
+                            <!-- vis status -->
                             @if (obstacle.ObstacleStatus == "Approved")
                             {
                                 <span class="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
@@ -83,6 +86,7 @@
                                 </span>
                             }
                         </td>
+                        <!-- apne panel tilsvarende id -->
                         <td class="px-4 py-3 text-center">
                             <button class="text-sm font-medium text-blue-700 hover:underline" onclick="openViewPanel(@obstacle.ObstacleId)">View</button>
                         </td>
@@ -93,21 +97,27 @@
     </div>
 </section>
 
-<!-- Bottom Panel for View -->
+<!-- bottom panel for view -->
 <div id="viewPanel" class="fixed bottom-0 left-0 w-full max-h-[80vh] bg-white shadow-lg border-t border-gray-300 transform translate-y-full transition-transform duration-300 z-50 overflow-y-auto">
     <div class="p-6">
+
+        <!-- lukk panel -->
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold" id="panelObstacleName">Obstacle Name</h2>
             <button onclick="closeViewPanel()" class="text-gray-500 hover:text-gray-700">&times;</button>
         </div>
 
+        <!-- vis detaljer og kart -->
         <div id="panelObstacleDetails" class="mb-4"></div>
         <div id="panelObstacleMap" class="w-full h-64 mb-4 rounded border"></div>
 
+        <!-- oppdater status -->
         <form id="updateStatusForm" method="post" action="/Account/UpdateStatus">
             @Html.AntiForgeryToken()
             <input type="hidden" id="statusReportIdInput" name="reportId" />
             <input type="hidden" id="statusNewStatusInput" name="newStatus" />
+
+            <!-- begrunnelse for rapport -->
             <div class="mb-4">
                 <label for="ReportReason" class="block text-gray-700 font-medium mb-1">Reason (optional):</label>
                 <textarea id="ReportReason" name="reportReason" rows="4"
@@ -116,19 +126,23 @@
             </div>
         </form>
 
+        <!-- submit knapper for avgjorelse -->
         <div class="flex space-x-2 mb-4">
             <button type="button" id="approveBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Approve</button>
             <button type="button" id="rejectBtn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Reject</button>
             <button type="button" id="shareBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Share</button>
         </div>
 
-        <!-- Share form -->
+        <!-- gjemt form -->
         <form id="shareFormInline" method="post" class="hidden flex flex-col space-y-2">
             @Html.AntiForgeryToken()
             <input type="hidden" id="reportIdInput" name="reportId" />
             <label class="font-medium">Select reviewers:</label>
+
+            <!-- del rapport med valgt reviewers -->
             <select id="reviewersSelect" name="selectedUserIds" multiple class="w-full border rounded-md p-2 h-32 overflow-y-auto"></select>
 
+            <!-- submit knapper for deling -->
             <div class="flex space-x-2">
                 <button type="submit" asp-action="ShareReport" asp-controller="Account" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                     Share

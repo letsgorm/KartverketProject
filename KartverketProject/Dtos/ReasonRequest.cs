@@ -3,6 +3,6 @@
     public class ReasonRequest
     {
         public int ReportId { get; set; }
-        public string ReportReason { get; set; }
+        public string? ReportReason { get; set; }
     }
 }

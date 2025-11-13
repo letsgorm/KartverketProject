@@ -8,6 +8,7 @@
 
 <h2 class="text-2xl font-semibold mb-4">Edit Obstacle Report</h2>
 
+<!-- rediger rapport -->
 <form asp-action="EditReport" asp-route-id="@Model.ReportEntries.FirstOrDefault()?.ReportId" method="post">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="ObstacleId" />
@@ -37,6 +38,7 @@
 
     <div id="map" style="height: 400px;" class="my-4 rounded-lg border"></div>
 
+    <!-- lagre eller slett rapport -->
     <div class="flex gap-2 mt-2">
         <button type="submit"
                 class="inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700">
@@ -52,19 +54,28 @@
 
 </form>
 
+@{
+    // default
+    string geoJsonForJs = "{}";
+    try
+    {
+        if (Model.ObstacleJSON != null)
+        {
+            var geoDataObj = JsonSerializer.Deserialize<object>(Model.ObstacleJSON);
+            geoJsonForJs = JsonSerializer.Serialize(geoDataObj);
+        }
+    }
+    catch
+    {
+        geoJsonForJs = "{}";
+    }
+}
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    @{
-        // Deserialize the JSON string and serialize safely for JS
-        var geoDataObj = string.IsNullOrEmpty(Model.ObstacleJSON)
-            ? new object()
-            : JsonSerializer.Deserialize<object>(Model.ObstacleJSON);
-        var geoJsonForJs = JsonSerializer.Serialize(geoDataObj);
-    }
-
+    <script src="~/js/map.js"></script>
     <script>
-        // Safe JSON injection
+        // parse serialisert json
         const jsonData = JSON.parse('@Html.Raw(geoJsonForJs)');
 
         if (jsonData.features && jsonData.features.length > 0) {

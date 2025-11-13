@@ -5,8 +5,8 @@ public class ReportShare
 {
     public int ReportShareId { get; set; }
 
-    public int ReportId { get; set; }        // FK to Report
-    public string? SharedWithUserId { get; set; }  // FK to User
+    public int ReportId { get; set; }        // FK
+    public string? SharedWithUserId { get; set; }  // FK
 
     [JsonIgnore]
     public Report? Report { get; set; }

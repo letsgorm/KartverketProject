@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Kartverket</title>
 
-    <!-- Tailwind (CDN for quick start). For production, use a proper build pipeline. -->
+    <!-- tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Optionally extend Tailwind (example keeps it minimal)
+        // minimal
         tailwind.config = {
           theme: {
             extend: {
@@ -18,13 +18,14 @@
         }
     </script>
 
-    <!-- Your app/site styles if needed -->
+    <!-- CSS -->
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
 
+    <!-- sjekker om index -->
     @{
         var currentAction = ViewContext.RouteData.Values["action"]?.ToString()?.ToLower();
         var isHomePage = currentAction == "index";
@@ -34,12 +35,11 @@
 
     }
 
-
-    <!-- Header / Nav -->
+    <!-- sett header transparent kun index -->
     <partial name="_Header" model="@headerClass" />
 
 
-    <!-- Main -->
+    <!-- navaerende view inject -->
     <div class="container flex-1 w-full pt-[7rem] md:pt-[9rem]">
         <main role="main" class="py-6 min-h-[calc(100vh-9rem)]">
             @RenderBody()
@@ -47,7 +47,7 @@
     </div>
 
 
-    <!-- Footer -->
+    <!-- footer -->
     <footer class="border-t bg-white text-sm text-gray-600">
         <div class="container py-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p>&copy; 2025 - Kartverket Obstacle Registry</p>
@@ -58,10 +58,9 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/css/site.css"></script>
-    <script src="~/js/map.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

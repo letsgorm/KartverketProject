@@ -7,7 +7,7 @@
 #map-wrapper {
     position: relative;
     height: 95vh; /* pc */
-    min-height: 400px; /* mobile */
+    min-height: 400px; /* mobil */
     flex: 1;
 }
 
