@@ -344,16 +344,16 @@ namespace KartverketProject.Controllers
             var userDepartment = currentUser?.Department;
             var userId = currentUser?.Id;
 
-            // 1. Fetch obstacles with nested reports and shared entries
+            // hent hindre
             var obstacles = await _context.Obstacle
                 .Include(o => o.ReportEntries)
                     .ThenInclude(r => r.User)
                 .Include(o => o.ReportEntries)
                     .ThenInclude(r => r.SharedWith)
                         .ThenInclude(rs => rs.SharedWithUser)
-                .ToListAsync(); // materialize in memory
+                .ToListAsync(); // materialiser i minne
 
-            // 2. Filter obstacles user can see (department or shared)
+            // filtrer der bruker er lik org eller delt med
             obstacles = obstacles
                 .Where(o => o.ReportEntries.Any(r =>
                     (r.User?.Department == userDepartment) ||
@@ -361,7 +361,7 @@ namespace KartverketProject.Controllers
                 ))
                 .ToList();
 
-            // 3. Map to DTO (handle nulls safely)
+            // map til dto
             var obstacleDtos = obstacles.Select(o =>
             {
                 var report = o.ReportEntries.FirstOrDefault();
@@ -376,13 +376,13 @@ namespace KartverketProject.Controllers
                 };
             });
 
-            // 4. Filter by status if provided
+            // filtrer status
             if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "All")
             {
                 obstacleDtos = obstacleDtos.Where(o => o.ReportStatus == statusFilter);
             }
 
-            // 5. Sort based on sortOrder
+            // sorter
             obstacleDtos = sortOrder switch
             {
                 "name_asc" => obstacleDtos.OrderBy(o => o.ObstacleName),
@@ -398,11 +398,10 @@ namespace KartverketProject.Controllers
                 _ => obstacleDtos.OrderByDescending(o => o.ObstacleSubmittedDate),
             };
 
-            // 6. Set ViewData
+            // viewdata 1 respons
             ViewData["SelectedStatus"] = statusFilter ?? "All";
             ViewData["SortOrder"] = sortOrder ?? "";
 
-            // 7. Return view
             return View(obstacleDtos);
         }
 
