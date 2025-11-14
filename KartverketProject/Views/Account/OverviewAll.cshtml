@@ -1,5 +1,5 @@
 ﻿@using System.Text.Json
-@model IEnumerable<KartverketProject.Models.Obstacle>
+@model IEnumerable<KartverketProject.Dtos.ObstacleRequest>
 
 <!-- henter status og sortering  -->
 @{
@@ -56,24 +56,25 @@
                 <!-- hent opp hindre -->
                 @foreach (var obstacle in Model)
                 {
+                    <!-- sett  -->
                     var report = obstacle.ReportEntries.FirstOrDefault();
                     var department = report?.User?.Department ?? "—";
                     var username = report?.User?.UserName ?? "—";
 
                     <tr class="border-b hover:bg-gray-50 transition">
                         <td class="px-4 py-3">@obstacle.ObstacleName</td>
-                        <td class="px-4 py-3">@department</td>
-                        <td class="px-4 py-3">@username</td>
-                        <td class="px-4 py-3">@obstacle.ObstacleSubmittedDate.ToString("yyyy-MM-dd")</td>
+                        <td class="px-4 py-3">@obstacle.Department</td>
+                        <td class="px-4 py-3">@obstacle.UserName</td>
+                        <td class="px-4 py-3">@obstacle.ObstacleSubmittedDate.ToString("MMM dd, HH:mm")</td>
                         <td class="px-4 py-3">
                             <!-- vis status -->
-                            @if (obstacle.ObstacleStatus == "Approved")
+                            @if (obstacle.ReportStatus == "Approved")
                             {
                                 <span class="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
                                     Approved
                                 </span>
                             }
-                            else if (obstacle.ObstacleStatus == "Rejected")
+                            else if (obstacle.ReportStatus == "Rejected")
                             {
                                 <span class="inline-block bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
                                     Rejected

@@ -14,6 +14,7 @@ else
             <tr>
                 <th class="border border-gray-300 px-4 py-2 text-left">Obstacle</th>
                 <th class="border border-gray-300 px-4 py-2 text-left">Status</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">Submitted</th>
                 <th class="border border-gray-300 px-4 py-2 text-left">Reason</th>
                 <th class="border border-gray-300 px-4 py-2 text-left">Actions</th>
             </tr>
@@ -26,13 +27,13 @@ else
 
                     <!-- status -->
                     <td class="border border-gray-300 px-4 py-2 font-medium">
-                        @if (report.Obstacle?.ObstacleStatus == "Approved")
+                        @if (report.ReportStatus == "Approved")
                         {
                             <span class="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
                                 Approved
                             </span>
                         }
-                        else if (report.Obstacle?.ObstacleStatus == "Rejected")
+                        else if (report.ReportStatus == "Rejected")
                         {
                             <span class="inline-block bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
                                 Rejected
@@ -46,8 +47,11 @@ else
                         }
                     </td>
 
+                    <!-- dato -->
+                    <td class="border border-gray-300 px-4 py-2">@report.Obstacle?.ObstacleSubmittedDate.ToString("MMM dd, HH:mm")</td>
+
+                    <!-- rapport begrunnelse -->
                     <td class="border border-gray-300 px-4 py-2">
-                        <!-- hvis ny rapport -->
                         @if (!string.IsNullOrEmpty(report.ReportReason))
                         {
                             <span class="text-gray-600">@report.ReportReason</span>
@@ -57,6 +61,7 @@ else
                             <span class="text-gray-500">—</span>
                         }
                     </td>
+
                     <!-- endre rapport -->
                     <td class="border border-gray-300 px-4 py-2">
                         <a asp-controller="Account"

@@ -125,7 +125,7 @@ The view is responsible for presenting content through the user interface. This 
 
 The controller handles user interaction and controls how the app responds to a given request. This includes model validating, page routing and application programming interfaces.
 
-Together these three complement each other, as the controller redirects the user through routes to the corresponding view. The view then shows a button that saves the model state, then it moves that data to the controller for further validation.
+The view displays a button, where the controller receives the input on click. The controller then performs validation, and updates the model; then selects a specific view to display the updated state.
 
 
 ### Frontend
@@ -134,12 +134,12 @@ The frontend is stored on the wwwroot, where it stores HTML, CSS and JavaScript.
 
 ### Backend
 
-The backend comprises of the Dockerfile, Docker-compose, Data folder, Controllers and Models. Docker gets its images from the dockerfile, where the containers get the necessary images in order to build the corresponding services in docker-compose.yml; The containers are built on images and use volumes. The volumes stores tables, databases, passwords and additional information about the database. 
+The backend consists of Dockerfile, Docker-compose, Data folder, Controllers and Models. Docker gets its images from the dockerfile, where the containers get the necessary images in order to build the corresponding services in docker-compose.yml; The containers are built on images and use volumes. The volumes stores tables, databases, passwords and additional information about the database. 
 
 
 ### Execution
 
-After docker is finished, program.cs starts; the application adds services to the views to allow for controller interactions, registers the DBContext, runs a third party API called Scalar, and automatically applies migrations through a helper service called migrate. If the appsettings.json password, .env password and the dbcontext are applied correctly; the server starts on port 8082.
+After docker has started, Program.cs performs these activites; the application adds services to the views to allow for controller interactions, registers the DBContext, runs a third party API called Scalar, and automatically applies migrations through a helper service called migrate. If the appsettings.json password, .env password and the dbcontext are applied correctly; the server starts on port 8082.
 
 ### System context diagram
 

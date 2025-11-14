@@ -20,8 +20,6 @@ namespace KartverketProject.Models
 
         public string? ObstacleJSON { get; set; }
 
-        [MaxLength(50)]
-        public string ObstacleStatus { get; set; } = "Pending"; // flytt til rapport
         public ICollection<Report> ReportEntries { get; set; } = new List<Report>();
     }
 }

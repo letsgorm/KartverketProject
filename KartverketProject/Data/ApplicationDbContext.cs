@@ -166,8 +166,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
                 ObstacleHeight = 10.5,
                 ObstacleDescription = "This is a test obstacle.",
                 ObstacleSubmittedDate = new DateTime(2024, 1, 1),
-                ObstacleJSON = "{\"type\":\"FeatureCollection\",\"features\":[]}",
-                ObstacleStatus = "Pending"
+                ObstacleJSON = "{\"type\":\"FeatureCollection\",\"features\":[]}"
             }
         );
 
@@ -177,7 +176,8 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
             ReportId = 1,
             ObstacleId = 1,
             UserId = reviewerIdLuft, // links to seeded user
-            ReportReason = "This is the reason."
+            ReportReason = "This is the reason.",
+            ReportStatus = "Pending"
         });
     }
 }
