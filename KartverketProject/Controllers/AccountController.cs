@@ -336,7 +336,6 @@ namespace KartverketProject.Controllers
 
         // REVIEWER DEL
 
-        // GET: /Account/OverviewAll
         [Authorize(Policy = "AuthenticatedHigh")]
         [HttpGet]
         public async Task<IActionResult> OverviewAll(string statusFilter, string sortOrder)
@@ -345,53 +344,67 @@ namespace KartverketProject.Controllers
             var userDepartment = currentUser?.Department;
             var userId = currentUser?.Id;
 
-            // hent opp hindre med bruker, og den de har delt med
+            // hent hindre
             var obstacles = await _context.Obstacle
                 .Include(o => o.ReportEntries)
-                    .ThenInclude(r => r.User) // nesting med thenInclude
+                    .ThenInclude(r => r.User)
                 .Include(o => o.ReportEntries)
                     .ThenInclude(r => r.SharedWith)
                         .ThenInclude(rs => rs.SharedWithUser)
-                .ToListAsync(); // lag til liste
+                .ToListAsync(); // materialiser i minne
 
-            // sjekk hindre som bruker er med eller delt med
+            // filtrer der bruker er lik org eller delt med
             obstacles = obstacles
                 .Where(o => o.ReportEntries.Any(r =>
-                        r.User?.Department == userDepartment ||
-                        r.SharedWith.Any(rs => rs.SharedWithUserId == userId)
+                    (r.User?.Department == userDepartment) ||
+                    r.SharedWith.Any(rs => rs.SharedWithUserId == userId)
                 ))
-                .ToList(); // allerede i memory
+                .ToList();
 
-            // sorter stigende og synkende
-            obstacles = sortOrder switch
+            // map til dto
+            var obstacleDtos = obstacles.Select(o =>
             {
-                "name_asc" => obstacles.OrderBy(o => o.ObstacleName).ToList(),
-                "name_desc" => obstacles.OrderByDescending(o => o.ObstacleName).ToList(),
-                "department_asc" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User?.Department).ToList(),
-                "department_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User?.Department).ToList(),
-                "username_asc" => obstacles.OrderBy(o => o.ReportEntries.FirstOrDefault()?.User?.UserName).ToList(),
-                "username_desc" => obstacles.OrderByDescending(o => o.ReportEntries.FirstOrDefault()?.User?.UserName).ToList(),
-                "date_asc" => obstacles.OrderBy(o => o.ObstacleSubmittedDate).ToList(),
-                "date_desc" => obstacles.OrderByDescending(o => o.ObstacleSubmittedDate).ToList(),
-                "status_asc" => obstacles.OrderBy(o => o.ObstacleStatus).ToList(),
-                "status_desc" => obstacles.OrderByDescending(o => o.ObstacleStatus).ToList(),
-                _ => obstacles.OrderByDescending(o => o.ObstacleSubmittedDate).ToList(),
-            };
+                var report = o.ReportEntries.FirstOrDefault();
+                return new ObstacleRequest
+                {
+                    ObstacleId = o.ObstacleId,
+                    ObstacleName = o.ObstacleName,
+                    ObstacleSubmittedDate = o.ObstacleSubmittedDate,
+                    Department = report?.User?.Department ?? "—",
+                    UserName = report?.User?.UserName ?? "—",
+                    ReportStatus = report?.ReportStatus ?? "Pending"
+                };
+            });
 
-            // sorter statusFilter
+            // filtrer status
             if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "All")
             {
-                obstacles = obstacles
-                    .Where(o => o.ObstacleStatus == statusFilter)
-                    .ToList();
+                obstacleDtos = obstacleDtos.Where(o => o.ReportStatus == statusFilter);
             }
 
-            // et respons kun med ViewData
-            ViewData["SelectedStatus"] = statusFilter;
-            ViewData["SortOrder"] = sortOrder;
+            // sorter
+            obstacleDtos = sortOrder switch
+            {
+                "name_asc" => obstacleDtos.OrderBy(o => o.ObstacleName),
+                "name_desc" => obstacleDtos.OrderByDescending(o => o.ObstacleName),
+                "department_asc" => obstacleDtos.OrderBy(o => o.Department),
+                "department_desc" => obstacleDtos.OrderByDescending(o => o.Department),
+                "username_asc" => obstacleDtos.OrderBy(o => o.UserName),
+                "username_desc" => obstacleDtos.OrderByDescending(o => o.UserName),
+                "date_asc" => obstacleDtos.OrderBy(o => o.ObstacleSubmittedDate),
+                "date_desc" => obstacleDtos.OrderByDescending(o => o.ObstacleSubmittedDate),
+                "status_asc" => obstacleDtos.OrderBy(o => o.ReportStatus),
+                "status_desc" => obstacleDtos.OrderByDescending(o => o.ReportStatus),
+                _ => obstacleDtos.OrderByDescending(o => o.ObstacleSubmittedDate),
+            };
 
-            return View(obstacles);
+            // viewdata 1 respons
+            ViewData["SelectedStatus"] = statusFilter ?? "All";
+            ViewData["SortOrder"] = sortOrder ?? "";
+
+            return View(obstacleDtos);
         }
+
 
         //Access Denied page
         [HttpGet]
@@ -428,15 +441,8 @@ namespace KartverketProject.Controllers
             if (!isOwner && !isShared && !isSameDepartment)
                 return Forbid();
 
-            // lagre status
-            var obstacle = await _context.Obstacle.FindAsync(reportId);
-            if (obstacle != null)
-            {
-                obstacle.ObstacleStatus = newStatus;
-                await _context.SaveChangesAsync();
-            }
-
             // lagre grunn til rapport
+            report.ReportStatus = newStatus;
             report.ReportReason = reportReason;
             _context.Update(report);
             await _context.SaveChangesAsync();
@@ -605,7 +611,7 @@ namespace KartverketProject.Controllers
                 department = report.User?.Department ?? "—",
                 username = report.User?.UserName ?? "—",
                 date = obstacle.ObstacleSubmittedDate.ToString("yyyy-MM-dd"),
-                status = obstacle.ObstacleStatus,
+                status = report.ReportStatus,
                 description = obstacle.ObstacleDescription,
                 obstacleJSON = obstacle.ObstacleJSON,
                 sharedWith = sharedWith,

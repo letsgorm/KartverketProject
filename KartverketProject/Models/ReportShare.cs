@@ -1,16 +1,20 @@
 ﻿using KartverketProject.Models;
 using System.Text.Json.Serialization;
 
-public class ReportShare
+namespace KartverketProject.Models
 {
-    public int ReportShareId { get; set; }
+    public class ReportShare
+    {
+        public int ReportShareId { get; set; }
 
-    public int ReportId { get; set; }        // FK
-    public string? SharedWithUserId { get; set; }  // FK
+        public int ReportId { get; set; }        // FK
 
-    [JsonIgnore]
-    public Report? Report { get; set; }
+        public string? SharedWithUserId { get; set; }  // FK
 
-    [JsonIgnore]
-    public User? SharedWithUser { get; set; }
+        [JsonIgnore]
+        public Report? Report { get; set; }
+
+        [JsonIgnore]
+        public User? SharedWithUser { get; set; }
+    }
 }

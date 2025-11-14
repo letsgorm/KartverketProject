@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace KartverketProject.Models
@@ -15,6 +16,8 @@ namespace KartverketProject.Models
 
         public bool ReportReasonSeen { get; set; } = false; // bruker har ikke sitt rapport
 
+        [MaxLength(50)]
+        public string ReportStatus { get; set; } = "Pending";
 
         [JsonIgnore]
         public User? User { get; set; } 
