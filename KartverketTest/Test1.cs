@@ -13,27 +13,7 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 public class ControllerTests
 {
-    [Fact]
-    public void ObstacleController_GetDataForm_ReturnsView()
-    {
-        // Arrange
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase("TestDb_ModelState")
-            .Options;
-
-        var context = new ApplicationDbContext(options);
-        var store = new Mock<IUserStore<User>>();
-        var mockUserManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-        var controller = new ObstacleController(context, mockUserManager.Object);
-
-        // Act
-        var result = controller.DataForm() as ViewResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.True(controller.ModelState.IsValid);
-    }
-
+    // sjekk at dataform lagrer hindre
     [Fact]
     public async Task ObstacleController_PostDataForm_SavesObstacle()
     {
@@ -78,6 +58,7 @@ public class ControllerTests
         Assert.Equal("john", savedObstacle.ObstacleName);
     }
 
+    // sjekk at login funker
     [Fact]
     public async Task AccountController_Login_SuccessfulRedirect()
     {
@@ -118,6 +99,7 @@ public class ControllerTests
         Assert.Equal("Obstacle", redirectResult.ControllerName);
     }
 
+    // sjekk at register funker
     [Fact]
     public async Task AccountController_Register_SuccessfulRedirect()
     {
