@@ -242,21 +242,21 @@ CSRF tricks an authenticated user into performing an unintended action.
 The attacker crafts an URL with the form that the user clicks.
 This can be devastating if the user is an admin.
 
-https://github.com/letsgorm/KartverketProject/blob/cdc685507a340f16b52a9758de7769ab751b4b31/KartverketProject/Views/Obstacle/DataForm.cshtml#L57-L58
+https://github.com/letsgorm/KartverketProject/blob/fb0fb4271ddc0f080dec6b35b7023c38041efda0/KartverketProject/Views/Obstacle/DataForm.cshtml#L57-L58
 
 Anti forgery token is placed on the form
 
-https://github.com/letsgorm/KartverketProject/blob/cdc685507a340f16b52a9758de7769ab751b4b31/KartverketProject/Controllers/ObstacleController.cs#L34-L35
+https://github.com/letsgorm/KartverketProject/blob/fb0fb4271ddc0f080dec6b35b7023c38041efda0/KartverketProject/Controllers/ObstacleController.cs#L34-L35
 
 The controller then validates each request.
 
-https://github.com/letsgorm/KartverketProject/blob/cdc685507a340f16b52a9758de7769ab751b4b31/KartverketProject/Program.cs#L81
+https://github.com/letsgorm/KartverketProject/blob/fb0fb4271ddc0f080dec6b35b7023c38041efda0/KartverketProject/Program.cs#L81
 
 The malicious site will not have a matching CSRF token, which stops the attacker.
 
 ### Security headers
 
-https://github.com/letsgorm/KartverketProject/blob/cdc685507a340f16b52a9758de7769ab751b4b31/KartverketProject/Program.cs#L81-L84
+https://github.com/letsgorm/KartverketProject/blob/fb0fb4271ddc0f080dec6b35b7023c38041efda0/KartverketProject/Program.cs#L81-L84
 
 X-Frame-Options is set to DENY in order to prevent <iframe> being displayed in another origin.
 
@@ -268,7 +268,7 @@ Referrer-Policy stops URL information such as paths being included in another or
 
 Even if the website is secure against XSS through sanitization, CSP provides an additional layer of protection.
 
-https://github.com/letsgorm/KartverketProject/blob/cdc685507a340f16b52a9758de7769ab751b4b31/KartverketProject/Program.cs#L87-L97
+https://github.com/letsgorm/KartverketProject/blob/fb0fb4271ddc0f080dec6b35b7023c38041efda0/KartverketProject/Program.cs#L87-L97
 
 This defines the allowed origins which blocks XSS coming from a cross origin webpage used in blind XSS.
 
