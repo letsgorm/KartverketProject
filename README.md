@@ -207,8 +207,7 @@ Map is rendered offline with no HTTP status.
 ZAP only revealed Content Security Policy issues as high risk.
 The use of Tailwind CDN, HTTP and unset Content-Type is a security risk.
 Due to the reason that this is a local project, during production; the data would be stored locally instead.
-In addition, HTTP would be moved to HTTPS so Tileserver-GL could render the map safely;
-Right now unsafe eval in CSP allows for XSS be injected, but most forms are secure due to parsing + serialization
+In addition, HTTP would be moved to HTTPS so Tileserver-GL could render the map safely.
 
 [View ZAP report](security/zapscan.html)
 
@@ -237,11 +236,51 @@ which then locks the account for 15 minutes until the attacker can log in again.
 
 This renders brute force essentially useless.
 
+### CSRF
+
+CSRF tricks an authenticated user into performing an unintended action.
+The attacker crafts an URL with the form that the user clicks.
+This can be devastating if the user is an admin.
+
+https://github.com/letsgorm/KartverketProject/blob/cdc685507a340f16b52a9758de7769ab751b4b31/KartverketProject/Views/Obstacle/DataForm.cshtml#L57-L58
+
+Anti forgery token is placed on the form
+
+https://github.com/letsgorm/KartverketProject/blob/cdc685507a340f16b52a9758de7769ab751b4b31/KartverketProject/Controllers/ObstacleController.cs#L34-L35
+
+The controller then validates each request.
+
+https://github.com/letsgorm/KartverketProject/blob/cdc685507a340f16b52a9758de7769ab751b4b31/KartverketProject/Program.cs#L81
+
+The malicious site will not have a matching CSRF token, which stops the attacker.
+
+### Security headers
+
+https://github.com/letsgorm/KartverketProject/blob/cdc685507a340f16b52a9758de7769ab751b4b31/KartverketProject/Program.cs#L81-L84
+
+X-Frame-Options is set to DENY in order to prevent <iframe> being displayed in another origin.
+
+X-Content-Type-Options stops attackers from executing malicious code like XSS if the browser sniffs the incorrect Content-Type.
+
+Referrer-Policy stops URL information such as paths being included in another origin which is used for CSRF.
+
+### Content Security Policy
+
+Even if the website is secure against XSS through sanitization, CSP provides an additional layer of protection.
+
+https://github.com/letsgorm/KartverketProject/blob/cdc685507a340f16b52a9758de7769ab751b4b31/KartverketProject/Program.cs#L87-L97
+
+This defines the allowed origins which blocks XSS coming from a cross origin webpage used in blind XSS.
+
+Most of the policies stops fetching resources from the page, which is used to trick the user.
+
+Removing unsafe-inline would break the webpage, so it cannot be removed; however JSON is reserialized and parsed, which prevents this XSS vector.
+
 ### XSS
 
 XSS can inject JavaScript on other users pages.
 Say the attacker uses {}; alert(0); // in BurpSuite.
-Then encodes the payload in URL encoding for further requests;
+Then encodes the payload in URL encoding for further requests:
 
 ![XSS](images/xss17.png)
 
