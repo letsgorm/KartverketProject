@@ -10,13 +10,13 @@ namespace KartverketProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Disable Kestrel's "Server" response header entirely
+            // fjern Kestrel server header
             builder.WebHost.ConfigureKestrel(options =>
             {
                 options.AddServerHeader = false;
             });
 
-            //  Add database context, use same connection string due to nested ReportEntries
+            //  legg til dbkontekst
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -24,7 +24,7 @@ namespace KartverketProject
             ));
 
 
-            // Core Identity
+            // core identity
             builder.Services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
@@ -40,20 +40,22 @@ namespace KartverketProject
                 options.LogoutPath = "/Account/Logout";
             });
 
-            // Configure Identity options
+            // identity instillinger
             builder.Services.Configure<IdentityOptions>(options =>
             {
-                // User settings
+                // bruker innstillinger
                 options.User.RequireUniqueEmail = true;
 
-                // Lockout settings
+                // brute force instillinger
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
             });
 
-            // MVC & other services
+            // MVC
             builder.Services.AddControllersWithViews();
+
+            // policies
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("AuthenticatedAll", policy =>
@@ -64,8 +66,6 @@ namespace KartverketProject
 
             var app = builder.Build();
 
-            app.MapOpenApi();
-
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error"); // stack trace fix
@@ -75,7 +75,7 @@ namespace KartverketProject
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            // Security headers
+            // sikkerhetsheaders
             app.Use(async (context, next) =>
             {
                 context.Response.Headers["X-Frame-Options"] = "DENY";
@@ -83,10 +83,10 @@ namespace KartverketProject
                 context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
                 context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload";
 
-                // CSP - allow Tailwind, Leaflet, etc.
+                // content security policy
                 context.Response.Headers["Content-Security-Policy"] =
                     "default-src 'self'; " +
-                    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://unpkg.com; " +
+                    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://unpkg.com; " +
                     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdn.tailwindcss.com https://unpkg.com; " +
                     "img-src 'self' data: blob: https: http://localhost:8080 https://localhost:8080 https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org https://tile.openstreetmap.org https://*.openstreetmap.fr; " +
                     "font-src 'self' https://fonts.gstatic.com; " +
