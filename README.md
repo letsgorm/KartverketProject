@@ -347,3 +347,5 @@ You can find his project here:
 
 https://github.com/DAkintola94/MatFrem/tree/main
 
+Generative AI was used to generate Tailwind CSS elements and to refactor existing code.
+
