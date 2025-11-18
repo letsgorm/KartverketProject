@@ -2,17 +2,33 @@
 
 Seamlessly register and view obstacles on the map even offline.
 
-## Seeded Data
+## Table of Contents
 
-username:password
+### Setting Up
+1. [Getting Started](#getting-started)
+2. [Offline Map](#offline-map)
+3. [Seeded Data](#seeded-data)
 
-1. johnd:admin (NLA, admin)
-  
-2. janed:admin (NLA, reviewer)
-   
-3. bobs:admin (NLA, user)
+### Errors
+4. [Resetting Migrations](#resetting-migrations)
+5. [An error occurred using the connection to the database](#an-error-occurred-using-the-connection-to-the-database)
 
-4. janiced:admin (Luftsforsvaret, reviewer)
+### Architecture
+6. [Model View Controller](#model-view-controller)
+7. [Docker](#docker)
+8. [Frontend](#frontend)
+9. [Backend](#backend)
+10. [System Context Diagram](#system-context-diagram)
+11. [Container Diagram](#container-diagram)
+
+### Testing
+12. [Unit Test](#unit-test)
+13. [System Test](#system-test)
+14. [Security Test](#security-test)
+15. [Usability Test](#usability-test)
+
+### Credits
+16. [Credits](#credits)
 
 ## Getting Started
 
@@ -71,18 +87,17 @@ http://github.com/letsgorm/KartverketProject/releases/latest/download/norway.zip
 
 Unzip the folder and place the norway.mbtiles file in KartverketProject/KartverketProject/wwwroot/
 
+## Seeded Data
 
-### Password does not work
+username:password
 
-1. Open cmd, list with «docker volume ls» and then do «docker volume rm {VOLUMENAME HERE}». If it says volume is in use, go to docker desktop and delete the container.
+1. johnd:admin (NLA, admin)
+  
+2. janed:admin (NLA, reviewer)
+   
+3. bobs:admin (NLA, user)
 
-![VOL](images/volume6.png)
-
-
-![DEL](images/deletecompose7.png)
-
-2. Run the project as docker-compose to set up the volume again.
-
+4. janiced:admin (Luftsforsvaret, reviewer)
 
 ## Resetting Migrations
 
@@ -109,6 +124,18 @@ Tools -> NuGet Package Manager -> Package Manager Console
 Add-Migration NewMigration
 
 Update-Database
+
+## An error occurred using the connection to the database 
+
+1. Open cmd, list with «docker volume ls» and then do «docker volume rm {VOLUMENAME HERE}». If it says volume is in use, go to docker desktop and delete the container.
+
+![VOL](images/volume6.png)
+
+
+![DEL](images/deletecompose7.png)
+
+2. Run the project as docker-compose to set up the volume again.
+
 
 ## System Architecture
 
