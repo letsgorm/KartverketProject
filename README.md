@@ -28,7 +28,7 @@ Seamlessly register and view obstacles on the map even offline.
 15. [Usability Test](#usability-test)
 
 ### Credits
-16. [Credits](#credits)
+16. [Credits](#credits-1)
 
 ## Getting Started
 
