@@ -9,22 +9,26 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8082
-      - ConnectionStrings__DefaultConnection=Server=mariadb;Database=KartverketDB;User=root;Password=${DBPASSWORD};
+      - ConnectionStrings__DefaultConnection=Server=mariadb;Database=KartverketDB;User=appuser;Password=${DBPASSWORD};
     depends_on:
         - mariadb
       
   mariadb:
     image: mariadb:latest
     restart: always
+    user: "999:999" 
+
     environment:
       MYSQL_ROOT_PASSWORD: ${DBPASSWORD}
       MYSQL_DATABASE: KartverketDB
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: ${DBPASSWORD}
     ports:
       - "3307:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p${DBPASSWORD}"]
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "appuser", "-p${DBPASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
