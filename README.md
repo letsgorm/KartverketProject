@@ -266,7 +266,9 @@ In addition, HTTP would be migrated to HTTPS in order to avoid plaintext passwor
 
 Download the ZAP report above to see the security issues.
 
-### Confidentiality
+### CIA Triad
+
+#### Confidentiality
 
 Reviewers are restricted based on these criterias:
 
@@ -282,6 +284,23 @@ https://github.com/letsgorm/KartverketProject/blob/9073420b0a123a217a8d737adba32
 
 This follows confidentiality as reviewers cannot share the report to standard users.
 In addition, the need-to-know principle requires that only users who require the information shall have access to it.
+
+#### Integrity
+
+Root users have full access to the file system.
+
+https://github.com/letsgorm/KartverketProject/blob/4dfe9b01d0d3ad47ad11f4ed9ea5672a0cce5419/docker-compose.yml#L19-L24
+
+Setting up an appuser isolates the container system as attackers will have difficulty enumerating the system for vulnerabilities.
+In addition, the principle of least privilege requires that users should have minimum access in order to perform a task.
+
+#### Availability
+
+Attackers can flood the database with requests in order to bring down the service.
+
+https://github.com/letsgorm/KartverketProject/blob/4dfe9b01d0d3ad47ad11f4ed9ea5672a0cce5419/docker-compose.yml#L30-L35
+
+The health check ensures the mariadb service keeps running.
 
 ### OWASP: Security Misconfiguration
 
