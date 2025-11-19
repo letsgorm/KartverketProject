@@ -34,6 +34,11 @@ namespace KartverketProject.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            // hvis bruker gar tilbake
+            if(User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("DataForm", "Obstacle");
+            }
             return View();
         }
 
@@ -78,6 +83,11 @@ namespace KartverketProject.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            // hvis bruker gar tilbake
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("DataForm", "Obstacle");
+            }
             return View();
         }
 
