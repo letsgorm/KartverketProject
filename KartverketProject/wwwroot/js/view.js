@@ -25,7 +25,7 @@ async function openViewPanel(obstacleId) {
 
     // lag kart
     const mapContainer = document.getElementById('panelObstacleMap');
-    mapContainer.innerHTML = '';
+    mapContainer.innerText = '';
     obstacleMap = L.map(mapContainer).setView([0, 0], 2);
     const group = L.layerGroup().addTo(obstacleMap);
 

@@ -36,7 +36,7 @@
         </div>
     </div>
 
-    <div id="map" style="height: 400px;" class="my-4 rounded-lg border"></div>
+    <div id="map-overview" style="height: 400px;" class="my-4 rounded-lg border"></div>
 
     <!-- lagre eller slett rapport -->
     <div class="flex gap-2 mt-2">
@@ -54,33 +54,10 @@
 
 </form>
 
-@{
-    // default
-    string geoJsonForJs = "{}";
-    try
-    {
-        if (Model.ObstacleJSON != null)
-        {
-            var geoDataObj = JsonSerializer.Deserialize<object>(Model.ObstacleJSON);
-            geoJsonForJs = JsonSerializer.Serialize(geoDataObj);
-        }
-    }
-    catch
-    {
-        geoJsonForJs = "{}";
-    }
-}
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script src="~/js/map.js"></script>
-    <script>
-        // parse serialisert json
-        const jsonData = JSON.parse('@Html.Raw(geoJsonForJs)');
-
-        if (jsonData.features && jsonData.features.length > 0) {
-            const geoLayer = L.geoJSON(jsonData).addTo(group);
-            map.fitBounds(geoLayer.getBounds());
-        }
+    <script id="obstacle-json" type="application/json">
+        @Model.ObstacleJSON
     </script>
+    <script src="~/js/mapoverview.js"></script>
 }
