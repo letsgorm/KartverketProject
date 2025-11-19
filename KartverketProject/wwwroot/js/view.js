@@ -10,13 +10,13 @@ async function openViewPanel(obstacleId) {
 
     // fyll ut data
     document.getElementById('panelObstacleName').innerText = data.obstacleName;
-    document.getElementById('panelObstacleDetails').innerHTML = `
-        <p><strong>Department:</strong> ${data.department}</p>
-        <p><strong>User:</strong> ${data.username}</p>
-        <p><strong>Submitted:</strong> ${data.date}</p>
-        <p><strong>Status:</strong> ${data.status}</p>
-        <p><strong>Description:</strong> ${data.description}</p>
-        <p><strong>Shared with:</strong> ${data.sharedWith.join(', ') || '—'}</p>
+    document.getElementById('panelObstacleDetails').innerText = `
+        Department: ${data.department}
+        User: ${data.username}
+        Submitted: ${data.date}
+        Status: ${data.status}
+        Description: ${data.description}
+        Shared with: ${data.sharedWith.join(', ') || '—'}
     `;
 
     // vis panel
@@ -102,7 +102,7 @@ async function openShareInline() {
 
     // hent opp valgte reviewers
     const select = document.getElementById('reviewersSelect');
-    select.innerHTML = '';
+    select.innerText = '';
 
     // legg til reviewers
     reviewers.forEach(r => {
