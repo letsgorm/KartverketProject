@@ -343,7 +343,11 @@ They can then show the alert on the page.
 
 ![ALERT](images/alert18.png)
 
-With parsing and serialization, the attacker can no longer do XSS.
+Getting the model, then parsing the HTML as textContent is safe as long as it is not placed on innerHTML.
+
+https://github.com/letsgorm/KartverketProject/blob/433e47255b20bc2ca6cc992841a94e9dc0285d14/KartverketProject/wwwroot/js/mapoverview.js#L14-L20
+
+The object is then parsed in order to create a GeoJSON object to display the marker on the map.
 
 ![REG](images/register19.png)
 
