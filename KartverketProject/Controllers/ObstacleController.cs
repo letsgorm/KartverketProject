@@ -25,8 +25,10 @@ namespace KartverketProject.Controllers
         // GET: /Obstacle/DataForm
         // blir kalt etter at vi trykker på "Register Obstacle" lenken i Index viewet
         [HttpGet]
-        public ActionResult DataForm() => View();
-
+        public ActionResult DataForm()
+        {
+            return View();
+        }
 
         // POST: /Obstacle/DataForm
         // blir kalt etter at vi trykker på "Submit Data" knapp i DataForm viewet

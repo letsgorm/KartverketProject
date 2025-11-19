@@ -64,6 +64,9 @@ namespace KartverketProject
                     policy.RequireRole("admin", "reviewer"));
             });
 
+            // cross site request forgery
+            builder.Services.AddAntiforgery();
+
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
