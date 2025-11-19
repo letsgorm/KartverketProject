@@ -103,6 +103,7 @@ namespace KartverketProject
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseAntiforgery();
 
             app.MapControllerRoute(
                 name: "default",
