@@ -183,7 +183,7 @@ ApplicationDbContext uses dependency injection in order to get services such as 
 
 The roles admin, reviewer and admin are created. The user is created with a hashed password, as storing plaintext passwords is a security risk.
 
-The <IdentityUser> is customized with <User> in order to add additional attributes such as Department and Active as required by the stakeholders.
+The IdentityUser is customized from the User model with additional attributes such as Department and Active as required by the stakeholders.
 
 Once the models have been defined, the process of migrating and updating the database creates these tables through object relational mapping. 
 
@@ -396,8 +396,6 @@ A special thank you to DAkintola94 for assisting us and allowing us to reuse his
 You can find his project here:
 
 https://github.com/DAkintola94/MatFrem/tree/main
-
-The security report was 
 
 Generative AI was used to generate Tailwind CSS pages and to enhance existing code.
 
