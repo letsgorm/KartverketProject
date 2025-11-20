@@ -457,7 +457,7 @@ namespace KartverketProject.Controllers
             _context.Update(report);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("OverviewAll");
+            return RedirectToAction("AllReports");
         }
 
         // GET: /Account/GetReviewersForSharing
@@ -521,7 +521,7 @@ namespace KartverketProject.Controllers
             if (!isOwner && !isSameDepartment) 
                 return Forbid();
 
-            // hent opp alle valgte brukere fra <select> i overviewall
+            // hent opp alle valgte brukere fra select i allreports
             foreach (var userId in selectedUserIds)
             {
                 var exists = await _context.ReportShare
@@ -540,7 +540,7 @@ namespace KartverketProject.Controllers
 
             // lagre endringer
             await _context.SaveChangesAsync();
-            return RedirectToAction("OverviewAll");
+            return RedirectToAction("AllReports");
         }
 
         // POST: /Account/StopSharing
@@ -573,7 +573,7 @@ namespace KartverketProject.Controllers
             _context.ReportShare.RemoveRange(report.SharedWith);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("OverviewAll");
+            return RedirectToAction("AllReports");
         }
 
         // GET: /Account/GetObstacleDetails
