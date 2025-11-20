@@ -32,7 +32,7 @@
                 <!-- kun for reviewer eller admin -->
                 @if (User.IsInRole("reviewer") || User.IsInRole("admin"))
                 {
-                    <a asp-controller="Account" asp-action="OverviewAll"
+                    <a asp-controller="Account" asp-action="AllReports"
                        class="flex flex-col md:flex-row items-center justify-center px-2 md:px-3 py-2 rounded-full bg-gray-800 hover:bg-gray-700 text-white text-center whitespace-nowrap">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 md:mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25v15.5a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 20.75V5.25z" />

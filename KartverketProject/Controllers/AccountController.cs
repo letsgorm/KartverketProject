@@ -348,7 +348,7 @@ namespace KartverketProject.Controllers
 
         [Authorize(Policy = "AuthenticatedHigh")]
         [HttpGet]
-        public async Task<IActionResult> OverviewAll(string statusFilter, string sortOrder)
+        public async Task<IActionResult> AllReports(string statusFilter, string sortOrder)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             var userDepartment = currentUser?.Department;
