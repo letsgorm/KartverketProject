@@ -346,6 +346,7 @@ namespace KartverketProject.Controllers
 
         // REVIEWER DEL
 
+        // GET: /Account/AllReports
         [Authorize(Policy = "AuthenticatedHigh")]
         [HttpGet]
         public async Task<IActionResult> AllReports(string statusFilter, string sortOrder)
@@ -576,10 +577,10 @@ namespace KartverketProject.Controllers
             return RedirectToAction("AllReports");
         }
 
-        // GET: /Account/GetObstacleDetails
+        // GET: /Account/GetReportDetails
         [Authorize(Policy = "AuthenticatedHigh")]
         [HttpGet]
-        public async Task<IActionResult> GetObstacleDetails(int obstacleId)
+        public async Task<IActionResult> GetReportDetails(int obstacleId)
         {
             var currentUserId = _userManager.GetUserId(User);
 
