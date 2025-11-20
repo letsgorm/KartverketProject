@@ -4,8 +4,8 @@ let obstacleMap;
 async function openViewPanel(obstacleId) {
     currentObstacleId = obstacleId;
 
-    // hent opp json fra GetObstacleDetails
-    const response = await fetch(`/Account/GetObstacleDetails?obstacleId=${obstacleId}`);
+    // hent opp json fra GetReportDetails
+    const response = await fetch(`/Account/GetReportDetails?obstacleId=${obstacleId}`);
     const data = await response.json();
 
     // fyll ut data
