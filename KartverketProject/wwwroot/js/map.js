@@ -5,8 +5,7 @@ if (mapDiv) {
 
     // hent offline kart fra lokal tileserver-gl
     L.tileLayer('http://localhost:8080/styles/basic-preview/512/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        maxNativeZoom: 13,
+        maxZoom: 20, // kun for demo, sett maxZoom til 18 og maxNativeZoom til 13
         attribution: 'OpenStreetMap'
     }).addTo(map);
 

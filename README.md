@@ -175,8 +175,6 @@ CSS is used to style the web page. The project uses Tailwind CSS to simplify thi
 
 JS is used to enable interactivity. The project uses Leaflet in order to create the map.
 
-lib stores bootstrap to show premade elements while jquery allows DOM manipulation.
-
 ### Backend
 
 ApplicationDbContext uses dependency injection in order to get services such as ASP.NET Core Identity to login and register users.
