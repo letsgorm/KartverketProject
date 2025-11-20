@@ -111,22 +111,22 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string
         // string id, string email, string username, string password, string department
 
         // NLA
-        var adminUserNrl = CreateUser(adminIdNla, "admin@nla.no", "johnd", "admin", "NLA");
-        var reviewerUserNrl = CreateUser(reviewerIdNla, "reviewer@nla.no", "janed", "admin", "NLA");
-        var userUserNrl = CreateUser(userIdNla, "user@nla.no", "bobs", "admin", "NLA");
+        var johnd = CreateUser(adminIdNla, "admin@nla.no", "johnd", "admin", "NLA");
+        var janed = CreateUser(reviewerIdNla, "reviewer@nla.no", "janed", "admin", "NLA");
+        var bobs = CreateUser(userIdNla, "user@nla.no", "bobs", "admin", "NLA");
 
         // Luftsforsvaret
-        var reviewerUserLuft = CreateUser(reviewerIdLuft, "reviewer@luftsforsvaret.no", "janiced", "admin", "Luftsforsvaret");
+        var janiced = CreateUser(reviewerIdLuft, "reviewer@luftsforsvaret.no", "janiced", "admin", "Luftsforsvaret");
 
         // seed data for rollene
         modelBuilder.Entity<IdentityRole>().HasData(roles);
 
-        // bruker egen model for admin brukeren
+        // bruker egen model for brukerne
         modelBuilder.Entity<User>().HasData(
-            adminUserNrl, 
-            reviewerUserNrl, 
-            userUserNrl, 
-            reviewerUserLuft
+            johnd, 
+            janed, 
+            bobs, 
+            janiced
             );
 
         // legg til roller
