@@ -6,6 +6,13 @@
     ViewData["Title"] = "All Obstacles";
     var selectedStatus = ViewData["SelectedStatus"] as string ?? "All";
     var sortOrder = ViewData["SortOrder"] as string ?? "";
+
+    if(TempData["Error"] != null)
+    {
+        <div class="w-max mx-auto mb-4 text-red-600 text-sm mb-2">
+            @TempData["Error"]
+        </div>
+    }
 }
 
 <section class="mx-auto max-w-6xl px-6 py-8">
@@ -35,19 +42,19 @@
             <thead class="bg-gray-100 border-b">
                 <tr class="text-left text-gray-700 font-medium">
                     <th class="px-4 py-3">
-                        <a asp-action="OverviewAll" asp-route-sortOrder="@((sortOrder == "name_asc") ? "name_desc" : "name_asc")" asp-route-statusFilter="@selectedStatus" class="hover:underline">Obstacle</a>
+                        <a asp-action="AllReports" asp-route-sortOrder="@((sortOrder == "name_asc") ? "name_desc" : "name_asc")" asp-route-statusFilter="@selectedStatus" class="hover:underline">Obstacle</a>
                     </th>
                     <th class="px-4 py-3">
-                        <a asp-action="OverviewAll" asp-route-sortOrder="@((sortOrder == "department_asc") ? "department_desc" : "department_asc")" asp-route-statusFilter="@selectedStatus" class="hover:underline">Department</a>
+                        <a asp-action="AllReports" asp-route-sortOrder="@((sortOrder == "department_asc") ? "department_desc" : "department_asc")" asp-route-statusFilter="@selectedStatus" class="hover:underline">Department</a>
                     </th>
                     <th class="px-4 py-3">
-                        <a asp-action="OverviewAll" asp-route-sortOrder="@((sortOrder == "username_asc") ? "username_desc" : "username_asc")" asp-route-statusFilter="@selectedStatus" class="hover:underline">Username</a>
+                        <a asp-action="AllReports" asp-route-sortOrder="@((sortOrder == "username_asc") ? "username_desc" : "username_asc")" asp-route-statusFilter="@selectedStatus" class="hover:underline">Username</a>
                     </th>
                     <th class="px-4 py-3">
-                        <a asp-action="OverviewAll" asp-route-sortOrder="@((sortOrder == "date_asc") ? "date_desc" : "date_asc")" asp-route-statusFilter="@selectedStatus" class="hover:underline">Submitted</a>
+                        <a asp-action="AllReports" asp-route-sortOrder="@((sortOrder == "date_asc") ? "date_desc" : "date_asc")" asp-route-statusFilter="@selectedStatus" class="hover:underline">Submitted</a>
                     </th>
                     <th class="px-4 py-3">
-                        <a asp-action="OverviewAll" asp-route-sortOrder="@((sortOrder == "status_asc") ? "status_desc" : "status_asc")" asp-route-statusFilter="@selectedStatus" class="hover:underline">Status</a>
+                        <a asp-action="AllReports" asp-route-sortOrder="@((sortOrder == "status_asc") ? "status_desc" : "status_asc")" asp-route-statusFilter="@selectedStatus" class="hover:underline">Status</a>
                     </th>
                     <th class="px-4 py-3 text-center">Actions</th>
                 </tr>

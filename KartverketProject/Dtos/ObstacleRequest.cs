@@ -23,6 +23,7 @@ namespace KartverketProject.Dtos
         [MaxLength(50)]
         public string ReportStatus { get; set; } = "Pending";
 
+        [MaxLength(1000)]
         public string? ReportReason { get; set; }
 
         // bruker
