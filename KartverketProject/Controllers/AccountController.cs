@@ -428,8 +428,13 @@ namespace KartverketProject.Controllers
         [Authorize(Policy = "AuthenticatedHigh")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateStatus(int reportId, string newStatus, string reportReason)
+        public async Task<IActionResult> UpdateStatus(ReasonRequest model, string newStatus)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "Reason is too long";
+                return RedirectToAction("AllReports");
+            }
             var currentUserId = _userManager.GetUserId(User);
 
             // hent opp bruker sin rapport som er delt med
@@ -437,7 +442,7 @@ namespace KartverketProject.Controllers
                 .Include(r => r.User)
                 .Include(r => r.SharedWith)
                     .ThenInclude(rs => rs.SharedWithUser)
-                .FirstOrDefaultAsync(r => r.ReportId == reportId);
+                .FirstOrDefaultAsync(r => r.ReportId == model.ReportId);
 
             if (report == null)
                 return NotFound();
@@ -454,7 +459,7 @@ namespace KartverketProject.Controllers
 
             // lagre grunn til rapport
             report.ReportStatus = newStatus;
-            report.ReportReason = reportReason;
+            report.ReportReason = model.ReportReason;
             _context.Update(report);
             await _context.SaveChangesAsync();
 

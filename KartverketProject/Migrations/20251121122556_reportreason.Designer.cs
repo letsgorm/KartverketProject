@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KartverketProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251121122556_reportreason")]
+    partial class reportreason
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +40,6 @@ namespace KartverketProject.Migrations
                         .HasColumnType("double");
 
                     b.Property<string>("ObstacleJSON")
-                        .HasMaxLength(50000)
                         .HasColumnType("longtext");
 
                     b.Property<string>("ObstacleName")
@@ -75,8 +77,7 @@ namespace KartverketProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ReportReason")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("ReportReasonSeen")
                         .HasColumnType("tinyint(1)");
@@ -207,16 +208,16 @@ namespace KartverketProject.Migrations
                             Id = "33333333-3333-3333-3333-333333333333",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "df763dc0-9ede-4ab7-a44c-a825b76bc05a",
+                            ConcurrencyStamp = "c6316a11-7814-4b69-bf8a-6e88763d98a7",
                             Department = "NLA",
                             Email = "admin@nla.no",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@NLA.NO",
                             NormalizedUserName = "JOHND",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKBIKjj4HK0ImTRDSOVHcCtovnv+1F+1LLK9OxCwubsafQWRlz05tzcm3a5Ggq5ejQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEImA3n2g/oZ+jCRMH6RtvswOGgufcSwavk/ojoQcNbxJTWW/IEpsrostNbRDtgZBgA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "34eee811-dfa3-42a4-8a9f-3d2e2c67144b",
+                            SecurityStamp = "89eab33c-4ca7-4823-bd92-f9044243829b",
                             TwoFactorEnabled = false,
                             UserName = "johnd"
                         },
@@ -225,16 +226,16 @@ namespace KartverketProject.Migrations
                             Id = "44444444-4444-4444-4444-444444444444",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "162cd054-eebd-4c7e-b669-50eb1f3390cb",
+                            ConcurrencyStamp = "14a7d060-8753-4fb6-8096-5537d16ba0c9",
                             Department = "NLA",
                             Email = "reviewer@nla.no",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "REVIEWER@NLA.NO",
                             NormalizedUserName = "JANED",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHnpqxpsL5HQkqcxrEq5nlZ3nA4qeoWlVb+hRdEXMpFQxUAckwXP4HQoHKNgJaMprA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF8ajPfu0AE35DqA+b5rfKzdt+3f53NDSK4CC1JKpt/BT4h3GnekO4DoOmDDBwliXA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6ebe07fa-7865-4ac4-be85-6e583e74c104",
+                            SecurityStamp = "592a9b98-0855-4772-b53a-b43153057140",
                             TwoFactorEnabled = false,
                             UserName = "janed"
                         },
@@ -243,16 +244,16 @@ namespace KartverketProject.Migrations
                             Id = "66666666-6666-6666-6666-666666666666",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "e2142608-01fa-4540-9335-ab996c47094c",
+                            ConcurrencyStamp = "bd1fb486-0351-44b7-84e6-6d5b82a6036e",
                             Department = "NLA",
                             Email = "user@nla.no",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "USER@NLA.NO",
                             NormalizedUserName = "BOBS",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBrDnAcQN8IyHe5kls5vqaGk2+vMHy4RGLjbGcQDlzcmzueb/Y+ow6bp8THsSw6eyg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIocgTN1Noy5lHH8FNQT7yCBlo3/ksNYwG1eB+OfbxDxzANOgwPcKTfT/eEELWujDw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "02e5531d-ee1a-43dd-b78c-83f94e6cdc0c",
+                            SecurityStamp = "a71926c7-896a-4da3-9aea-6084522a4d87",
                             TwoFactorEnabled = false,
                             UserName = "bobs"
                         },
@@ -261,16 +262,16 @@ namespace KartverketProject.Migrations
                             Id = "77777777-7777-7777-7777-777777777777",
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "faf21f24-2912-41c0-8db6-0972f3b7f7eb",
+                            ConcurrencyStamp = "5070f500-c114-4d73-83b1-48baf59b8c71",
                             Department = "Luftsforsvaret",
                             Email = "reviewer@luftsforsvaret.no",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "REVIEWER@LUFTSFORSVARET.NO",
                             NormalizedUserName = "JANICED",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHlBHbs0BHdE09COCa+lmB2WftaoSIEF/YRi7A7Bu9LSXgC6V5jc5HM5gblDMu1H6g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB6+35Lf4p03qc4AKAeYL+2j2czlRn2ps4YP+0TNqfT9+0CFeeI45DFwAN2bB4OnFw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3016093f-2264-42ba-979f-f8a61c122e8a",
+                            SecurityStamp = "7dc48e35-0f8a-4178-861e-4d56c50d7a74",
                             TwoFactorEnabled = false,
                             UserName = "janiced"
                         });

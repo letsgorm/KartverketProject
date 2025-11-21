@@ -18,6 +18,7 @@ namespace KartverketProject.Models
 
         public DateTime ObstacleSubmittedDate { get; set; }
 
+        [MaxLength(50000)]
         public string? ObstacleJSON { get; set; }
 
         public ICollection<Report> ReportEntries { get; set; } = new List<Report>();

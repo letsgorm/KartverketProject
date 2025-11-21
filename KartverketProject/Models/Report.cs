@@ -12,6 +12,7 @@ namespace KartverketProject.Models
 
         public int ObstacleId { get; set; } // FK
 
+        [MaxLength(1000)]
         public string? ReportReason { get; set; }
 
         public bool ReportReasonSeen { get; set; } = false; // bruker har ikke sitt rapport
