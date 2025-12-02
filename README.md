@@ -62,22 +62,17 @@ Seamlessly register and view obstacles on the map even offline.
 
 ![PASS](images/apppass5.png)
 
-6. Select docker-compose as the main project.
+
+6. In Visual Studio:
 
 
-![SEL](images/selectdockercompose8.png)
+Tools -> NuGet Package Manager -> Package Manager Console
 
 
-7. Run the docker-compose project.
+7. Type the following command
 
+docker compose up --build
 
-![COMP](images/rundockercompose9.png)
-
-
-8. Observe that all three containers have started.
-
-
-![OBS](images/observedockercompose10.png)
 
 ## Offline Map
 
