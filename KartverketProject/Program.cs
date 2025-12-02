@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using KartverketProject.Models;
+using Pomelo.EntityFrameworkCore.MySql.Internal;
 
 namespace KartverketProject
 {
@@ -20,9 +21,13 @@ namespace KartverketProject
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
-                    new MySqlServerVersion(new Version(11, 8, 3))
+                    new MySqlServerVersion(new Version(11, 8, 3)),
+                     options => options.EnableRetryOnFailure(
+                    maxRetryCount: 10,
+                    maxRetryDelay: TimeSpan.FromSeconds(5),
+                    errorNumbersToAdd: null
+                    )
             ));
-
 
             // core identity
             builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -68,6 +73,13 @@ namespace KartverketProject
             builder.Services.AddAntiforgery();
 
             var app = builder.Build();
+
+            // automatisk migrering
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.Migrate();
+            }
 
             if (!app.Environment.IsDevelopment())
             {
