@@ -197,7 +197,7 @@ Based on the C4 model: https://c4model.com/diagrams/system-context
 
 ### Container Diagram
 
-![CD](images/containerdiagram12.png)
+
 
 Based on the C4 model: https://c4model.com/diagrams/container
 
