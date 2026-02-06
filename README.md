@@ -197,7 +197,7 @@ Built with https://mermaid.live
 
 ### System Context Diagram
 
-![SCD](images/systemcontextdiagram11.png)
+![SCD](images/systemcontextdiagram11_v2.png)
 
 Based on the C4 model: https://c4model.com/diagrams/system-context
 
