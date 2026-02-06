@@ -189,17 +189,17 @@ The project uses Entity Framework, which supports LINQ queries that perform Crea
 
 The controller is then responsible for returning views, model binding, model validation, and model errors.
 
+### Mermaid Diagram
+
+![MMD](images/mermaiddiagram28.png)
+
+Built with https://mermaid.live
+
 ### System Context Diagram
 
 ![SCD](images/systemcontextdiagram11.png)
 
 Based on the C4 model: https://c4model.com/diagrams/system-context
-
-### Container Diagram
-
-![SCD](images/containerdiagram28.png)
-
-Based on the C4 model: https://c4model.com/diagrams/container
 
 ## Unit Test
 
