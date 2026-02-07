@@ -75,7 +75,7 @@ Tools -> NuGet Package Manager -> Package Manager Console
 docker compose up --build
 
 
-8. Go to http://localhost:8080 and log in using the seeded data.
+8. Go to http://localhost:8082 and log in using the seeded data.
 
 9. To see the map, download the offline map in Releases page or with the link below.
 
